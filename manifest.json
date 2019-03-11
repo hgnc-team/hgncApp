@@ -52,5 +52,19 @@
         "setting" : {
             "urlCheck" : true
         }
-    }
+    },
+	/* H5 特有配置 */
+	"h5": {
+		"devServer": {
+            "port": 8001,
+            "disableHostCheck": true,
+            "proxy": {
+                "/api/*": {
+                    "target": "http://10.90.131.72:7001",
+                    "changeOrigin": true,
+                    "secure": false
+                }
+            }
+        }
+	}
 }

@@ -19,6 +19,7 @@
 				</view>
 			</view>
 		</view>
+		
 		<!-- 登录模块 -->
 		<view class="content pd-30" v-if="currentTab == 'login'">
 			<view class="input-wrap">
@@ -84,12 +85,10 @@
 </template>
 
 <script>
-	import service from '../../common/service.js';
 	import { uniIcon } from '@dcloudio/uni-ui';
-	import {
-	    mapState,
-	    mapMutations
-	} from 'vuex'
+	import { mapState, mapMutations } from 'vuex';
+	import service from '../../common/service.js';
+	import graceChecker from '../../common/graceChecker.js'
 	export default {
 		components:{
 			uniIcon
@@ -172,25 +171,22 @@
 			        }
 			    });
 			},
-			// 貌似iOS 平台不支持此 API
+			//退出app  貌似iOS 平台不支持此 API
 			closed() {
 				// #ifdef APP-PLUS  
 				plus.runtime.quit();  
 				// #endif  
 			},
+			// 切换tab
 			changeTab(tab) {
 				console.log(tab)
 				this.currentTab = tab;
 			},
-// 			BindInput:function(e){
-// 				var dataval = e.currentTarget.dataset.val;
-// 				this.loginData[dataval] = e.detail.value; 
-// 			},
 			// 点击登录
 			bindLogin() {
-			    // 校验手机号
-				console.log(this.loginData.phone)
-			    if (this.loginData.phone != 123456 && this.loginData.phone != 1234567) {
+			    // 校验手机号 ，
+				let reg = /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/;
+			    if (!this.loginData.phone || !reg.test(this.loginData.phone)) {
 			        uni.showToast({
 			            icon: 'none',
 			            title: '请输入正确的手机号'
@@ -206,29 +202,43 @@
 			        return;
 			    }
 			   
-			    const data = {
+			    const parms = {
 			        phone: this.loginData.phone,
 			        password: this.loginData.password
 			    };
 				let validUser = false;
 				this.loginData.loading = true;
 				// 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
-// 				service.loginFn(data).then(data => {//data为一个数组，数组第一项为错误信息，第二项为返回数据
-// 					var [error, res]  = data;
-// 					console.log(res.data);
-// 					validUser = true;
-// 				}));
-				 
-			    validUser = true;
-				const userLevel = this.loginData.phone == 123456 ? 1 : 2;
-			    if (validUser) {
-			        this.setfooterBar(this.loginData.phone, userLevel);
-			    } else {
-			        uni.showToast({
-			            icon: 'none',
-			            title: '用户账号或密码不正确',
-			        });
-			    }
+				service.loginRe(parms).then(data => {//data为一个数组，数组第一项为错误信息，第二项为返回数据
+					var [error, res]  = data;
+					this.loginData.loading = false;
+					if(!error) {
+						this.loginData.loading = false;
+						// 请求失败
+						uni.showToast({
+						    icon: 'none',
+						    title: JSON.stringify(error),
+						});
+						return;
+					} else {
+						// 登录成功
+						if(res.data.code === 200) {
+							validUser = true;
+							const userLevel = this.loginData.phone == 123456 ? 1 : 2;
+							// 设置底部导航栏
+							this.setfooterBar(userLevel);
+							// 缓存用户数据
+							this.saveUserInfo(this.loginData.phone, userLevel);
+						} else {
+							// 登录失败
+							uni.showToast({
+							    icon: 'none',
+							    title: JSON.stringify(res.data.errorMsg),
+							});
+							return;
+						}
+					};
+				});
 			},
 			// 获取验证码
 			getsmscode: function() {
@@ -251,25 +261,23 @@
 				}
 			},
 			// 设置不同的tabbar
-			setfooterBar(userName, userLevel) {
+			setfooterBar(userLevel) {
+				// 用户等级大于1的才能看到会员中心
+				let barType =  userLevel > 1 ? "menu_5" : "menu_4";
+				this.$store.dispatch(barType);
+			},
+			// 缓存用户数据
+			saveUserInfo(userName, userLevel) {
 				// 同步store里面的用户名称，等级
 				this.login(userName, userLevel);
-				if(userLevel == 1) {
-					// 注册会员看不到会员中心
-					this.$store.dispatch("menu_4");
-				} else {
-					// 普通会员及以上有会员中心
-					this.$store.dispatch("menu_5");
-				}
 				this.toIndex();
-			}
-			,
+			},
 			// 跳转首页
 			toIndex() {
+				// reLaunch关闭所有页面，打开一个新页面
 				uni.reLaunch({
 				    url: '../index',
-				});
-				// uni.navigateBack();		
+				});		
 			}
 		},
 		onLoad() {
