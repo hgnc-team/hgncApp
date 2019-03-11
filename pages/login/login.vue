@@ -76,6 +76,12 @@
 				<view class="input-item">
 					<input placeholder="确认密码" type="password" v-model="registerData.password1"/>
 				</view>
+				<view class="input-item has-label-right uni-flex">
+					<input placeholder="输入推荐人ID" class="input-left" v-model="registerData.inviteCode"/>
+					<view class="label-right" @tap="getsmscode">
+						<text style="color: red;font-size: 24upx;">*推荐人ID必填</text>
+					</view>
+				</view>
 			</view>
 			<view class=" loginbtn">
 				<button :loading="registerData.loading" @tap="bindLogin"> {{ registerData.loading ? "注册中...":"注 册"}} </button>
@@ -104,7 +110,8 @@
 					loading: false,
 					phone:"",
 					password:"",
-					code: ""
+					code: "",
+					inviteCode: ""
 				},
 				currentTab: "login",
 				smsbtn: {
