@@ -10,7 +10,7 @@
 </template>
 
 <script>
-	import { uniIcon } from '@dcloudio/uni-ui'
+	import { uniIcon } from '@dcloudio/uni-ui';
 	export default {
 		components: {
 			uniIcon

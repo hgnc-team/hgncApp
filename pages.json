@@ -28,10 +28,10 @@
         {
             "path" : "pages/login/pwd",
             "style" : {
-                "navigationBarTitleText" : "忘记密码",
-				"app-plus": {  
-					"titleNView": false  
-				}
+                "navigationBarTitleText" : "忘记密码"
+// 				"app-plus": {  
+// 					"titleNView": false  
+// 				}
 			}
         },
         {
@@ -45,9 +45,9 @@
         }
     ],
     "globalStyle" : {
-        "navigationBarTextStyle" : "black",
+        "navigationBarTextStyle" : "white",
         "navigationBarTitleText" : "M+",
-        "navigationBarBackgroundColor" : "#F8F8F8",
+        "navigationBarBackgroundColor" : "#333",
         "backgroundColor" : "#F8F8F8"
     },
 	"subPackages": [

@@ -16,7 +16,7 @@
 	import vipCenterPage from "./vipCenter/vipCenter_page.vue";
 	import shopCartPage from "./shopCart/shopCart_page.vue";
 	import minePage from "./mine/mine_page.vue";
-	import footerNav from "../components/footer/footer_nav.vue";
+	import footerNav from "../components/global/footer_nav.vue";
 	export default {
 		data() {
 			return {}

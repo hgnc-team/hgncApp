@@ -1,7 +1,7 @@
 <template>
 	<view class="homePage">
 		<!-- 状态栏 -->
-		<view class="status" :style="{position:headerPosition}"></view>
+		<statusBar></statusBar>
 		<!-- 漂浮头部 -->
 		<view class="header" :style="{position:headerPosition}">
 			<!-- 消息 -->
@@ -87,7 +87,7 @@
 </template>
 <script>
 	import topTabMenu from "../../components/common/top_tabMenu.vue";
-	import { uniBadge, uniIcon } from '@dcloudio/uni-ui'
+	import { uniBadge, uniIcon } from '@dcloudio/uni-ui';
 	export default {
 		components: {
 			topTabMenu,

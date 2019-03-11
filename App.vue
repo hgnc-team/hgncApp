@@ -43,13 +43,19 @@
 
 <style>
 	/*每个页面公共css */
-	@import "./static/css/simplepro.css";
+	/* @import "./static/css/simplepro.css"; */
 	@import "./static/css/uni.css";
+	.t-c-w{
+		color: #fff;
+	}
 	.pd-10{
 		padding: 10upx;
 	}
 	.pd-20{
-		padding: 10upx;
+		padding: 20upx;
+	}
+	.pd-30{
+		padding: 30upx;
 	}
 	.mg-10{
 		margin: 10upx;
