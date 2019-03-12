@@ -94,12 +94,8 @@
 		width: 100%;
 		font-size: 28upx;
 		.top-menu-view {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			white-space: nowrap;
-			width: 100%;
-			background-color: inherit;
+			padding:0 20upx;
+			box-sizing: border-box;
 			/* 在这里设置导航条高度 */
 			height: 100upx;
 			.uni-scroll-view >div>div{
@@ -110,8 +106,8 @@
 			.menu-one-view {
 				display: inline-block;
 				white-space: nowrap;
-				margin-left: 15upx;
-				margin-right: 15upx;
+				margin-left: 20upx;
+				margin-right: 20upx;
 				height: 100upx;
 				text-align: center;
 				line-height: 100upx;
@@ -131,21 +127,21 @@
 					align-items: center;
 					justify-content: center;
 					position: absolute;
-					bottom: 10upx;
+					bottom: 0upx;
 					width: 100%;
 					.menu-one-bottom-color {
-						width: 60%;
-						height: 4upx;
+						width: 40%;
+						height: 6upx;
 					}
 				}
 				
 				&.menu-one-act {
 					.menu-one-txt {	
-						color: rgba(0, 170, 255, 1);	
+						color: #000;	
 					}
 					.menu-one-bottom {
 						.menu-one-bottom-color {
-							background: rgba(0, 170, 255, 1);
+							background: #000;
 						}
 					}
 				}

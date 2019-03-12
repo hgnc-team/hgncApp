@@ -29,7 +29,8 @@
 		/*  #ifdef  APP-PLUS  */
 		height: var(--status-bar-height);//表示状态栏的高度。
 		/*  #endif  */
-		opacity: 0;
+		// opacity: 0;
+		background-color: #000;
 		position: fixed;
 		top: 0;
 		z-index: 999;

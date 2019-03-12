@@ -70,7 +70,8 @@
 	left: 0;
 	width: 100%;
 	background-color: #fff;
-	color: #333;
+	border-top: 1upx solid #eee;
+	color: #999;
 	.footer_item{
 		float: left;
 		width: 33.3%;
@@ -80,7 +81,7 @@
 		margin-top: 4upx;
 	}
 	.select_text{
-		color: #00c1de;
+		color: #000;
 	}
 	.footer_item image{
 		width: 40upx;

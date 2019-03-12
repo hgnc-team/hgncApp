@@ -4,20 +4,28 @@
 		<statusBar></statusBar>
 		<!-- 漂浮头部 -->
 		<view class="header" :style="{position:headerPosition}">
+			<!-- 切换地理位置 -->
+			<view class="">
+				<view class="local" @click="showPicker">
+					<view class="text">{{pickerText}}</view>
+					<uni-icon class="icon" type="arrowdown" size="18"></uni-icon>
+				</view>
+				<view class="mpvue-picer">
+					<mpvue-picker ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
+					 :themeColor="themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
+				</view>
+			</view>
+			<!-- 搜索 -->
+			<view class="input">
+				<view class="icon">
+					<uni-icon class="icon" type="search" size="24"></uni-icon>
+				</view>
+				<input placeholder="名称,类型" @tap="toSearch()" />
+			</view>
 			<!-- 消息 -->
 			<view class="messages" @tap="goMessagesPage">
 				<uni-icon class="icon" type="email" size="30"></uni-icon>
 				<uni-badge text="2" type="error" size="small"></uni-badge>
-			</view>
-			<!-- 搜索 -->
-			<view class="input">
-				<uni-icon class="icon" type="search" size="24"></uni-icon>
-				<input placeholder="名称,类型" @tap="toSearch()" />
-			</view>
-			<!-- 切换地理位置 -->
-			<view class="local">
-				<view class="text">武汉</view>
-				<uni-icon class="icon" type="arrowdown" size="18"></uni-icon>
 			</view>
 		</view>
 		<!-- 占位 -->
@@ -82,459 +90,642 @@
 					<view class="loading-text">{{loadingText}}</view>
 				</view>
 			</view>
-		</view>	
+		</view>
 	</view>
 </template>
 <script>
+	import {
+		uniBadge,
+		uniIcon
+	} from '@dcloudio/uni-ui';
+	import mpvuePicker from 'mpvue-picker';
 	import topTabMenu from "../../components/common/top_tabMenu.vue";
-	import { uniBadge, uniIcon } from '@dcloudio/uni-ui';
+	import cityData from "../../common/city.data.js";
 	export default {
 		components: {
 			topTabMenu,
 			uniIcon,
-			uniBadge
+			uniBadge,
+			mpvuePicker
 		},
 		data() {
 			return {
+				mode: 'selector',
+				deepLength: 0, // 几级联动
+				pickerValueDefault: [], // 初始化值
+				pickerValueArray: [], // picker 数组值
+				pickerText: '全国',
+				themeColor: '#000', // 颜色主题
 				tabs: {
 					// 选项卡
-					items: ['全部','推荐','手机','电脑','箱包'],
+					items: ['全部', '推荐', '手机', '电脑', '箱包', '时装时装', '男装', '女装'],
 					current: 0
 				},
 				//轮播
-				swiperList:[
-					{sid:0,src:'自定义src0',img:'../../../static/HM-shophome/swiper-img/0.jpg'},
-					{sid:1,src:'自定义src1',img:'../../../static/HM-shophome/swiper-img/1.jpg'},
-					{sid:2,src:'自定义src2',img:'../../../static/HM-shophome/swiper-img/2.jpg'},
-					{sid:3,src:'自定义src3',img:'../../../static/HM-shophome/swiper-img/3.jpg'}
+				swiperList: [{
+						sid: 0,
+						src: '自定义src0',
+						img: '../../../static/HM-shophome/swiper-img/0.jpg'
+					},
+					{
+						sid: 1,
+						src: '自定义src1',
+						img: '../../../static/HM-shophome/swiper-img/1.jpg'
+					},
+					{
+						sid: 2,
+						src: '自定义src2',
+						img: '../../../static/HM-shophome/swiper-img/2.jpg'
+					},
+					{
+						sid: 3,
+						src: '自定义src3',
+						img: '../../../static/HM-shophome/swiper-img/3.jpg'
+					}
 				],
 
 				//推荐商品 3个
-				pickList:[
-					{ goods_id: 0, img: '../../../static/HM-shophome/pick-img/p1.jpg', price: '￥168', slogan:'限时抢购' },
-					{ goods_id: 1, img: '../../../static/HM-shophome/pick-img/p2.jpg', price: '￥168', slogan:'精选商品' },
-					{ goods_id: 2, img: '../../../static/HM-shophome/pick-img/p3.jpg', price: '￥168', slogan:'今日疯抢' }
+				pickList: [{
+						goods_id: 0,
+						img: '../../../static/HM-shophome/pick-img/p1.jpg',
+						price: '￥168',
+						slogan: '限时抢购'
+					},
+					{
+						goods_id: 1,
+						img: '../../../static/HM-shophome/pick-img/p2.jpg',
+						price: '￥168',
+						slogan: '精选商品'
+					},
+					{
+						goods_id: 2,
+						img: '../../../static/HM-shophome/pick-img/p3.jpg',
+						price: '￥168',
+						slogan: '今日疯抢'
+					}
 				],
 				//猜你喜欢列表
-				productList:[
-					{ goods_id: 0, img: '../../../static/HM-shophome/img/p1.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 1, img: '../../../static/HM-shophome/img/p2.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 2, img: '../../../static/HM-shophome/img/p3.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 3, img: '../../../static/HM-shophome/img/p4.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 4, img: '../../../static/HM-shophome/img/p5.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 5, img: '../../../static/HM-shophome/img/p6.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 6, img: '../../../static/HM-shophome/img/p7.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 7, img: '../../../static/HM-shophome/img/p8.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 8, img: '../../../static/HM-shophome/img/p9.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' },
-					{ goods_id: 9, img: '../../../static/HM-shophome/img/p10.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' }
+				productList: [{
+						goods_id: 0,
+						img: '../../../static/HM-shophome/img/p1.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 1,
+						img: '../../../static/HM-shophome/img/p2.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 2,
+						img: '../../../static/HM-shophome/img/p3.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 3,
+						img: '../../../static/HM-shophome/img/p4.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 4,
+						img: '../../../static/HM-shophome/img/p5.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 5,
+						img: '../../../static/HM-shophome/img/p6.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 6,
+						img: '../../../static/HM-shophome/img/p7.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 7,
+						img: '../../../static/HM-shophome/img/p8.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 8,
+						img: '../../../static/HM-shophome/img/p9.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					},
+					{
+						goods_id: 9,
+						img: '../../../static/HM-shophome/img/p10.jpg',
+						name: '商品名称商品名称商品名称商品名称商品名称',
+						price: '￥168',
+						slogan: '1235人付款'
+					}
 				],
 				currentPageindex: 0,
-				headerPosition:"fixed",
-				loadingText:"正在加载..."
-				
+				headerPosition: "fixed",
+				loadingText: "正在加载..."
+
 			};
 		},
-		computed:{
-			list(){
+		computed: {
+			list() {
 				console.log(this.$store.state.list)
 				return this.$store.state.list;
 			}
 		},
-		onPageScroll(e){
+		onPageScroll(e) {
 			//兼容iOS端下拉时顶部漂移
-			if(e.scrollTop>=0){
+			if (e.scrollTop >= 0) {
 				this.headerPosition = "fixed";
-			}else{
+			} else {
 				this.headerPosition = "absolute";
 			}
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
-		    setTimeout(function () {
-		        uni.stopPullDownRefresh();
-		    }, 1000);
+			setTimeout(function() {
+				uni.stopPullDownRefresh();
+			}, 1000);
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
-		onReachBottom(){
+		onReachBottom() {
 			// uni.showToast({title: '触发上拉加载'});
 			let len = this.productList.length;
-			if(len>=40){
-				this.loadingText="到底了";
+			if (len >= 40) {
+				this.loadingText = "到底了";
 				return false;
 			}
-			let end_goods_id = this.productList[len-1].goods_id;
-			for(let i=1;i<=10;i++){
-				let goods_id = end_goods_id+i;
-				let p = { goods_id: goods_id, img: '../../../static/HM-shophome/img/p'+(goods_id%10==0?10:goods_id%10)+'.jpg', name: '商品名称商品名称商品名称商品名称商品名称', price: '￥168', slogan:'1235人付款' };
+			let end_goods_id = this.productList[len - 1].goods_id;
+			for (let i = 1; i <= 10; i++) {
+				let goods_id = end_goods_id + i;
+				let p = {
+					goods_id: goods_id,
+					img: '../../../static/HM-shophome/img/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
+					name: '商品名称商品名称商品名称商品名称商品名称',
+					price: '￥168',
+					slogan: '1235人付款'
+				};
 				this.productList.push(p);
 			}
 		},
 		onLoad() {},
 		methods: {
+			// 二级联动
+			showPicker() {
+				this.pickerValueArray = cityData;
+				this.mode = 'multiLinkageSelector';
+				this.deepLength = 2;
+				this.pickerValueDefault = [1, 0];
+				this.$refs.mpvuePicker.show();
+			},
+			onConfirm(e) {
+				console.log(e);
+				// this.pickerText = e.label;
+				if (e && e.label) {
+					this.pickerText = e.label.split('-')[1];
+				}
+			},
+			onChange(e) {
+				console.log(e);
+			},
+			onCancel(e) {
+				console.log(e);
+			},
 			//消息页跳转
-			goMessagesPage(){
+			goMessagesPage() {
 				uni.scanCode({
-					success:(res)=>{
-						uni.showToast({title: '条码内容：' + res.result});
+					success: (res) => {
+						uni.showToast({
+							title: '条码内容：' + res.result
+						});
 					}
 				});
 			},
 			//搜索跳转
-			toSearch(){
+			toSearch() {
 				uni.hideKeyboard();
 				uni.navigateTo({
 					url: '../../home/search'
 				})
 			},
 			// 切换选项卡
-			changeTabs(index){
+			changeTabs(index) {
 				if (this.tabs.current !== index) {
 					this.tabs.current = index;
 				}
 			},
 			//轮播图跳转
-			toSwiper(e){
-				uni.showToast({title: e.src});
+			toSwiper(e) {
+				uni.showToast({
+					title: e.src
+				});
 			},
 			//推荐商品跳转
-			toPick(e){
-				uni.showToast({title: '推荐商品'+e.goods_id});
+			toPick(e) {
+				uni.showToast({
+					title: '推荐商品' + e.goods_id
+				});
 			},
 			//商品跳转
-			toGoods(e){
-				uni.showToast({title: '商品'+e.goods_id});
+			toGoods(e) {
+				uni.showToast({
+					title: '商品' + e.goods_id
+				});
 			},
-// 			//更新分类指示器
-// 			categoryChange(event) {
-// 				this.currentPageindex = event.detail.current;
-// 			},
-// 			//分类图片加载完毕
-// 			categoryImgLoad(e){
-// 				this.categoryImg = this.categoryImg?this.categoryImg+1:1;
-// 				//完成加载11个分类图片开始计算分类高度，若分类图片不足10个则修改此处的10。
-// 				if(this.categoryImg==10){
-// 					this.getCategoryHeight();
-// 				}
-// 			},
-// 			//更新分类高度
-// 			getCategoryHeight() {
-// 				let view = uni.createSelectorQuery().select('.category-list');
-// 				view.fields(
-// 					{
-// 						size: true
-// 					},
-// 					data => {
-// 						this.categoryHeight = data.height + 'px';
-// 					}
-// 				).exec();
-// 			}
+			// 			//更新分类指示器
+			// 			categoryChange(event) {
+			// 				this.currentPageindex = event.detail.current;
+			// 			},
+			// 			//分类图片加载完毕
+			// 			categoryImgLoad(e){
+			// 				this.categoryImg = this.categoryImg?this.categoryImg+1:1;
+			// 				//完成加载11个分类图片开始计算分类高度，若分类图片不足10个则修改此处的10。
+			// 				if(this.categoryImg==10){
+			// 					this.getCategoryHeight();
+			// 				}
+			// 			},
+			// 			//更新分类高度
+			// 			getCategoryHeight() {
+			// 				let view = uni.createSelectorQuery().select('.category-list');
+			// 				view.fields(
+			// 					{
+			// 						size: true
+			// 					},
+			// 					data => {
+			// 						this.categoryHeight = data.height + 'px';
+			// 					}
+			// 				).exec();
+			// 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-.homePage{
-	width: 100%;
-	height: auto;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: #fff;
-	.status {
+	.homePage {
 		width: 100%;
-		height: 0;
-		/*  #ifdef  APP-PLUS  */
-		height: var(--status-bar-height);//表示状态栏的高度。
-		/*  #endif  */
-		background-color: #ff570a;
-		position: fixed;
-		top: 0;
-		z-index: 999;
-	}
-	.header {
-		width: 100%;
-		height: 100upx;
-		background-color: #ff570a;
+		height: auto;
 		display: flex;
-		position: fixed;
-		top: 0;
-		/*  #ifdef  APP-PLUS  */
-		top: var(--status-bar-height);
-		/*  #endif  */
-		z-index: 996;
-		.messages {
-			width: 100upx;
-			height: 100upx;
-			flex-shrink: 1;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			position: relative;
-			color:#fff;
-			.uni-badge{
-				position: absolute;
-				top:12upx;
-				right:4upx;
-			}
+		align-items: center;
+		justify-content: center;
+		background-color: #fff;
+
+		.status {
+			width: 100%;
+			height: 0;
+			/*  #ifdef  APP-PLUS  */
+			height: var(--status-bar-height); //表示状态栏的高度。
+			/*  #endif  */
+			background-color: #000;
+			position: fixed;
+			top: 0;
+			z-index: 999;
 		}
-		.input {
-			width: calc(100% - 220upx);
+
+		.header {
+			width: 100%;
+			height: 100upx;
+			background-color: #000;
 			display: flex;
-			justify-content: center;
-			align-items: center;
-			position:relative;
-			input {
-				width: calc(100% - 60upx);
-				height: 60upx;
-				background-color: #ffffff;
-				border-radius: 60upx;
-				padding-left: 60upx;
-				font-size: 30upx;			
-			}
-			.icon{
-				width: 60upx;
-				height: 60upx;
-				position: absolute;
-				color: #a18090;
-				z-index: 996;
-				top: 20upx;
-				/*  #ifdef  APP-PLUS  */
-				top: 0upx;
-				/*  #endif  */
-				left: 0;
-				/*  #ifdef  APP-PLUS  */
-				left: 30upx;
-				/*  #endif  */
+			position: fixed;
+			top: 0;
+			/*  #ifdef  APP-PLUS  */
+			top: var(--status-bar-height);
+			/*  #endif  */
+			z-index: 996;
+
+			.messages {
+				width: 100upx;
+				height: 100upx;
+				flex-shrink: 1;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				position: relative;
+				color: #fff;
+
+				.uni-badge {
+					position: absolute;
+					top: 12upx;
+					right: 4upx;
+				}
 			}
-		}
-		.local {
-			width: 120upx;
-			height: 100upx;
-			flex-shrink: 1;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			font-size: 30upx;
-			color:#fff;
-		}
-	}
-	.place{
-		/*  #ifdef  APP-PLUS  */
-		margin-top: var(--status-bar-height);
-		/*  #endif  */
-		background-color: #ff570a;
-		height: 100upx;
-	}
-	.tabs{
-		width: 100%;
-		height: 100upx;
-		position: fixed;  /* 固定位置 */
-		z-index: 100;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		white-space: nowrap; /* white-space 属性设置如何处理元素内的空白 */
-		background-color: #eee;
-		top: 100upx;
-		/*  #ifdef  APP-PLUS  */
-		top: calc(var(--status-bar-height) + 100upx);
-		/*  #endif  */	
-	}
-	.content{
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		top: 200upx;
-		/*  #ifdef  APP-PLUS  */
-		top: calc(var(--status-bar-height) + 200upx);
-		/*  #endif  */	
-		margin-bottom: 120upx;
-	}
-	.swiper-view {
-		.swiper {
-			width: 100%;
-			height: 280upx;
-			image {
-				width: 100%;
-				height: 280upx;
-			}
-		}
-		.keep-out {
-			width: 100%;
-			height: 30upx;
-			border-radius: 100% 100% 0 0;
-			background-color: #ff570a;
-			margin-top: -15upx;
-			position: absolute;
-		}
-	}
-	.pick{
-		width: 95%;
-		padding: 0 2.5vw 2.5vw 2.5vw;
-		background: linear-gradient(to bottom, #ff570a 0%,#ffffff 105%);
-		.box{
-			width: 100%;
-			border-radius: 20upx;
-			background-color: #ffffff;
-			.title{
+
+			.input {
+				width: calc(100% - 240upx);
 				display: flex;
-				justify-content: flex-start;
-				align-items: flex-end;
-				height: 60upx;
-				border-bottom: solid 1upx #eee;
-				padding-bottom: 10upx;
-				.big{
-					font-size: 34upx;
-					padding-left: 20upx;
-					color: #46434f;
-				}
-				.small{
-					font-size: 24upx;
-					padding-left: 20upx;
-					color: #827f8b;
-				}
-			}
-			.product-list{
-				padding: 15upx 20upx 15upx 20upx;
-				column-count: 2;
-				column-width: 50%;
-				column-gap: 10upx;
-				>view{
-					display: flex;
-					background-color: #f8f8f8;
-					position:relative;
-					&:nth-child(1){
-						.price{
-							color: #e65339;
-							font-size: 30upx;
-							position: absolute;
-							bottom: 8upx;
-							left: 8upx;
-						}
-						.slogan{
-							color: #807c87;
-							font-size: 30upx;
-							position: absolute;
-							bottom: 8upx;
-							right: 8upx;
-						}
-						image{
-							width: 100%;
-							height: 0;
-						}
-					}
-					&:nth-child(2),&:nth-child(3){
-						image{
-							width: calc(50% - 5upx);
-							height: 0;
-						}
-						.price{
-							position: absolute;
-							top: 25%;
-							left: 55%;
-							color: #e65339;
-							font-size: 30upx;
-						}
-						.slogan{
-							position: absolute;
-							top: 60%;
-							left: 55%;
-							color: #807c87;
-							font-size: 20upx;
-						}
-					}
-					&:nth-child(2){
-						margin-bottom: 10upx;
-					}
-				}
-			}
-		}
-	}
-	.banner{
-		image{
-			width: 100%;
-		}
-	}
-	.goods-list{
-		background-color: #f4f4f4;
-		.title{
-			width: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 60upx;
-			color: #979797;
-			font-size: 24upx;
-		}
-		.loading-text{
-			width: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 60upx;
-			color: #979797;
-			font-size: 24upx;
-		}
-		.product-list{
-			width: 95%;
-			padding: 0 2.5% 2.5vw 2.5%;
-			display: flex;
-			justify-content: space-between;
-			flex-wrap: wrap;
-			.product{
-				width: 48.75%;
-				border-radius: 20upx;
-				background-color: #fff;
-				margin: 0 0 15upx 0;
-				image{
-					width: 100%;
-					border-radius: 20upx 20upx 0 0;
-				}
-				.name{
-					width: 92%;
-					padding: 10upx 4%;
-					display: -webkit-box;
-					-webkit-box-orient: vertical;
-					-webkit-line-clamp: 2;
-					text-align: justify;
-					overflow: hidden;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+
+				input {
+					width: calc(100% - 60upx);
+					height: 60upx;
+					background-color: #ffffff;
+					border-radius: 60upx;
+					padding-left: 60upx;
 					font-size: 30upx;
 				}
-				.info{
+
+				.icon {
+					width: 60upx;
+					height: 60upx;
+					position: absolute;
+					color: #a18090;
+					z-index: 996;
+					top: 12upx;
+					/*  #ifdef  APP-PLUS  */
+					top: 0upx;
+					/*  #endif  */
+					left: 0;
 					display: flex;
-					justify-content: space-between;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+
+			.local {
+				width: 140upx;
+				height: 100upx;
+				flex-shrink: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 30upx;
+				color: #fff;
+				padding-left: 20upx;
+				.text {
+					max-width: 65%;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+
+		.place {
+			/*  #ifdef  APP-PLUS  */
+			margin-top: var(--status-bar-height);
+			/*  #endif  */
+			background-color: #ff570a;
+			height: 100upx;
+		}
+
+		.tabs {
+			width: 100%;
+			height: 100upx;
+			position: fixed;
+			/* 固定位置 */
+			z-index: 100;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			white-space: nowrap;
+			/* white-space 属性设置如何处理元素内的空白 */
+			background-color: #eee;
+			top: 100upx;
+			/*  #ifdef  APP-PLUS  */
+			top: calc(var(--status-bar-height) + 100upx);
+			/*  #endif  */
+		}
+
+		.content {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			top: 200upx;
+			/*  #ifdef  APP-PLUS  */
+			top: calc(var(--status-bar-height) + 200upx);
+			/*  #endif  */
+			margin-bottom: 120upx;
+		}
+
+		.swiper-view {
+			.swiper {
+				width: 100%;
+				height: 280upx;
+
+				image {
+					width: 100%;
+					height: 280upx;
+				}
+			}
+
+			.keep-out {
+				width: 100%;
+				height: 30upx;
+				border-radius: 100% 100% 0 0;
+				background-color: #ff570a;
+				margin-top: -15upx;
+				position: absolute;
+			}
+		}
+
+		.pick {
+			width: 95%;
+			padding: 0 2.5vw 2.5vw 2.5vw;
+			background: linear-gradient(to bottom, #ff570a 0%, #ffffff 105%);
+
+			.box {
+				width: 100%;
+				border-radius: 20upx;
+				background-color: #ffffff;
+
+				.title {
+					display: flex;
+					justify-content: flex-start;
 					align-items: flex-end;
-					width: 92%;
-					padding: 10upx 4% 10upx 4%;
-					
-					.price{
-						color: #e65339;
-						font-size: 30upx;
-						font-weight: 600;
+					height: 60upx;
+					border-bottom: solid 1upx #eee;
+					padding-bottom: 10upx;
+
+					.big {
+						font-size: 34upx;
+						padding-left: 20upx;
+						color: #46434f;
 					}
-					.slogan{
-						color: #807c87;
+
+					.small {
 						font-size: 24upx;
+						padding-left: 20upx;
+						color: #827f8b;
+					}
+				}
+
+				.product-list {
+					padding: 15upx 20upx 15upx 20upx;
+					column-count: 2;
+					column-width: 50%;
+					column-gap: 10upx;
+
+					>view {
+						display: flex;
+						background-color: #f8f8f8;
+						position: relative;
+
+						&:nth-child(1) {
+							.price {
+								color: #e65339;
+								font-size: 30upx;
+								position: absolute;
+								bottom: 8upx;
+								left: 8upx;
+							}
+
+							.slogan {
+								color: #807c87;
+								font-size: 30upx;
+								position: absolute;
+								bottom: 8upx;
+								right: 8upx;
+							}
+
+							image {
+								width: 100%;
+								height: 0;
+							}
+						}
+
+						&:nth-child(2),
+						&:nth-child(3) {
+							image {
+								width: calc(50% - 5upx);
+								height: 0;
+							}
+
+							.price {
+								position: absolute;
+								top: 25%;
+								left: 55%;
+								color: #e65339;
+								font-size: 30upx;
+							}
+
+							.slogan {
+								position: absolute;
+								top: 60%;
+								left: 55%;
+								color: #807c87;
+								font-size: 20upx;
+							}
+						}
+
+						&:nth-child(2) {
+							margin-bottom: 10upx;
+						}
 					}
 				}
 			}
-			
 		}
-		.bottom-info{
-			width: 100%;
-			height:80upx;
-			text-align: center;
-			font-size: 28upx;
-			color:#979797;
-			.info,.tel{
-				margin: 5upx 0;
+
+		.banner {
+			image {
+				width: 100%;
+			}
+		}
+
+		.goods-list {
+			background-color: #f4f4f4;
+
+			.title {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 60upx;
+				color: #979797;
+				font-size: 24upx;
+			}
+
+			.loading-text {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 60upx;
+				color: #979797;
+				font-size: 24upx;
+			}
+
+			.product-list {
+				width: 95%;
+				padding: 0 2.5% 2.5vw 2.5%;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+
+				.product {
+					width: 48.75%;
+					border-radius: 20upx;
+					background-color: #fff;
+					margin: 0 0 15upx 0;
+
+					image {
+						width: 100%;
+						border-radius: 20upx 20upx 0 0;
+					}
+
+					.name {
+						width: 92%;
+						padding: 10upx 4%;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						text-align: justify;
+						overflow: hidden;
+						font-size: 30upx;
+					}
+
+					.info {
+						display: flex;
+						justify-content: space-between;
+						align-items: flex-end;
+						width: 92%;
+						padding: 10upx 4% 10upx 4%;
+
+						.price {
+							color: #e65339;
+							font-size: 30upx;
+							font-weight: 600;
+						}
+
+						.slogan {
+							color: #807c87;
+							font-size: 24upx;
+						}
+					}
+				}
+
+			}
+
+			.bottom-info {
+				width: 100%;
+				height: 80upx;
+				text-align: center;
+				font-size: 28upx;
+				color: #979797;
+
+				.info,
+				.tel {
+					margin: 5upx 0;
+				}
 			}
 		}
 	}
-}
 </style>
