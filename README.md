@@ -1,13 +1,17 @@
 # hgncApp
-使用`uni-app`开发的一个app，[文档](https://uniapp.dcloud.io/)<br>
+使用`uni-app`开发的一个app，一次开发兼容多个平台。 [文档](https://uniapp.dcloud.io/)<br>
 
-涉及到的技术： `vue`, `vuex`, 
+涉及到的技术： `vue`, `vuex`。
 
 
 ## 开发环境
 * 需要安装`HBuilderx`, [下载地址](https://www.dcloud.io/hbuilderx.html)
-*
 
+## 快速开始
+```
+  1，npm install  安装依赖包
+  2，在HBuilderx上点击运行到浏览器/真机/模拟器
+```
 ## 项目配置
 ```
 common----------------------------------------------公共的js方法
@@ -36,17 +40,18 @@ App.vue---------------------------------------------应用配置，用来配置A
 manifest.json---------------------------------------置应用名称、appid、logo、版本等打包信息
 pages.json------------------------------------------配置页面路由、导航条、选项卡等页面类信息
 ```
-* pages.json[详见](https://uniapp.dcloud.io/collocation/pages)
-* manifest.json[详见](https://uniapp.dcloud.io/collocation/manifest)
+* pages.json [详见](https://uniapp.dcloud.io/collocation/pages)
+* manifest.json [详见](https://uniapp.dcloud.io/collocation/manifest)
 
 ## 注意事项
 #### * 项目中使用sass
-> 1. 在`HBuilderx`编辑器的工具选项中选择插件安装，安装scss/sass编辑
+> 1. 在`HBuilderx`编辑器的工具选项中选择插件安装，安装scss/sass编辑;
 > 2. 在.vue文件中设置属性
 > ```<style lang="scss">```
 
-#### * 项目中使用sass
-> 真机调试时，无法找到手机，需要重新启动编辑器
+#### * 调试
+> 1. 真机调试时，无法找到手机，需要重新启动编辑器;
+> 2. 通过WiFi连接手机调试, [参考地址](http://ask.dcloud.net.cn/article/565)
 
 #### * 插件市场
 > https://ext.dcloud.net.cn/
