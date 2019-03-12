@@ -40,7 +40,18 @@
             },
             "ios" : {},
             /* ios打包配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {},
+            "splashscreen" : {
+                "android" : {
+                    "hdpi" : "",
+                    "xhdpi" : "",
+                    "xxhdpi" : ""
+                }
+            }
+        },
+        "splashscreen" : {
+            "waiting" : true,
+            "alwaysShowBeforeRender" : true
         }
     },
     /* SDK配置 */
@@ -53,18 +64,21 @@
             "urlCheck" : true
         }
     },
-	/* H5 特有配置 */
-	"h5": {
-		"devServer": {
-            "port": 8001,
-            "disableHostCheck": true,
-            "proxy": {
-                "/api/*": {
-                    "target": "http://10.90.131.72:7001",
-                    "changeOrigin": true,
-                    "secure": false
+    /* H5 特有配置 */
+    "h5" : {
+        "devServer" : {
+            "port" : 8001,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/api/*" : {
+                    "target" : "http://10.90.131.72:7001",
+                    "changeOrigin" : true,
+                    "secure" : false
                 }
             }
+        },
+        "router" : {
+            "mode" : "hash"
         }
-	}
+    }
 }

@@ -29,18 +29,6 @@
             "path" : "pages/login/pwd",
             "style" : {
                 "navigationBarTitleText" : "忘记密码"
-// 				"app-plus": {  
-// 					"titleNView": false  
-// 				}
-			}
-        },
-        {
-            "path" : "pages/login/reg",
-            "style" : {
-				"navigationBarTitleText" : "注册",
-				"app-plus": {  
-					"titleNView": false  
-				}
 			}
         }
     ],

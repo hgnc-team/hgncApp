@@ -21,7 +21,7 @@ const STATE_KEY = 'STATE_KEY';
   * @throws   
   */
 const loginRe = function(userInfo) {
-	let users = {
+	let data = {
 		phoneNum: userInfo.phone,
 		pwd: userInfo.password
 	}
@@ -29,7 +29,7 @@ const loginRe = function(userInfo) {
 	return uni.request({
         url: '/api/v1/user/login',
 		method: 'POST',
-		data: users
+		data: data
     })
 }
 
@@ -42,16 +42,16 @@ const loginRe = function(userInfo) {
   * @return {promise} 返回一个requestTask对象     
   **/
 const registerRe = function(parms) {
-	let users = {
+	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		inviteCode: parms.inviteCode,
-		authCode: parms.authCode,
+		authCode: parms.code,
 	}
 	return uni.request({
         url: '/api/v1/user/signUp',
 		method: 'POST',
-		data: users
+		data: data
     })
 }
 
@@ -61,7 +61,7 @@ const registerRe = function(parms) {
   * @return {promise} 返回一个requestTask对象    
   **/
 const getSmsRe = function(parms) {
-	let users = {
+	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		authCode: parms.authCode,
@@ -69,7 +69,7 @@ const getSmsRe = function(parms) {
 	return uni.request({
         url: '/api/v1/sms/getSms',
 		method: 'POST',
-		data: users
+		data: data
     })
 }
 
@@ -81,15 +81,15 @@ const getSmsRe = function(parms) {
   * @return {promise} 返回一个requestTask对象     
   **/
 const reSetPwdRe = function(parms) {
-	let users = {
+	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
-		authCode: parms.authCode,
+		authCode: parms.code,
 	}
 	return uni.request({
         url: '/api/v1/user/changePwd',
 		method: 'POST',
-		data: users
+		data: data
     })
 }
 
