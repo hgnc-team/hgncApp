@@ -5,10 +5,12 @@
 		<!-- 漂浮头部 -->
 		<view class="header" :style="{position:headerPosition}">
 			<!-- 切换地理位置 -->
-			<view class="">
+			<view class="location">
 				<view class="local" @click="showPicker">
-					<view class="text">{{pickerText}}</view>
-					<uni-icon class="icon" type="arrowdown" size="18"></uni-icon>
+					<view class="text uni-ellipsis">{{pickerText}}</view>
+					<view class="icon">
+						<uni-icon type="arrowdown" size="18"></uni-icon>
+					</view>
 				</view>
 				<view class="mpvue-picer">
 					<mpvue-picker ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
@@ -16,15 +18,17 @@
 				</view>
 			</view>
 			<!-- 搜索 -->
-			<view class="input">
+			<view class="search">
 				<view class="icon">
-					<uni-icon class="icon" type="search" size="24"></uni-icon>
+					<uni-icon  type="search" size="24"></uni-icon>
 				</view>
 				<input placeholder="名称,类型" @tap="toSearch()" />
 			</view>
 			<!-- 消息 -->
 			<view class="messages" @tap="goMessagesPage">
-				<uni-icon class="icon" type="email" size="30"></uni-icon>
+				<view class="icon">
+					<uni-icon type="email" size="30"></uni-icon>
+				</view>
 				<uni-badge text="2" type="error" size="small"></uni-badge>
 			</view>
 		</view>
@@ -308,13 +312,9 @@
 			},
 			//消息页跳转
 			goMessagesPage() {
-				uni.scanCode({
-					success: (res) => {
-						uni.showToast({
-							title: '条码内容：' + res.result
-						});
-					}
-				});
+				uni.navigateTo({
+					url: '../../home/messages'
+				})
 			},
 			//搜索跳转
 			toSearch() {
@@ -343,9 +343,9 @@
 			},
 			//商品跳转
 			toGoods(e) {
-				uni.showToast({
-					title: '商品' + e.goods_id
-				});
+				uni.navigateTo({
+					url: '../../home/goodsDetail'
+				})
 			},
 			// 			//更新分类指示器
 			// 			categoryChange(event) {
@@ -399,7 +399,8 @@
 		.header {
 			width: 100%;
 			height: 100upx;
-			background-color: #000;
+			background-color: $uni-bg-color-status;
+			color:$uni-text-color-status;
 			display: flex;
 			position: fixed;
 			top: 0;
@@ -416,8 +417,6 @@
 				justify-content: center;
 				align-items: center;
 				position: relative;
-				color: #fff;
-
 				.uni-badge {
 					position: absolute;
 					top: 12upx;
@@ -425,7 +424,7 @@
 				}
 			}
 
-			.input {
+			.search {
 				width: calc(100% - 240upx);
 				display: flex;
 				justify-content: center;
@@ -458,22 +457,23 @@
 				}
 			}
 
-			.local {
+			.location {
 				width: 140upx;
 				height: 100upx;
-				flex-shrink: 1;
-				display: flex;
-				justify-content: center;
-				align-items: center;
 				font-size: 30upx;
-				color: #fff;
-				padding-left: 20upx;
-				.text {
-					max-width: 65%;
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
+				// padding-left: 20upx;
+				.local{
+					width: 100%;
+					height: 100%;
+					flex-shrink: 1;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					.text {
+						max-width: 65%;
+					}
 				}
+				
 			}
 		}
 

@@ -41,10 +41,17 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/*每个页面公共css */
-	/* @import "./static/css/simplepro.css"; */
 	@import "./static/css/uni.css";
+	// 顶部导航栏全局配置
+	.uni-navbar{
+		color: $uni-text-color-status !important;
+		margin-top: 0;
+		/*  #ifdef  APP-PLUS  */
+		margin-top: var(--status-bar-height); //表示状态栏的高度。
+		/*  #endif  */
+	}
 	.t-c-w{
 		color: #fff;
 	}

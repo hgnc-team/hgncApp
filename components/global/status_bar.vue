@@ -30,7 +30,7 @@
 		height: var(--status-bar-height);//表示状态栏的高度。
 		/*  #endif  */
 		// opacity: 0;
-		background-color: #000;
+		background-color: $uni-bg-color-status;
 		position: fixed;
 		top: 0;
 		z-index: 999;
