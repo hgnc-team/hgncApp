@@ -112,6 +112,7 @@
 		uniIcon,
 		uniNavBar
 	} from '@dcloudio/uni-ui';
+	import service from '../../common/service.js';
 	export default {
 		components: {
 			uniIcon,
@@ -190,6 +191,9 @@
 			}
 		},
 		methods: {
+			initData(id){
+				service.getGoodsDetail().then();
+			},
 			/**  
 			 * 左侧按钮点击事件  
 			 */
@@ -214,9 +218,12 @@
 			},
 			// 跳转购物车
 			toCart(){
+				console.log(222)
+				this.$store.commit("change_page", 2)
 				uni.navigateTo({
-					url:"../shopCart/shopCart_page"
+					url:"../index"
 				})
+				
 			},
 			// 加入购物车
 			addToCart(){
@@ -229,6 +236,10 @@
 					title:"立即购买"
 				})
 			}
+		},
+		onLoad(e) {
+			console.log(e)
+			// this.initData(e.id);
 		},
 		
 	}

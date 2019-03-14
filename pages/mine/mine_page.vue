@@ -1,52 +1,64 @@
 <template>
-	<view>
-		<view class="header" v-bind:class="{'status':isH5Plus}">
+	<view class="mine_page">
+		<!-- 状态栏 -->
+		<statusBar></statusBar>
+		<view class="header">
 			<view class="userinfo">
 				<view class="face">
 					<image :src="userinfo.face"></image>
 				</view>
 				<view class="info">
 					<view class="username">{{userinfo.username}}</view>
-					<view class="integral">积分:{{userinfo.integral}}</view>
+					<view class="integral">手机号:{{userinfo.telPhone}}</view>
 				</view>
 			</view>
-			<view class="setting">
+			<view class="setting" @tap="toAccountInfo">
 				<image src="../../static/HM-PersonalCenter/setting.png"></image>
 			</view>
 		</view>
 		<view class="orders">
+			<view class="title uni-flex">
+				<view class="uni-h4 uni-flex-item">
+					我的订单
+				</view>
+				<view class="to-all-orders uni-flex-item uni-link" @tap="toOrderType(0)">
+					所有订单 >
+				</view>
+			</view>
 			<view class="box">
-				<view class="label" v-for="(row,index) in orderTypeLise" :key="row.name" hover-class="hover" @tap="toOrderType(index)">
+				<view class="label" v-for="(row,index) in orderTypeLise" :key="row.name" hover-class="hover" @tap="toOrderType(index+1)">
 					<view class="icon">
 						<view class="badge" v-if="row.badge>0">{{row.badge}}</view>
 						<image :src="'../../static/HM-PersonalCenter/'+row.icon"></image>
 					</view>
-					{{row.name}}
+					<view class="text">
+						{{row.name}}
+					</view>
 				</view>
 			</view>
+			<view class="bg-bar"></view>
 		</view>
-		<view class="list" v-for="(list,list_i) in severList" :key="list_i">
-			<view class="li" v-for="(li,li_i) in list" @tap="toPage(list_i,li_i)" v-bind:class="{'noborder':li_i==list.length-1}"
-			 hover-class="hover" :key="li.name">
-				<view class="icon">
-					<image :src="'../../static/HM-PersonalCenter/sever/'+li.icon"></image>
-				</view>
-				<view class="text">{{li.name}}</view>
-				<image class="to" src="../../static/HM-PersonalCenter/to.png"></image>
-			</view>
+		<view class="list">
+			<uni-list>
+				<uni-list-item title="换绑手机" @click="changeTelphone" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item title="收货地址" @click="toAddress" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item title="密码管理" @click="setSecondaryPassword" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+			</uni-list>
 		</view>
 	</view>
 </template>
 <script>
+	import {
+		uniList,
+		uniListItem
+	} from '@dcloudio/uni-ui';
 	export default {
+		components: {
+			uniList,
+			uniListItem
+		},
 		data() {
 			return {
-				//#ifdef APP-PLUS
-				isH5Plus: true,
-				//#endif
-				//#ifndef APP-PLUS
-				isH5Plus: false,
-				//#endif
 				userinfo: {},
 				orderTypeLise: [
 					//name-标题 icon-图标 badge-角标
@@ -66,60 +78,11 @@
 						badge: 6
 					},
 					{
-						name: '待评价',
+						name: '交易成功',
 						icon: 'l4.png',
 						badge: 9
-					},
-					{
-						name: '退换货',
-						icon: 'l5.png',
-						badge: 0
 					}
-				],
-				severList: [
-					[{
-							name: '我的收藏',
-							icon: 'point.png'
-						},
-						{
-							name: '优惠券',
-							icon: 'quan.png'
-						},
-						{
-							name: '红包',
-							icon: 'momey.png'
-						},
-						{
-							name: '任务',
-							icon: 'renw.png'
-						},
-					],
-					[{
-							name: '积分明细',
-							icon: 'mingxi.png'
-						},
-						{
-							name: '抽奖',
-							icon: 'choujiang.png'
-						},
-						{
-							name: '收货地址',
-							icon: 'addr.png'
-						},
-						{
-							name: '银行卡',
-							icon: 'bank.png'
-						},
-						{
-							name: '安全中心',
-							icon: 'security.png'
-						},
-						{
-							name: '在线客服',
-							icon: 'kefu.png'
-						}
-					]
-				],
+				]
 			};
 		},
 		onLoad() {
@@ -132,21 +95,40 @@
 				this.userinfo = {
 					face: '../../static/HM-PersonalCenter/face.jpeg',
 					username: "VIP会员10240",
-					integral: "1435"
+					telPhone: "1435*****2132"
 				}
+			},
+			// 修改账户信息
+			toAccountInfo(){
+				uni.navigateTo({
+					url: `../../mine/account_info`
+				})
 			},
 			//用户点击订单类型
 			toOrderType(index) {
-				uni.showToast({
-					title: this.orderTypeLise[index].name
-				});
+				uni.navigateTo({
+					url: `../../mine/order_list?index=${index}`
+				})
 			},
-			//用户点击列表项
-			toPage(list_i, li_i) {
-				uni.showToast({
-					title: this.severList[list_i][li_i].name
-				});
+			// 换绑手机
+			changeTelphone(){
+				uni.navigateTo({
+					url: "../../mine/change_telphone"
+				})
+			},
+			// 管理密码
+			setSecondaryPassword(){
+				uni.navigateTo({
+					url: "../../mine/secondary_password"
+				})
+			},
+			// 收货地址
+			toAddress(){
+				uni.navigateTo({
+					url: "../../mine/address_management"
+				})
 			}
+			
 		}
 	}
 </script>
@@ -157,13 +139,9 @@
 	}
 
 	.header {
-		&.status {
-			padding-top: var(--status-bar-height);
-		}
-
-		background-color:#ff6364;
+		background-color:#eee;
 		width:92%;
-		height:30vw;
+		height:260upx;
 		padding:0 4%;
 		display:flex;
 		align-items:center;
@@ -174,8 +152,8 @@
 
 			.face {
 				flex-shrink: 0;
-				width: 15vw;
-				height: 15vw;
+				width: 120upx;
+				height:120upx;
 
 				image {
 					width: 100%;
@@ -225,43 +203,40 @@
 	}
 
 	.orders {
-		background-color: #ff6364;
-		width: 92%;
-		height: 11vw;
-		padding: 0 4%;
-		margin-bottom: calc(11vw + 40upx);
-		display: flex;
-		align-items: flex-start;
-		border-radius: 0 0 100% 100%;
-		margin-top: -1upx;
-
+		background-color: #fff;
+		width: 100%;
+		.title{
+			width: 100%;
+			padding: 15upx 30upx;
+			border-bottom: 1upx solid #eee; 
+			box-sizing: border-box; 
+			.to-all-orders{
+				text-align: right;
+				line-height: 2;
+			}
+		}
 		.box {
-			width: 98%;
-			padding: 0 1%;
-			height: 22vw;
-			background-color: #fefefe;
-			border-radius: 24upx;
-			box-shadow: 0 0 20upx rgba(0, 0, 0, 0.15);
-			margin-bottom: 40upx;
+			width: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 
 			.label {
+				width: 100%;
+				height: 160upx;
+				color: #666666;
+				padding: 20upx 0;
+				font-size: 26upx;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				flex-flow: wrap;
-				width: 100%;
-				height: 16vw;
-				color: #666666;
-				font-size: 26upx;
-
+				flex-direction: column;
 				.icon {
 					position: relative;
 					width: 7vw;
 					height: 7vw;
 					margin: 0 1vw;
+					border: 1upx;
 
 					.badge {
 						position: absolute;
@@ -285,14 +260,20 @@
 						z-index: 9;
 					}
 				}
+				.text{
+					
+				}
 			}
+		}
+		.bg-bar{
+			width: 100%;
+			height: 30upx;
+			background-color: #eee;
 		}
 	}
 
 	.list {
 		width: 100%;
-		border-bottom: solid 26upx #f1f1f1;
-
 		.li {
 			width: 92%;
 			height: 100upx;

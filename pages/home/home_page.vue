@@ -7,14 +7,14 @@
 			<!-- 切换地理位置 -->
 			<view class="location">
 				<view class="local" @click="showPicker">
-					<view class="text uni-ellipsis">{{pickerText}}</view>
+					<view class="text uni-ellipsis">{{picker.pickerText}}</view>
 					<view class="icon">
 						<uni-icon type="arrowdown" size="18"></uni-icon>
 					</view>
 				</view>
 				<view class="mpvue-picer">
-					<mpvue-picker ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
-					 :themeColor="themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
+					<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
+					 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 				</view>
 			</view>
 			<!-- 搜索 -->
@@ -35,9 +35,9 @@
 		<!-- 占位 -->
 		<view class="place"></view>
 		<!-- 选项卡分类选择 -->
-		<view class="tabs">
+		<!-- <view class="custom-tabs"> -->
 			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu>
-		</view>
+		<!-- </view> -->
 		<!-- 主体内容 -->
 		<view class="content">
 			<view v-show="tabs.current === i" v-for="(tab, i) in tabs.items" :key="i">
@@ -114,42 +114,96 @@
 		},
 		data() {
 			return {
-				mode: 'selector',
-				deepLength: 0, // 几级联动
-				pickerValueDefault: [], // 初始化值
-				pickerValueArray: [], // picker 数组值
-				pickerText: '全国',
-				themeColor: '#000', // 颜色主题
+				picker: {
+					mode: 'selector',
+					deepLength: 0, // 几级联动
+					pickerValueDefault: [], // 初始化值
+					pickerValueArray: [], // picker 数组值
+					pickerText: '全国',
+					themeColor: '#000', // 颜色主题
+				},
 				tabs: {
 					// 选项卡
 					items: ['全部', '推荐', '手机', '电脑', '箱包', '时装时装', '男装', '女装'],
 					current: 0
 				},
 				//轮播
-				swiperList: [{
+				swiperList: [],
+				//推荐商品 3个
+				pickList: [],
+				//猜你喜欢列表
+				productList: [],
+				currentPageindex: 0,
+				headerPosition: "fixed",
+				loadingText: "正在加载..."
+
+			};
+		},
+		computed: {
+			list() {
+				console.log(this.$store.state.list)
+				return this.$store.state.list;
+			}
+		},
+		onPageScroll(e) {
+			//兼容iOS端下拉时顶部漂移
+			if (e.scrollTop >= 0) {
+				this.headerPosition = "fixed";
+			} else {
+				this.headerPosition = "absolute";
+			}
+		},
+		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
+		onPullDownRefresh() {
+			setTimeout(function() {
+				uni.stopPullDownRefresh();
+			}, 1000);
+		},
+		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
+		onReachBottom() {
+			// uni.showToast({title: '触发上拉加载'});
+			let len = this.productList.length;
+			if (len >= 40) {
+				this.loadingText = "到底了";
+				return false;
+			}
+			let end_goods_id = this.productList[len - 1].goods_id;
+			for (let i = 1; i <= 10; i++) {
+				let goods_id = end_goods_id + i;
+				let p = {
+					goods_id: goods_id,
+					img: '../../../static/HM-shophome/img/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
+					name: '商品名称商品名称商品名称商品名称商品名称',
+					price: '￥168',
+					slogan: '1235人付款'
+				};
+				this.productList.push(p);
+			}
+		},
+		methods: {
+			init(){
+				this.swiperList = [{
 						sid: 0,
 						src: '自定义src0',
-						img: '../../../static/HM-shophome/swiper-img/0.jpg'
+						img: '../../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 1,
 						src: '自定义src1',
-						img: '../../../static/HM-shophome/swiper-img/1.jpg'
+						img: '../../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 2,
 						src: '自定义src2',
-						img: '../../../static/HM-shophome/swiper-img/2.jpg'
+						img: '../../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 3,
 						src: '自定义src3',
-						img: '../../../static/HM-shophome/swiper-img/3.jpg'
+						img: '../../../static/img/login/img_login_bg@2x.png'
 					}
-				],
-
-				//推荐商品 3个
-				pickList: [{
+				];
+				this.pickList = [{
 						goods_id: 0,
 						img: '../../../static/HM-shophome/pick-img/p1.jpg',
 						price: '￥168',
@@ -167,9 +221,8 @@
 						price: '￥168',
 						slogan: '今日疯抢'
 					}
-				],
-				//猜你喜欢列表
-				productList: [{
+				];
+				this.productList = [{
 						goods_id: 0,
 						img: '../../../static/HM-shophome/img/p1.jpg',
 						name: '商品名称商品名称商品名称商品名称商品名称',
@@ -239,62 +292,15 @@
 						price: '￥168',
 						slogan: '1235人付款'
 					}
-				],
-				currentPageindex: 0,
-				headerPosition: "fixed",
-				loadingText: "正在加载..."
-
-			};
-		},
-		computed: {
-			list() {
-				console.log(this.$store.state.list)
-				return this.$store.state.list;
-			}
-		},
-		onPageScroll(e) {
-			//兼容iOS端下拉时顶部漂移
-			if (e.scrollTop >= 0) {
-				this.headerPosition = "fixed";
-			} else {
-				this.headerPosition = "absolute";
-			}
-		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
-		onPullDownRefresh() {
-			setTimeout(function() {
-				uni.stopPullDownRefresh();
-			}, 1000);
-		},
-		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
-		onReachBottom() {
-			// uni.showToast({title: '触发上拉加载'});
-			let len = this.productList.length;
-			if (len >= 40) {
-				this.loadingText = "到底了";
-				return false;
-			}
-			let end_goods_id = this.productList[len - 1].goods_id;
-			for (let i = 1; i <= 10; i++) {
-				let goods_id = end_goods_id + i;
-				let p = {
-					goods_id: goods_id,
-					img: '../../../static/HM-shophome/img/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
-					name: '商品名称商品名称商品名称商品名称商品名称',
-					price: '￥168',
-					slogan: '1235人付款'
-				};
-				this.productList.push(p);
-			}
-		},
-		onLoad() {},
-		methods: {
+				];
+				
+			},
 			// 二级联动
 			showPicker() {
-				this.pickerValueArray = cityData;
-				this.mode = 'multiLinkageSelector';
-				this.deepLength = 2;
-				this.pickerValueDefault = [1, 0];
+				this.picker.pickerValueArray = cityData;
+				this.picker.mode = 'multiLinkageSelector';
+				this.picker.deepLength = 2;
+				this.picker.pickerValueDefault = [1, 0];
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
@@ -344,7 +350,7 @@
 			//商品跳转
 			toGoods(e) {
 				uni.navigateTo({
-					url: '../../home/goodsDetail'
+					url: '../../home/goods_detail'
 				})
 			},
 			// 			//更新分类指示器
@@ -371,7 +377,10 @@
 			// 					}
 			// 				).exec();
 			// 			}
-		}
+		},
+		onLoad() {
+			this.init();
+		},
 	}
 </script>
 
@@ -483,24 +492,6 @@
 			/*  #endif  */
 			background-color: #ff570a;
 			height: 100upx;
-		}
-
-		.tabs {
-			width: 100%;
-			height: 100upx;
-			position: fixed;
-			/* 固定位置 */
-			z-index: 100;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			white-space: nowrap;
-			/* white-space 属性设置如何处理元素内的空白 */
-			background-color: #eee;
-			top: 100upx;
-			/*  #ifdef  APP-PLUS  */
-			top: calc(var(--status-bar-height) + 100upx);
-			/*  #endif  */
 		}
 
 		.content {

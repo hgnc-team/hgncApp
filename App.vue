@@ -73,7 +73,4 @@
 	.mg-t-20{
 		margin-top: 20upx;
 	}
-	.tc{
-		text-align: center;
-	}
 </style>

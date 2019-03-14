@@ -1,5 +1,5 @@
 <template>
-	<view class="top-menu-control" style="width: 100%;height: 100%;">
+	<view class="top-menu-control">
 		<scroll-view scroll-x="true" @scroll="scroll" scroll-left="scrollLeft">
 			<view class="top-menu-view">
 				<view :id="'tabNum' + index" v-for="(item, index) in values" class="menu-one-view" :class="[currentIndex==index ? 'menu-one-act' : 'menu-one']" :key="index" @click="swichMenu(index)">
@@ -88,21 +88,29 @@
 
 <style lang="scss">
 	.top-menu-control {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
 		width: 100%;
-		font-size: 28upx;
+		height: 100upx;
+		position: fixed;
+		/* 固定位置 */
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/* white-space 属性设置如何处理元素内的空白 */
+		background-color: #eee;
+		top: 100upx;
+		/*  #ifdef  APP-PLUS  */
+		top: calc(var(--status-bar-height) + 100upx);
+		/* #endif */
 		.top-menu-view {
 			padding:0 20upx;
 			box-sizing: border-box;
+// 			display: flex;
+// 			align-items: center;
+// 			justify-content: center;
+			white-space: nowrap;
 			/* 在这里设置导航条高度 */
 			height: 100upx;
-			.uni-scroll-view >div>div{
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
 			.menu-one-view {
 				display: inline-block;
 				white-space: nowrap;
