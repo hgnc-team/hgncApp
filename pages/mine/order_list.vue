@@ -3,7 +3,7 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<!-- 导航栏 -->
-		<uni-nav-bar fixed="true" :background-color="titleBg" color="textColor" left-icon="back" @click-left="onClickLeft"
+		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
 		title="订单列表"></uni-nav-bar>
 		<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu>
 		<!-- 列表内容 -->
@@ -38,9 +38,7 @@
 			topTabMenu
 		},
 		data() {
-			return {
-				titleBg: 'rgba(0,0,0,1)',
-				textColor: 'rgba(255,255,255,1)',	
+			return {	
 				tabs: {
 					// 选项卡
 					items: ['全部', '待付款', '待发货', '待收货', '交易成功'],

@@ -19,7 +19,10 @@
 				// app中不展示title标签
 				"app-plus": {
 					"titleNView": false
-				}  
+				},
+				"usingComponents": {
+					"van-checkbox": "/wxcomponents/vant/checkbox/index"
+				}
 			}
 		},
 		{

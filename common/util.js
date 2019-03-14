@@ -92,6 +92,10 @@ var graceChecker = {
 	},
 }
 
+// 模拟跳转底部nav页面的首页
+var navigator = function(){
+	
+}
 
 export default {
 	graceChecker
