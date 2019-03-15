@@ -22,6 +22,13 @@
 		},
 		methods:{
 			change_nav(index){
+				// 点击附近，跳转到其对应的页面
+				if(index === 1) {
+					uni.navigateTo({
+						url: "../../nearby/nearby_page"
+					})
+					return
+				}
 				this.$store.commit("change_page",index)
 			}
 		},

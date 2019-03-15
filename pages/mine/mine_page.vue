@@ -7,9 +7,12 @@
 				<view class="face">
 					<image :src="userinfo.face"></image>
 				</view>
-				<view class="info">
+				<view class="info" v-if="$store.state.hasLogin">
 					<view class="username">{{userinfo.username}}</view>
 					<view class="integral">手机号:{{userinfo.telPhone}}</view>
+				</view>
+				<view class="info" v-if="!$store.state.hasLogin" @tap="login">
+					<view class="username">登录/注册 ></view>
 				</view>
 			</view>
 			<view class="setting" @tap="toAccountInfo">
@@ -52,6 +55,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
+	import { mapMutations } from 'vuex';
 	export default {
 		components: {
 			uniList,
@@ -97,6 +101,13 @@
 					username: "VIP会员23123",
 					telPhone: "1435*****2132"
 				}
+			},
+			login(){
+				// this.login()
+				// this.$store.commit('login');
+				uni.navigateTo({
+					url: "../../login/login"
+				})
 			},
 			// 修改账户信息
 			toAccountInfo(){

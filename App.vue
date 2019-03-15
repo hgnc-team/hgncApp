@@ -52,6 +52,10 @@
 		margin-top: var(--status-bar-height); //表示状态栏的高度。
 		/*  #endif  */
 	}
+	// 全局多列选择的样式
+	.mpvue-picer{
+		color: #000;
+	}
 	.t-c-w{
 		color: #fff;
 	}

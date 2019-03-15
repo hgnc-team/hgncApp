@@ -1,17 +1,16 @@
 {
 	"pages": [
 		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		// 第一页跳转到登录页面
-		// 		{
-		// 		    "path" : "pages/login/login",
-		// 		    "style" : {
-		// 		        "navigationBarTitleText" : "M+ 登录",
-		// 				// app中不展示title标签
-		// 				"app-plus": {  
-		// 					"titleNView": false  
-		// 				}
-		// 			}
-		// 		},
+		{
+			"path" : "pages/startup",
+			"style" : {
+				"navigationBarTitleText" : "启动页",
+				// app中不展示title标签
+				"app-plus": {  
+					"titleNView": false  
+				}
+			}
+		},
 		{
 			"path": "pages/index",
 			"style": {
@@ -22,6 +21,16 @@
 				},
 				"usingComponents": {
 					"van-checkbox": "/wxcomponents/vant/checkbox/index"
+				}
+			}
+		},
+		{
+		    "path" : "pages/login/login",
+		    "style" : {
+		        "navigationBarTitleText" : "M+ 登录",
+				// app中不展示title标签
+				"app-plus": {  
+					"titleNView": false  
 				}
 			}
 		},
@@ -80,6 +89,24 @@
 					"titleNView": false
 				}
 			}
+		},{
+			"path": "/shop_index",
+			"style": {
+				"navigationBarTitleText": "店铺首页"
+			}
+		},{
+			"path": "/goods_detail",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+					"titleNView": false
+				},
+				"usingComponents": {
+					"van-goods-action": "/wxcomponents/vant/goods-action/index",
+					"van-goods-action-icon": "/wxcomponents/vant/goods-action-icon/index",
+					"van-goods-action-button": "/wxcomponents/vant/goods-action-button/index"
+				}
+			}
 		}]
 	}, {
 		// 会员中心
@@ -127,6 +154,16 @@
 			"path": "/shopCart_page",
 			"style": {
 				"navigationBarTitleText": "购物车"
+			}
+		},{
+			"path": "/pay",
+			"style": {
+				"navigationBarTitleText": "提交订单"
+			}
+		},{
+			"path": "/order_result",
+			"style": {
+				"navigationBarTitleText": "交易详情"
 			}
 		}]
 	}, {

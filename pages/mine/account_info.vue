@@ -11,6 +11,11 @@
 				<uni-list-item title="换绑手机" @click="changeTelphone" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
 				<uni-list-item title="累计消费" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}" show-arrow="false" show-badge="true" badge-text="1222.2元"></uni-list-item>
 			</uni-list>
+			
+			<view class="bottom-btn" @tap="logout">
+				<button type="primary">退出当前账号</button>
+			</view>
+			
 		</view>
 	</view>
 </template>
@@ -20,6 +25,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
+	import { mapMutations } from 'vuex';
 	export default {
 		components: {
 			uniList,
@@ -62,10 +68,30 @@
 					url: `change_telphone`
 				})
 			},
+			// 退出当前账号
+			logout(){
+				this.$store.commit('logout')
+				uni.navigateBack({
+					
+				})
+			}
 			
 		}
 	}
 </script>
 
 <style lang="scss">
+	.accountInfoPage{
+		.content{
+			width: 100%;
+			.bottom-btn{
+				width: 100%;
+				position: fixed;
+				bottom: 0;
+				button{
+					background-color: #eee;
+				}
+			}
+		}
+	}
 </style>

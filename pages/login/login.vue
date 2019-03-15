@@ -184,9 +184,12 @@
 			},
 			//退出app  貌似iOS 平台不支持此 API
 			closed() {
-				// #ifdef APP-PLUS  
-				plus.runtime.quit();  
-				// #endif  
+// 				// #ifdef APP-PLUS  
+// 				plus.runtime.quit();  
+// 				// #endif  
+				uni.navigateBack({
+					
+				})
 			},
 			// 切换tab
 			changeTab(tab) {

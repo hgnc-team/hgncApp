@@ -86,21 +86,16 @@
 			<view class="cart uni-flex-item uni-center" @click="toCart">
 				<text>购物车</text>
 			</view>
-			<view class="add-to-cart uni-flex-item uni-center" @click="addToCart">
-				<button type="primary">加入购物车</button>
-			</view>
 			<view class="to-buy uni-flex-item uni-center" @click="toBuy">
-				<button type="warn">立即购买</button>
+				<button type="warn">去买单</button>
 			</view>
 		</view>
 		<!-- #endif -->
 
 		<!-- #ifdef APP-PLUS -->
 		<van-goods-action>
-			<van-goods-action-icon icon="chat-o" text="客服" @click="onClickIcon" />
 			<van-goods-action-icon icon="cart-o" text="购物车" @click="toCart" />
-			<van-goods-action-button text="加入购物车" type="warning" @click="addToCart" />
-			<van-goods-action-button text="立即购买" @click="toBuy" />
+			<van-goods-action-button text="去买单" @click="toBuy" />
 		</van-goods-action>
 		<!-- #endif -->
 
@@ -234,6 +229,9 @@
 			toBuy(){
 				uni.showToast({
 					title:"立即购买"
+				})
+				uni.navigateTo({
+					url: "../shopCart/pay"
 				})
 			}
 		},

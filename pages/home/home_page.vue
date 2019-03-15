@@ -185,27 +185,27 @@
 				this.swiperList = [{
 						sid: 0,
 						src: '自定义src0',
-						img: '../../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 1,
 						src: '自定义src1',
-						img: '../../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 2,
 						src: '自定义src2',
-						img: '../../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/login/img_login_bg@2x.png'
 					},
 					{
 						sid: 3,
 						src: '自定义src3',
-						img: '../../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/login/img_login_bg@2x.png'
 					}
 				];
 				this.pickList = [{
 						goods_id: 0,
-						img: '../../../static/HM-shophome/pick-img/p1.jpg',
+						img: '../../static/',
 						price: '￥168',
 						slogan: '限时抢购'
 					},
@@ -300,14 +300,14 @@
 				this.picker.pickerValueArray = cityData;
 				this.picker.mode = 'multiLinkageSelector';
 				this.picker.deepLength = 2;
-				this.picker.pickerValueDefault = [1, 0];
+				// this.picker.pickerValueDefault = [1, 0];
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
 				console.log(e);
 				// this.pickerText = e.label;
 				if (e && e.label) {
-					this.pickerText = e.label.split('-')[1];
+					this.picker.pickerText = e.label.split('-')[1];
 				}
 			},
 			onChange(e) {
