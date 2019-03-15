@@ -84,7 +84,42 @@
 	}, {
 		// 会员中心
 		"root": "pages/vipCenter",
-		"pages": []
+		"pages": [{
+			"path": "/fund_management",
+			"style": {
+				"navigationBarTitleText": "资金管理"
+			}
+		},{
+			"path": "/intergral_center",
+			"style": {
+				"navigationBarTitleText": "积分中心"
+			}
+		},{
+			"path": "/intergral_transfer",
+			"style": {
+				"navigationBarTitleText": "积分转让"
+			}
+		},{
+			"path": "/my_team",
+			"style": {
+				"navigationBarTitleText": "我的团队"
+			}
+		},{
+			"path": "/performance_management",
+			"style": {
+				"navigationBarTitleText": "业绩管理"
+			}
+		},{
+			"path": "/sales_management",
+			"style": {
+				"navigationBarTitleText": "销售管理"
+			}
+		},{
+			"path": "/setup_store",
+			"style": {
+				"navigationBarTitleText": "我要开店"
+			}
+		}]
 	}, {
 		// 购物车
 		"root": "pages/shopCart",

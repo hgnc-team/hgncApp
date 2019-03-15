@@ -1,5 +1,5 @@
 <template>
-	<view class="mine_page">
+	<view class="minePage">
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<view class="header">
@@ -94,7 +94,7 @@
 				//用户信息
 				this.userinfo = {
 					face: '../../static/HM-PersonalCenter/face.jpeg',
-					username: "VIP会员10240",
+					username: "VIP会员23123",
 					telPhone: "1435*****2132"
 				}
 			},

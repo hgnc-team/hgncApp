@@ -19,8 +19,8 @@
 			</view>
 		</view>
 		<view class="table">
-			<view class="uni-flex">
-				<view class="uni-flex-item uni-center">
+			<view class="row uni-flex">
+				<view class="row-item uni-flex-item uni-center">
 					<view class="top">
 						9999
 					</view>
@@ -28,7 +28,7 @@
 						我的积分
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center">
 					<view class="top">
 						9.88枚
 					</view>
@@ -36,75 +36,75 @@
 						今日释放M币
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center" @tap="toIntegralCenter(1)">
 					<view class="top">
 						9999.99枚
 					</view>
 					<view class="bottom">
-						M币钱包
+						M币钱包>
 					</view>
 				</view>
 			</view>
 			
-			<view class="uni-flex">
-				<view class="uni-flex-item uni-center">
+			<view class="row uni-flex">
+				<view class="row-item uni-flex-item uni-center" @tap="toMyOrder">
 					<view class="top">
-						9999
+						我的订单
 					</view>
 					<view class="bottom">
-						我的积分
+						购买记录
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center" @tap="toIntegralCenter(0)">
 					<view class="top">
-						9999
+						积分中心
 					</view>
 					<view class="bottom">
-						我的积分
+						数据详情
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center" @tap="toMyTeam">
 					<view class="top">
-						9999
+						我的团队
 					</view>
 					<view class="bottom">
-						我的积分
+						团队数据
 					</view>
 				</view>
 			</view>
 			
-			<view class="uni-flex">
-				<view class="uni-flex-item uni-center">
+			<view class="row uni-flex">
+				<view class="row-item uni-flex-item uni-center" @tap="toFundManagement">
 					<view class="top">
-						9999
+						资金管理
 					</view>
 					<view class="bottom">
-						我的积分
+						佣金提现
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center" @tap="toSalesManagement">
 					<view class="top">
-						9999
+						销售管理
 					</view>
 					<view class="bottom">
-						我的积分
+						销售记录
 					</view>
 				</view>
-				<view class="uni-flex-item uni-center">
+				<view class="row-item uni-flex-item uni-center" @tap="toPerformanceManagement">
 					<view class="top">
-						9999
+						业绩管理
 					</view>
 					<view class="bottom">
-						我的积分
+						业绩详情
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="list">
 			<uni-list>
-				<uni-list-item title="邀请会员" @click="changeTelphone" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
-				<uni-list-item title="积分转让" @click="toAddress" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
-				<uni-list-item title="实体加盟" @click="setSecondaryPassword" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item title="邀请会员" @click="inviteMembers" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item title="积分转让" @click="transferIntergral" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item title="实体加盟" @click="setupStore" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}" show-badge="true" badge-text="需要实名"></uni-list-item>
 			</uni-list>
 		</view>
 	</view>
@@ -125,7 +125,7 @@
 			return {
 				userinfo: {
 					face: '../../static/HM-PersonalCenter/face.jpeg',
-					username: 'VIP会员10240',
+					username: 'VIP会员2312',
 					id:"1234567",
 					levelName:"销售经理",
 					telPhone: '1435*****2132'
@@ -140,6 +140,61 @@
 					username: 'VIP会员10240',
 					telPhone: '1435*****2132'
 				};
+			},
+			// 我的订单
+			toMyOrder(){
+				uni.navigateTo({
+					url: '../../mine/order_list?index=0'
+				})
+			},
+			// 积分中心
+			toIntegralCenter(index){
+				// 根据index的不同展示不同的tab
+				uni.navigateTo({
+					url: '../../vipCenter/intergral_center'
+				})
+			},
+			// 我的团队
+			toMyTeam(){
+				uni.navigateTo({
+					url: '../../vipCenter/my_team'
+				})
+			},
+			// 资金管理
+			toFundManagement(){
+				uni.navigateTo({
+					url: '../../vipCenter/fund_management'
+				})
+			},
+			// 销售管理
+			toSalesManagement(){
+				uni.navigateTo({
+					url: '../../vipCenter/sales_management'
+				})
+			},
+			// 业绩管理
+			toPerformanceManagement(){
+				uni.navigateTo({
+					url: '../../vipCenter/performance_management'
+				})
+			},
+			// 邀请会员
+			inviteMembers(){
+				uni.showToast({
+					title: "邀请会员"
+				})
+			},
+			// 积分转让
+			transferIntergral(){
+				uni.navigateTo({
+					url: '../../vipCenter/intergral_transfer'
+				})
+			},
+			// 实体加盟（我要开店）
+			setupStore(){
+				uni.navigateTo({
+					url: '../../vipCenter/setup_store'
+				})
 			}
 		}
 	};
@@ -149,9 +204,9 @@
 .vipCenterPage {
 	.header {
 		background-color: #eee;
-		width: 92%;
+		width: 100%;
 		height: 260upx;
-		padding: 0 4%;
+		padding: 10upx;
 		display: flex;
 		align-items: center;
 
@@ -205,6 +260,35 @@
 				height: 100%;
 			}
 		}
+	}
+	.table{
+		width: 100%;
+		height: 420upx;
+		padding: 30upx;
+		box-sizing: border-box;
+		.row{
+			border-bottom: 2upx solid #999;
+			&:last-child{
+				border-bottom:none; 
+			}
+			.row-item{
+				margin: 20upx 0;
+				border-right: 1upx solid #999;
+				&:last-child{
+					border-right:none; 
+					margin-bottom: none;
+				}
+				.top{
+					color: #333;
+					font-weight: 600;
+				}
+				.bottom{
+					color: #999;
+					font-size:24upx;
+				}
+			}
+		}
+		// .row
 	}
 }
 </style>
