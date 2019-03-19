@@ -56,6 +56,10 @@
 	.mpvue-picer{
 		color: #000;
 	}
+	.uni-navbar .uni-navbar__content {
+		padding: 0 30upx;
+		box-sizing: border-box;
+	}
 	// 全局的button样式
 	.btn-primary {
 		margin-top: 96upx;

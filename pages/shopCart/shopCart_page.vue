@@ -10,7 +10,7 @@
 			<scroll-view scroll-x="true" class="scrollView" v-for="(ite,ind) in shopData" :key="ind" :id="ite.pro_id"
 			 :scroll-left="ite.scrollLeft" @touchstart="touchS" @touchend="touchE">
 				<view class="viewbox">
-					<view class="shangpin">
+					<view class="shangpin uni-flex">
 						<!-- #ifdef H5 -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
 							<checkbox  :isselected="ite.isChecked" @change="proActive(ite)"></checkbox >
@@ -21,19 +21,19 @@
 							<van-checkbox :value="ite.isChecked" @change="proActive(ite)"></van-checkbox>
 						</view>
 						<!-- #endif -->	
-						<view class="shangpin-info">
-							<view class="img">
+						<view class="shangpin-info uni-flex-item">
+							<view class="img uni-inline-item">
 								<image :src="ite.pro_img" mode="aspectFit"></image>
 							</view>
-							<view class="text-info">
+							<view class="text-info uni-flex-item">
 								<view class="title-text">
-									<text class="name">{{ ite.pro_name }}</text>
-									<text class="tags">{{ ite.tags }} </text>
+									<text class="name uni-flex uni-h5">{{ ite.pro_name }}</text>
+									<text class="tags uni-flex uni-text-small uni-text-gray">{{ ite.tags }} </text>
 								</view>
 								<view class="bottom-price">
-									<view class="jiage">
-										<text class="danjia">￥{{ ite.now_price }}</text>
-										<text class="shuliang">x {{ ite.pro_count }}</text>
+									<view class="jiage uni-flex">
+										<text class="danjia uni-inline-item">￥{{ ite.now_price }}</text>
+										<text class="shuliang uni-inline-item uni-text-small">x {{ ite.pro_count }}</text>
 									</view>
 									<view class="numInput">
 										<text class="reduce iconfont" @tap="changeCount(ite,-1)" :class="ite.pro_count == 0 ? 'numbox-disabled' : ''">-</text>
@@ -138,16 +138,16 @@
 				endX = e.mp.changedTouches[0].clientX;
 				if (Math.abs(endX - startX) > 10) {
 					if (endX - startX > 0) {
-						this.shopData.forEach((item) => {
-							item.forEach((goods) => {
+						_.forEach(this.shopData, (item)=>{
+							_.forEach(item, (goods) => {
 								if (goods.pro_id == e.currentTarget.id) {
 									goods.scrollLeft = 0;
 								}
 							})
 						})
 					} else {
-						this.shopData.forEach((item) => {
-							item.forEach((goods) => {
+						_.forEach(this.shopData, (item)=>{
+							_.forEach(item, (goods) => {
 								if (goods.pro_id == e.currentTarget.id) {
 									goods.scrollLeft = 75;
 								}
@@ -266,116 +266,85 @@
 </script>
 
 <style lang="scss">
-	.numInput {
-		overflow: hidden;
-		float: right;
-
-		text {
-			float: left;
-			color: #999;
-			font-size: 22upx;
-			line-height: 50upx;
-		}
-
-		input {
-			display: inline-block;
-			width: 80upx;
-			float: left;
-			text-align: center;
-			color: #999;
-		}
-
-		.numbox-disabled {
-			color: #c0c0c0;
-		}
-	}
-
-	.shopCartPage {
-		background-color: #FAFAFA;
+	.shopCartPage{
+		background-color: #fff;
 		padding-bottom: 98upx;
+		.content{
+			margin-bottom: 20upx;
+			.scrollView{
+				width: 100%;
+				height: 200upx;
+				.viewbox {
+					width: 900upx;
+					height: 200upx;
+					display: flex;
+					.shangpin{
+						width: 750upx;
+						padding: 36upx 30upx;
+						display: flex;
+						border-bottom: 1px solid #FAFAFA;
+						.shangpin-info{
+							display: flex;
+							.img {
+								width: 150upx;
+								height: 130upx;
+								margin-right: 30upx;
+								flex-shrink: 0;
+								image {
+									display: block;
+									width: 100%;
+									height: 100%;
+									background-color: #f0f0f0;
+								}
+							}
+							.text-info {
+								.title-text{
+									
+								}
+								.bottom-price{
+									position: relative;
+									.danjia{
+										color: #59a0fa;
+										margin-right: 10upx ;
+									}
+									.shuliang{
+										color:#666;
+									}
+									.numInput{
+										position: absolute;
+										right: 0upx;
+										top: 0upx;
+										text {
+											float: left;
+											color: #999;
+											font-size: 22upx;
+											line-height: 50upx;
+										}
+										.iconfont{
+											
+										}
+										
+										input {
+											display: inline-block;
+											width: 80upx;
+											float: left;
+											text-align: center;
+											color: #999;
+										}
+										
+										.numbox-disabled {
+											color: #c0c0c0;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
-	.shopCartPage .content {
-		background-color: #FFFFFF;
-		margin-bottom: 20upx;
-	}
-
-	.shopCartPage .content .content-name {
-		height: 70upx;
-		box-sizing: border-box;
-		padding: 20upx 32upx;
-		border-bottom: 1px solid #FAFAFA;
-		display: flex;
-		margin-top: 1upx;
-	}
-
-	.shopCartPage .content .select,
-	.shopCartPage .content .select-active {
-		flex-shrink: 0;
-	}
-
-	.shopCartPage .content .content-name .iconfont {
-		font-size: 45upx;
-		color: #FF6B94;
-		line-height: 32upx;
-		margin-right: 8upx;
-	}
-
-	.shopCartPage .content .content-name .text {
-		font-size: 24upx;
-		color: #333333;
-		line-height: 31upx;
-	}
-
-	.shopCartPage .content .shangpin {
-		width: 750upx;
-		padding: 22upx 32upx;
-		display: flex;
-		border-bottom: 1px solid #FAFAFA;
-	}
-
-	.shopCartPage .content .shangpin .select,
-	.shopCartPage .content .shangpin .select-active {
-		margin-top: 40upx;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info {
-		display: flex;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info .img {
-		width: 108upx;
-		height: 108upx;
-		margin-right: 10upx;
-		flex-shrink: 0;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info .img image {
-		display: block;
-		width: 100%;
-		height: 100%;
-		border-radius: 8upx;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info .text-info .title-text {
-		line-height: 34upx;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info .text-info .title-text .name {
-		color: #333;
-		font-size: 24upx;
-	}
-	
-	.shopCartPage .content .shangpin .shangpin-info .text-info .jiage {
-		font-size: 22upx;
-		color: #999999;
-		display: inline-block;
-	}
-
-	.shopCartPage .content .shangpin .shangpin-info .text-info .jiage .danjia {
-		color: #FD395B;
-		margin-right: 10upx;
-	}
 
 	.shopCartPage .content .jiesuan {
 		padding: 30upx 30upx 30upx;
