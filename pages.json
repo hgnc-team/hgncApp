@@ -20,7 +20,7 @@
 					"titleNView": false
 				},
 				"usingComponents": {
-					"van-checkbox": "/wxcomponents/vant/checkbox/index",
+					// "van-checkbox": "/wxcomponents/vant/checkbox/index",
 					"van-tab": "/wxcomponents/vant/tab/index",
 					"van-tabs": "/wxcomponents/vant/tabs/index"
 				}
@@ -160,6 +160,26 @@
 			"path": "setup_store",
 			"style": {
 				"navigationBarTitleText": "我要开店"
+			}
+		},{
+			"path": "bank_card",
+			"style": {
+				"navigationBarTitleText": "银行卡管理"
+			}
+		},{
+			"path": "commissions_management",
+			"style": {
+				"navigationBarTitleText": "佣金管理"
+			}
+		},{
+			"path": "withdrawals_record",
+			"style": {
+				"navigationBarTitleText": "提现记录"
+			}
+		},{
+			"path": "withdrawals_record_detail",
+			"style": {
+				"navigationBarTitleText": "提现记录详情"
 			}
 		}]
 	}, {
