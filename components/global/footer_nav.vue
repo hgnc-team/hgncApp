@@ -22,6 +22,31 @@
 		},
 		methods:{
 			change_nav(index){
+				// 方便微信调试用
+// 				if(index === 0) {
+// 					uni.navigateTo({
+// 						url: "../../home/home_page"
+// 					})
+// 					return
+// 				}
+// 				if(index === 2) {
+// 					uni.navigateTo({
+// 						url: "../../vipCenter/vipCenter_page"
+// 					})
+// 					return
+// 				}
+// 				if(index === 3) {
+// 					uni.navigateTo({
+// 						url: "../../shopCart/shopCart_page"
+// 					})
+// 					return
+// 				}
+// 				if(index === 4) {
+// 					uni.navigateTo({
+// 						url: "../../mine/mine_page"
+// 					})
+// 					return
+// 				}
 				// 点击附近，跳转到其对应的页面
 				if(index === 1) {
 					uni.navigateTo({

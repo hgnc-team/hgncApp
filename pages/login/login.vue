@@ -1,11 +1,11 @@
 <template>
 	<view class="loginPage">
 		<statusBar></statusBar>
-		<view class="header-wrap pd-30">
-			<view class="t-c-w">
+		<view class="header-wrap common-pa-30">
+			<view class="text-color-white">
 				<uni-icon type="closeempty" size="36" @click="closed"></uni-icon>
 			</view>
-			<view class="title uni-h2 uni-center t-c-w">
+			<view class="title uni-h2 uni-center text-color-white">
 				嬴鱼
 			</view>
 			<view class="tabs">
@@ -24,7 +24,7 @@
 		</view>
 		
 		<!-- 登录模块 -->
-		<view class="content pd-30" v-if="currentTab == 'login'">
+		<view class="content common-pa-30" v-if="currentTab == 'login'">
 			<view class="input-wrap">
 				<view class="input-item">
 					<input type="number" maxlength="11" v-model="loginData.phone" placeholder="请输入手机号" data-val="phone" />
@@ -37,12 +37,12 @@
 				</view>
 			</view>
 			
-			<view class="loginbtn">
+			<view class="btn-primary">
 				<button :loading="loginData.loading" @tap="bindLogin"> {{ loginData.loading ? "登录中...":"登 录"}} </button>
 			</view>
 			
 			<!-- 第三方登录 -->
-			<view class="oauth-wrap pd-30" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
+			<view class="oauth-wrap common-pa-30" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 				<view class="oauth-title uni-flex">
 					<view class="oauth-title-item line">
 						
@@ -62,7 +62,7 @@
 			</view>
 		</view>
 		<!-- 注册模块 -->
-		<view class="content pd-30" v-if="currentTab == 'reg'">
+		<view class="content common-pa-30" v-if="currentTab == 'reg'">
 			<view class="input-wrap">
 				<view class=" input-item">
 					<input type="number" maxlength="11" v-model="registerData.phone" placeholder="请输入手机号" class="is-input1 " data-val="phone" />
@@ -83,7 +83,7 @@
 					<input placeholder="推荐人ID(必填)" v-model="registerData.inviteCode"/>
 				</view>
 			</view>
-			<view class=" loginbtn">
+			<view class="btn-primary">
 				<button :loading="registerData.loading" @tap="bindRegister"> {{ registerData.loading ? "注册中...":"注 册"}} </button>
 			</view>
 		</view>
@@ -526,23 +526,6 @@
 						}
 						
 					}
-				}
-			}
-			.loginbtn {
-				margin-top: 80upx;
-				button{
-					height: 88upx;
-					width: 100%;
-					line-height: 88rpx;
-					color: #ffffff;
-					font-size: 32rpx;
-					outline: 0;
-					display: block;
-					margin: 0;
-					font-family: inherit;
-					/* background: #f35; */
-					background: #222;
-					opacity: 0.8;
 				}
 			}
 			.oauth-wrap{

@@ -56,25 +56,64 @@
 	.mpvue-picer{
 		color: #000;
 	}
-	.t-c-w{
-		color: #fff;
+	// 全局的button样式
+	.btn-primary {
+		margin-top: 96upx;
+		button{
+			height: 100upx;
+			width: 100%;
+			line-height: 100upx;
+			color: #ffffff;
+			font-size: 32upx;
+			outline: 0;
+			display: block;
+			margin: 0;
+			font-family: inherit;
+			background: #242424;
+			opacity: 1;
+			border-radius: 2upx;
+		}
 	}
-	.pd-10{
-		padding: 10upx;
+	.flex-center-center{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
 	}
-	.pd-20{
-		padding: 20upx;
+	.text-color-white{
+		color: #fff !important;
 	}
-	.pd-30{
+	.common-pa-30{
 		padding: 30upx;
 	}
-	.mg-10{
-		margin: 10upx;
+	.common-pl-20{
+		padding-left: 20upx;
 	}
-	.mg-20{
-		margin: 20upx;
+	.common-pr-20{
+		padding-right: 20upx;
 	}
-	.mg-t-20{
-		margin-top: 20upx;
+	.common-ma-30{
+		margin: 30upx;
 	}
+	.common-ml-20{
+		margin-left: 20upx;
+	}
+	.common-mr-20{
+		margin-right: 20upx;
+	}
+	// 字体颜色和大小
+	.big-title{
+		font-size: $uni-font-size-title;
+		color: $uni-color-title;
+	}
+	.sub-title{
+		font-size: $uni-font-size-lg;
+		color: $uni-color-title;
+	}
+	.tab-sub-title{
+		font-size: $uni-font-size-lg;
+		color: $uni-color-title;
+		font-weight: 600;
+	}
+	
 </style>

@@ -29,7 +29,7 @@
 		uniNavBar
 	} from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
-	import topTabMenu from "../../components/common/top_tabMenu.vue";
+	import topTabMenu from "../../components/common/topTabMenu.vue";
 	export default {
 		components: {
 			uniTag,

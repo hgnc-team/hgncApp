@@ -89,7 +89,7 @@
 <style lang="scss">
 	.top-menu-control {
 		width: 100%;
-		height: 100upx;
+		height: 80upx;
 		position: fixed;
 		/* 固定位置 */
 		z-index: 100;
@@ -97,10 +97,10 @@
 		align-items: center;
 		justify-content: center;
 		/* white-space 属性设置如何处理元素内的空白 */
-		background-color: #eee;
-		top: 100upx;
+		background-color: #fff;
+		top: 88upx;
 		/*  #ifdef  APP-PLUS  */
-		top: calc(var(--status-bar-height) + 100upx);
+		top: calc(var(--status-bar-height) + 88upx);
 		/* #endif */
 		.top-menu-view {
 			padding:0 20upx;
@@ -110,15 +110,15 @@
 // 			justify-content: center;
 			white-space: nowrap;
 			/* 在这里设置导航条高度 */
-			height: 100upx;
+			height: 100%;
 			.menu-one-view {
 				display: inline-block;
 				white-space: nowrap;
 				margin-left: 20upx;
 				margin-right: 20upx;
-				height: 100upx;
+				height: 80upx;
 				text-align: center;
-				line-height: 100upx;
+				line-height: 80upx;
 				position: relative;
 				.menu-one-txt {
 					display: flex;

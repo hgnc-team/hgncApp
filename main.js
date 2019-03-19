@@ -7,9 +7,11 @@ import store from "./store";
 // // 在main.js中注册全局组件
 // import myloading from './components/loading/loading.vue'
 // Vue.component('myloading',myloading) 
-// 全局注册状态栏组件
+// 全局注册组件
 import statusBar from './components/global/status_bar.vue';
+import bottomInfo from './components/global/bottom_info.vue';
 Vue.component('statusBar',statusBar);
+Vue.component('bottomInfo',bottomInfo);
 
 App.mpType = 'app'
 function switch_loading(tf){

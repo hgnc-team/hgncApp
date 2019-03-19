@@ -13,7 +13,7 @@
 					<view class="shangpin">
 						<!-- #ifdef H5 -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<checkBox :isselected="ite.isChecked" @change="proActive(ite)"></checkBox>
+							<checkbox  :isselected="ite.isChecked" @change="proActive(ite)"></checkbox >
 						</view>
 						<!-- #endif -->
 						<!-- #ifdef APP-PLUS -->
