@@ -114,94 +114,80 @@
 				swiperList: [{
 						sid: 0,
 						src: '自定义src0',
-						img: '../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/common/banner1.jpg',
 					},
 					{
 						sid: 1,
 						src: '自定义src1',
-						img: '../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/common/banner2.jpg'
 					},
 					{
 						sid: 2,
 						src: '自定义src2',
-						img: '../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/common/banner3.jpg'
 					},
 					{
 						sid: 3,
 						src: '自定义src3',
-						img: '../../static/img/login/img_login_bg@2x.png'
+						img: '../../static/img/common/banner4.jpg'
 					}
 				],
 				//猜你喜欢列表
 				productList: [{
 						goods_id: 0,
-						img: '../../../static/HM-shophome/img/p1.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good1.jpg',
+						name: '老街口-红糖麻花500g/袋',
+						price: '￥58',
+						slogan: '1096人付款'
 					},
 					{
 						goods_id: 1,
-						img: '../../../static/HM-shophome/img/p2.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good2.jpg',
+						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
+						price: '￥68',
+						slogan: '686人付款'
 					},
 					{
 						goods_id: 2,
-						img: '../../../static/HM-shophome/img/p3.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good3.jpg',
+						name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
+						price: '￥368',
+						slogan: '1234人付款'
 					},
 					{
 						goods_id: 3,
-						img: '../../../static/HM-shophome/img/p4.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good4.jpg',
+						name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
+						price: '￥668',
+						slogan: '678人付款'
 					},
 					{
 						goods_id: 4,
-						img: '../../../static/HM-shophome/img/p5.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good5.jpg',
+						name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
+						price: '￥218',
+						slogan: '52244人付款'
 					},
 					{
 						goods_id: 5,
-						img: '../../../static/HM-shophome/img/p6.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good6.jpg',
+						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
+						price: '￥288',
+						slogan: '232人付款'
 					},
 					{
 						goods_id: 6,
-						img: '../../../static/HM-shophome/img/p7.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good7.jpg',
+						name: '进口智利三文鱼400g',
+						price: '￥216',
+						slogan: '3235人付款'
 					},
 					{
 						goods_id: 7,
-						img: '../../../static/HM-shophome/img/p8.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 8,
-						img: '../../../static/HM-shophome/img/p9.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 9,
-						img: '../../../static/HM-shophome/img/p10.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
+						img: '../../static/img/common/good8.jpg',
+						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
+						price: '￥58',
+						slogan: '35人付款'
 					}
 				],
 				currentPageindex: 0,
@@ -237,112 +223,20 @@
 			}
 			let end_goods_id = this.productList[len - 1].goods_id;
 			for (let i = 1; i <= 10; i++) {
-				let goods_id = end_goods_id + i;
-				let p = {
-					goods_id: goods_id,
-					img: '../../../static/HM-shophome/img/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
-					name: '商品名称商品名称商品名称商品名称商品名称',
-					price: '￥168',
-					slogan: '1235人付款'
-				};
-				this.productList.push(p);
+// 				let goods_id = end_goods_id + i;
+// 				let p = {
+// 					goods_id: goods_id,
+// 					img: '../../static/img/common/' + ((goods_id + 1) % 10 == 0 ? 10 : (goods_id + 1) % 10) + '.jpg',
+// 					name: '商品名称商品名称商品名称商品名称商品名称',
+// 					price: '￥168',
+// 					slogan: '1235人付款'
+// 				};
+				this.productList.push(this.productList[i]);
 			}
 		},
 		methods: {
 			init() {
-				this.swiperList = [{
-						sid: 0,
-						src: '自定义src0',
-						img: '../../static/img/login/img_login_bg@2x.png'
-					},
-					{
-						sid: 1,
-						src: '自定义src1',
-						img: '../../static/img/login/img_login_bg@2x.png'
-					},
-					{
-						sid: 2,
-						src: '自定义src2',
-						img: '../../static/img/login/img_login_bg@2x.png'
-					},
-					{
-						sid: 3,
-						src: '自定义src3',
-						img: '../../static/img/login/img_login_bg@2x.png'
-					}
-				];
-				this.productList = [{
-						goods_id: 0,
-						img: '../../../static/HM-shophome/img/p1.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 1,
-						img: '../../../static/HM-shophome/img/p2.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 2,
-						img: '../../../static/HM-shophome/img/p3.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 3,
-						img: '../../../static/HM-shophome/img/p4.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 4,
-						img: '../../../static/HM-shophome/img/p5.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 5,
-						img: '../../../static/HM-shophome/img/p6.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 6,
-						img: '../../../static/HM-shophome/img/p7.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 7,
-						img: '../../../static/HM-shophome/img/p8.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 8,
-						img: '../../../static/HM-shophome/img/p9.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					},
-					{
-						goods_id: 9,
-						img: '../../../static/HM-shophome/img/p10.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					}
-				];
-
+				
 			},
 			// 二级联动
 			showPicker() {
