@@ -143,7 +143,7 @@ export default {
 		width: 100%;
 		height: 60upx;
 		//border: 1px #ccc solid; //HM修改 去掉边框
-		background: #fff;
+		background: #f6f6f6;
 		overflow: hidden;
 		transition: all 0.2s linear;
 		border-radius: 30px;
@@ -168,7 +168,7 @@ export default {
 				height: 60upx;
 				transition: all 0.2s linear;
 				&.center {
-					width: 200upx;
+					width: 300upx;
 				}
 				&.sub {
 					// position: absolute;
@@ -182,8 +182,8 @@ export default {
 			flex-shrink: 0;
 			padding: 0 30upx;
 			//HM修改 按钮背景色
-			background:linear-gradient(to right,#ff9801,#ff570a);
-			//background: $uni-color-success;
+			// background:linear-gradient(to right,#ff9801,#ff570a);
+			background: #242424;
 			line-height: 60upx;
 			color: #fff;
 			//border-left: 1px #ccc solid; //HM修改 去掉边框
