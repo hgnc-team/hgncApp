@@ -44,7 +44,7 @@
 		<view class="swiper-content">
 			<!-- <dropDownRefresh :on-refresh="onRefresh"></dropDownRefresh> -->
 			<!--  #ifdef  APP-PLUS  -->
-			<van-tabs :active="active" swipeable="true" z-index="10000" animated="true"  swipe-threshold="6" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
+			<van-tabs :active="active" z-index="10000"  swipe-threshold="6" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
 				<van-tab :title="tab" v-for="(tab, i) in tabs.items" :key="i">
 					<!-- 轮播图 -->
 					<view class="swiper-list">
@@ -528,7 +528,7 @@
 							.info {
 								display: flex;
 								justify-content: space-between;
-								align-items: flex-end;
+								align-items: center;
 								width: 100%;
 								font-weight: 100;
 				

@@ -17,8 +17,8 @@ const store = new Vuex.Store({
 		userLevel: 1,
 		// 全局的自定义标题栏的样式
 		titleNView: Object.freeze({
-			bg: 'rgba(0,0,0,1)',
-			textColor: 'rgba(255,255,255,1)'
+			bg: '#242424',
+			textColor: '#fff'
 		})	
 	},
 	mutations: {

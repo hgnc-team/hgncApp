@@ -78,6 +78,10 @@
 			border-radius: 2upx;
 		}
 	}
+	.text-price{
+		color: #59a0fa !important;
+		font-size: 28upx;
+	}
 	.flex-center-center{
 		display: flex;
 		justify-content: center;

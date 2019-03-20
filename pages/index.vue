@@ -32,6 +32,7 @@
 		
 		computed: {
 			page_code() {
+				console.log(this.$store.state.footer_store.footer_nav[this.$store.state.footer_store.now_page_index].name_code);
 				return this.$store.state.footer_store.footer_nav[this.$store.state.footer_store.now_page_index].name_code;
 			}
 		},

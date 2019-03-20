@@ -54,7 +54,9 @@
 					})
 					return
 				}
-				this.$store.commit("change_page",index)
+				console.log(index);
+				this.$store.commit("change_page",index);
+				console.log(this.$store.state.footer_store.now_page_index)
 			}
 		},
 		computed:{
@@ -84,7 +86,6 @@
 				}
 			},
 			footer_nav(){
-				console.log(this.$store.state.footer_store.footer_nav)
 				return this.$store.state.footer_store.footer_nav
 			},
 			now_index(){
@@ -104,6 +105,7 @@
 	background-color: #fff;
 	border-top: 1upx solid #eee;
 	color: #999;
+	z-index: 10000;
 	.footer_item{
 		float: left;
 		width: 33.3%;
