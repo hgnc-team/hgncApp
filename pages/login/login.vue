@@ -30,8 +30,8 @@
 					<input type="number" maxlength="11" v-model="loginData.phone" placeholder="请输入手机号" data-val="phone" />
 				</view>
 				<view class="input-item has-label-right uni-flex">
-					<input type="password" v-model="loginData.password" class="input-left" placeholder="请输入密码"  data-val="password"/>
-					<view class="label-right">
+					<input type="password" v-model="loginData.password" class="input-left uni-inline-item" placeholder="请输入密码"  data-val="password"/>
+					<view class="label-right uni-inline-item" style="border:none;">
 						<navigator url="pwd">忘记密码？</navigator>
 					</view>
 				</view>
@@ -70,7 +70,7 @@
 				<view class="input-item has-label-right uni-flex">
 					<input type="number" class="input-left" placeholder="短信验证码" v-model="registerData.code" />
 					<view class="label-right" @tap="getsmscode">
-						<text style="border: 1upx solid #999;padding: 12upx 16upx;">{{smsbtn.text}}</text>
+						<text :style="{color:smsbtn.status?'#333':'#999'}">{{smsbtn.text}}</text>
 					</view>
 				</view>
 				<view class="input-item">
@@ -80,7 +80,7 @@
 					<input placeholder="确认密码" type="password" v-model="registerData.password1"/>
 				</view>
 				<view class="input-item">
-					<input placeholder="推荐人ID(必填)" v-model="registerData.inviteCode"/>
+					<input placeholder="推荐人ID (必填)" v-model="registerData.inviteCode"/>
 				</view>
 			</view>
 			<view class="btn-primary">
@@ -502,27 +502,40 @@
 
 		}
 		.content{
-			margin-top:30upx;
 			.input-wrap{
 				.input-item{
 					width: 100%;
 					height: 80upx;
-					margin-bottom: 10upx;
-					padding-top: 10upx; 
+					// margin-bottom: 10upx;
+					padding-top: 30upx; 
 					border-bottom: 1px solid #999;
+					justify-content: center;
+					align-items: center;
 					input{		
 						width: 100%;
 						height: 100%;
 						border:none;
 					}
 					&.has-label-right{
-						.input-left{
-							width: 75%;
-						}
 						.label-right{
-							width: 25%;
-							text-align: center;
-							line-height: 80upx;
+							width: 240upx;
+							height: 50upx;
+							margin-left: 20upx;
+							border: 1upx solid #999;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							navigator{
+								width: 100%;
+								text-align: right;
+							}
+							text{
+								width: 100%;
+								height: 100%;
+								text-align: center;
+								color: #333;
+								line-height: 50upx;
+							}
 						}
 						
 					}
