@@ -16,13 +16,6 @@ export default {
 				size:'small'
 			},
 			{
-				name:'会员中心',
-				name_code:'vipCenter',
-				icon:'star',
-				select_icon:'star-filled',
-				size:'small'
-			},
-			{
 				name:'购物车',
 				name_code:'shopCart',
 				icon:'plus',

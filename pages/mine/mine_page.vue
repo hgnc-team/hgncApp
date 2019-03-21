@@ -106,7 +106,8 @@
 				// this.login()
 				// this.$store.commit('login');
 				uni.navigateTo({
-					url: "../../login/login"
+					url: "../../login/login",
+					animationType: "slide-in-bottom"
 				})
 			},
 			// 修改账户信息

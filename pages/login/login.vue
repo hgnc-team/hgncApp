@@ -3,7 +3,7 @@
 		<statusBar></statusBar>
 		<view class="header-wrap common-pa-30">
 			<view class="text-color-white">
-				<uni-icon type="closeempty" size="36" @click="closed"></uni-icon>
+				<uni-icon type="closeempty" size="36" @click="goBack"></uni-icon>
 			</view>
 			<view class="title uni-h2 uni-center text-color-white">
 				嬴鱼
@@ -74,10 +74,10 @@
 					</view>
 				</view>
 				<view class="input-item">
-					<input placeholder="输入密码" type="password" v-model="registerData.password"/>
+					<input placeholder="输入密码" type="password" v-model="registerData.password" maxlength="16"/>
 				</view>
 				<view class="input-item">
-					<input placeholder="确认密码" type="password" v-model="registerData.password1"/>
+					<input placeholder="确认密码" type="password" v-model="registerData.password1" maxlength="16"/>
 				</view>
 				<view class="input-item">
 					<input placeholder="推荐人ID (必填)" v-model="registerData.inviteCode"/>
@@ -182,15 +182,6 @@
 			        }
 			    });
 			},
-			//退出app  貌似iOS 平台不支持此 API
-			closed() {
-// 				// #ifdef APP-PLUS  
-// 				plus.runtime.quit();  
-// 				// #endif  
-				uni.navigateBack({
-					
-				})
-			},
 			// 切换tab
 			changeTab(tab) {
 				this.currentTab = tab;
@@ -245,36 +236,38 @@
 			        phone: this.loginData.phone,
 			        password: this.loginData.password
 			    };
-				// 使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
+				// 登录
 				this.loginData.loading = true;
-				service.loginRe(parms).then(data => {//data为一个数组，数组第一项为错误信息，第二项为返回数据
-					var [error, res]  = data;
+				uni.showLoading({title: '登录中'});
+				service.login(parms).then(res => {
+					uni.hideLoading();
 					this.loginData.loading = false;
-					if(!error) {
-						// 请求失败
+					if(res.data.status === 200) {
+						const data = res.data.data;
+						// 用户角色等级
+						const userLevel = data.role || 0;
+						// 设置底部导航栏
+						this.setfooterBar(userLevel);
+						// 缓存用户数据
+						this.saveUserInfo(data);
+					} else {
+						// 登录失败
 						uni.showToast({
-						    icon: 'none',
-						    title: JSON.stringify(error),
+							icon: 'none',
+							title: JSON.stringify(res.data.errorMsg),
 						});
 						return;
-					} else {
-						// 登录成功
-						if(res.data.code === 200) {
-							const userLevel = this.loginData.phone == 123456 ? 1 : 2;
-							// 设置底部导航栏
-							this.setfooterBar(userLevel);
-							// 缓存用户数据
-							this.saveUserInfo(this.loginData.phone, userLevel);
-						} else {
-							// 登录失败
-							uni.showToast({
-							    icon: 'none',
-							    title: JSON.stringify(res.data.errorMsg),
-							});
-							return;
-						}
-					};
-				});
+					}
+				}).catch((err)=>{
+					uni.hideLoading();
+                    this.loginData.loading = false;
+                    // 请求失败
+					uni.showToast({
+						icon: 'none',
+						title: err.errMsg,
+					});
+					return;
+                })
 			},
 			// 校验数据是否合法
 			isValidFn(name, rules, dataType){
@@ -343,10 +336,9 @@
 					}
 				];
 				// 校验数据
-				let that = this;
 				let isUserInvalid = false;
-				_.forEach(checkList, function(item){
-					const isValid = that.isValidFn(item.name, item.rules, "registerData");
+				_.forEach(checkList, (item) => {
+					const isValid = this.isValidFn(item.name, item.rules, "registerData");
 					if (!isValid) {
 					    uni.showToast({
 					        icon: 'none',
@@ -366,73 +358,143 @@
 					code: this.registerData.code,
 					inviteCode: this.registerData.inviteCode
 				}
-				
-				service.registerRe(parms).then(data => {
-					var [error, res]  = data;
+				uni.showLoading({title: '注册中'});
+				service.register(parms).then(res => {
+					uni.hideLoading();
 					this.loginData.loading = false;
-					if(!error) {
-						// 请求失败
+					if(res.data.status === 200) {
+						const data = res.data.data;
+						util.alert({
+							// title:'注册',
+							content: "恭喜您,注册成功!", 
+							success: () => {
+								// 用户角色等级
+								const userLevel = data.role || 0;
+								// 设置底部导航栏
+								this.setfooterBar(userLevel);
+								// 缓存用户数据
+								this.saveUserInfo(data);							
+							} 
+						})
+					} else {
+						// 登录失败
 						uni.showToast({
-						    icon: 'none',
-						    title: JSON.stringify(error),
+							icon: 'none',
+							title: res.data.errorMsg,
 						});
 						return;
-					} else {
-						// 注册成功
-						if(res.data.code === 200) {
-							const userLevel = this.loginData.phone == 123456 ? 1 : 2;
-							// 设置底部导航栏
-							this.setfooterBar(userLevel);
-							// 缓存用户数据
-							this.saveUserInfo(this.loginData.phone, userLevel);
+					}
+				}).catch((err)=>{
+					uni.hideLoading();
+                    this.loginData.loading = false;
+                    // 请求失败
+					uni.showToast({
+						icon: 'none',
+						title: err.errMsg,
+					});
+					return;
+                })
+			},
+			// 获取验证码
+			getsmscode() {
+				// 定义校验列表
+				const checkList = [
+					{
+						name: "phone",
+						rules: [
+							{
+								checkType: "notnull",
+								name: "phone",
+								errorMsg: "请输入手机号"
+							},{
+								checkType: "phoneno",
+								name: "phone",
+								errorMsg: "请输入正确的手机号"
+							}
+						]
+					}
+				];
+				// 校验数据
+				let isUserInvalid = false;
+				_.forEach(checkList, (item) => {
+					const isValid = this.isValidFn(item.name, item.rules, "registerData");
+					if (!isValid) {
+					    uni.showToast({
+					        icon: 'none',
+					        title: util.graceChecker.error
+					    });
+						isUserInvalid = true;
+					    return false;
+					}
+				});
+				if( isUserInvalid ) {
+					return 
+				}
+				
+				if(this.smsbtn.status) {
+					const parms = {
+						phone: this.registerData.phone
+					} 
+					service.getSms(parms).then(res => {
+						if(res.data && res.data.status === 200) {
+							this.timerId = setInterval(() => {
+								this.smsbtn.status = false;
+								var codeTime = this.smsbtn.codeTime;
+								codeTime--;
+								this.smsbtn.codeTime = codeTime;
+								this.smsbtn.text = codeTime + "S";
+								if (codeTime < 1) {
+									clearInterval(this.timerId);
+									this.smsbtn.text = "重新获取";
+									this.smsbtn.codeTime = 60;
+									this.smsbtn.status = true;
+								}
+							},
+							1000);
 						} else {
-							// 注册失败
 							uni.showToast({
-							    icon: 'none',
-							    title: JSON.stringify(res.data.errorMsg),
+								icon: 'none',
+								title: res.data.errmsg,
 							});
 							return;
 						}
-					};
-				});
-			},
-			// 获取验证码
-			getsmscode: function() {
-				if(this.smsbtn.status) {
-					this.timerId = setInterval(() => {
-							this.smsbtn.status = false;
-							var codeTime = this.smsbtn.codeTime;
-							codeTime--;
-							this.smsbtn.codeTime = codeTime;
-							this.smsbtn.text = codeTime + "S";
-							if (codeTime < 1) {
-								clearInterval(this.timerId);
-								this.smsbtn.text = "重新获取";
-								this.smsbtn.codeTime = 60;
-								this.smsbtn.status = true;
-							}
-						},
-						1000);
-					return false;
+					}).catch((err)=>{
+						// 请求失败
+						uni.showToast({
+							icon: 'none',
+							title: err.errMsg,
+						});
+						return;
+					});
 				}
 			},
 			// 设置不同的tabbar
 			setfooterBar(userLevel) {
 				// 用户等级大于1的才能看到会员中心
-				let barType =  userLevel > 1 ? "menu_5" : "menu_4";
+				let barType =  userLevel >= 1 ? "menu_5" : "menu_4";
+				// 设置底部bar选中
+				if(userLevel >= 1) {
+					let index = this.$store.state.footer_store.now_page_index;
+					// 由于插入"会员中心",占据下边为2的位置,所以原本下标为2以后的都要往后挪一位;
+					if(index >= 2) {
+						index += 1;
+					}
+					this.$store.dispatch(barType);
+					this.$store.commit("change_page",index);
+					return;
+				}
 				this.$store.dispatch(barType);
 			},
 			// 缓存用户数据
-			saveUserInfo(userName, userLevel) {
+			saveUserInfo(data) {
 				// 同步store里面的用户名称，等级
-				this.login(userName, userLevel);
-				this.toIndex();
+				this.login(data);
+				this.goBack();
 			},
-			// 跳转首页
-			toIndex() {
-				// reLaunch关闭所有页面，打开一个新页面
-				uni.reLaunch({
-				    url: '../index',
+			// 返回登录前一页
+			goBack() {
+				uni.navigateBack({
+					animationType: 'slide-out-bottom',
 				});		
 			}
 		},
@@ -502,11 +564,13 @@
 
 		}
 		.content{
+			/* #ifdef APP-PLUS */
+			margin-top: 30upx;
+			/* #endif */
 			.input-wrap{
 				.input-item{
 					width: 100%;
 					height: 80upx;
-					// margin-bottom: 10upx;
 					padding-top: 30upx; 
 					border-bottom: 1px solid #999;
 					justify-content: center;
