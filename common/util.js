@@ -1,5 +1,19 @@
+/**  
+ * @Title: service.js    
+ * @Description: 公共工具汇总   
+ * @author cskying  
+ * @date 2019-3-11   
+ * @version V1.0  
+ */
 
-var graceChecker = {
+/**     
+  * @method 表单优雅校验   
+  * @param {String} error 错误提示  
+  * @param {Object} data  需要检验的数据 {phone：13555555555}
+  * @param {Array} rule   校验规则  [{checkType: "notnull",name: "password1",errorMsg: "确认密码不能为空"},{checkType: "same",checkRule: this.pwdData.password,name: "password1",errorMsg: "两次密码输入不一致"}]
+  * @throws   
+  */
+const graceChecker = {
 	error:'',
 	check : function (data, rule){
 		for(var i = 0; i < rule.length; i++){
@@ -97,6 +111,43 @@ var navigator = function(){
 	
 }
 
+/**     
+  * @method  alert确认框       
+  **/
+const alert = function(parms) {
+	uni.showModal({
+		title:parms.title,
+		content: parms.content,
+		showCancel: false,
+		confirmColor: "#242424",
+		success: (res) => {
+			if (res.confirm) {
+				parms.success()
+			}
+		}
+	})
+}
+
+/**     
+  * @method 确认框       
+  **/
+const confirm = function(parms) {
+	uni.showModal({
+		title:parms.title,
+		content: parms.content,
+		confirmColor: "#242424",
+		success: (res) => {
+			if (res.confirm) {
+				parms.success()
+			} else if (res.cancel) {
+				console.log('用户点击取消');
+			}
+		}	
+	})
+}
+
 export default {
-	graceChecker
+	graceChecker,
+	alert,
+	confirm
 }
