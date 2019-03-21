@@ -109,7 +109,7 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "/api/*" : {
-                    "target" : "http://10.90.131.72:7001",
+                    "target" : "http://yapi.maiyidesan.cn:3000/mock/15/",
                     "changeOrigin" : true,
                     "secure" : false
                 }

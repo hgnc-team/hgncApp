@@ -5,6 +5,10 @@
  * @date 2019-3-11   
  * @version V1.0  
  */
+//引入vue
+import Vue from 'vue'; 
+//必须实例化 Vue
+let vm = new Vue();
 
 // 管理账号信息
 const USERS_KEY = 'USERS_KEY';
@@ -20,17 +24,14 @@ const STATE_KEY = 'STATE_KEY';
   * @return {promise} 返回一个requestTask对象   
   * @throws   
   */
-const loginRe = function(userInfo) {
+const login = function(userInfo) {
 	let data = {
 		phoneNum: userInfo.phone,
 		pwd: userInfo.password
 	}
 	// 直接返回promise对象
-	return uni.request({
-        url: '/api/v1/user/login',
-		method: 'POST',
-		data: data
-    })
+	console.log(vm.$http);
+	return vm.$http.post('/api/v1/user/login', data)
 }
 
 /**     
@@ -41,18 +42,14 @@ const loginRe = function(userInfo) {
   * @param {String} authCode  验证码
   * @return {promise} 返回一个requestTask对象     
   **/
-const registerRe = function(parms) {
+const register = function(parms) {
 	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		inviteCode: parms.inviteCode,
 		authCode: parms.code,
 	}
-	return uni.request({
-        url: '/api/v1/user/signUp',
-		method: 'POST',
-		data: data
-    })
+	return vm.$http.post('/api/v1/user/signUp', data)
 }
 
 /**     
@@ -60,17 +57,13 @@ const registerRe = function(parms) {
   * @param {String} phoneNum  手机号
   * @return {promise} 返回一个requestTask对象    
   **/
-const getSmsRe = function(parms) {
+const getSms = function(parms) {
 	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		authCode: parms.authCode,
 	}
-	return uni.request({
-        url: '/api/v1/sms/getSms',
-		method: 'POST',
-		data: data
-    })
+	return vm.$http.post('/api/v1/sms/getSms', data)
 }
 
 /**     
@@ -80,17 +73,13 @@ const getSmsRe = function(parms) {
   * @param {String} authCode  验证码
   * @return {promise} 返回一个requestTask对象     
   **/
-const reSetPwdRe = function(parms) {
+const reSetPwd = function(parms) {
 	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		authCode: parms.code,
 	}
-	return uni.request({
-        url: '/api/v1/user/changePwd',
-		method: 'POST',
-		data: data
-    })
+	return vm.$http.post('/api/v1/user/changePwd', data)
 }
 
 const LOGIN_MODULE = {
