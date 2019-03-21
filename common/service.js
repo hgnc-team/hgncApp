@@ -83,10 +83,10 @@ const reSetPwd = function(parms) {
 }
 
 const LOGIN_MODULE = {
-	loginRe,
-	registerRe,
-	getSmsRe,
-	reSetPwdRe
+	login,
+	register,
+	getSms,
+	reSetPwd
 }
 const HOME_MODULE = {
 	

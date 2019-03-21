@@ -7,9 +7,14 @@ import store from "./store";
 
 // 设置http 
 import http from './common/http/';
-console.log(http)
 //设置baseUrl
+// #ifdef H5
+http.config.baseUrl = "10.90.131.120:7002";
+// #endif
+/* #ifdef APP-PLUS */
 http.config.baseUrl = "http://yapi.maiyidesan.cn:3000/mock/15";
+/* #endif */
+
 //设置请求前拦截器
 http.interceptor.request = (config) => {
     //添加通用参数
