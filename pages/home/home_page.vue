@@ -49,14 +49,15 @@
 				<van-tab :title="tab" v-for="(tab, i) in tabs.items" :key="i">
 			<!--  #endif    -->
 					<!-- 轮播图 -->
-					<view class="swiper-list">
-						<swiper class="swiper" indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
+					<customSwiper :swiperList="swiperList" @toSwiper="toSwiper"></customSwiper>
+					<!-- <view class="swiper-list">
+						<swiper class="swiper" circular indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
 						 indicator-color="#dadada">
 							<swiper-item v-for="swiper in swiperList" :key="swiper.sid" @tap="toSwiper(swiper)">
-								<image mode="aspectFill" :src="swiper.img"></image>
+								<image mode="aspectFill" :src="swiper.img" lazy-load></image>
 							</swiper-item>
 						</swiper>
-					</view>
+					</view> -->
 					<view class="goods-list">
 						<view class="title">好物热卖</view>
 						<view class="product-list">
@@ -87,6 +88,7 @@
 	} from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
 	import topTabMenu from "../../components/common/topTabMenu.vue";
+	import customSwiper from "../../components/common/custom-swiper.vue";
 	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
 	export default {
@@ -95,6 +97,7 @@
 			uniIcon,
 			uniBadge,
 			mpvuePicker,
+			customSwiper
 			// dropDownRefresh
 		},
 		data() {

@@ -51,15 +51,31 @@
 		/*  #ifdef  APP-PLUS  */
 		margin-top: var(--status-bar-height); //表示状态栏的高度。
 		/*  #endif  */
+		.uni-navbar__content {
+			padding: 0 30upx;
+			box-sizing: border-box;
+		}
 	}
 	// 全局多列选择的样式
 	.mpvue-picer{
 		color: #000;
 	}
-	.uni-navbar .uni-navbar__content {
-		padding: 0 30upx;
-		box-sizing: border-box;
+	// 全局swiper的样式
+	.swiper{
+		.uni-swiper-wrapper{
+			overflow: visible !important;
+			.uni-swiper-dots{
+				bottom: -40upx !important;
+				.uni-swiper-dot{
+					border-radius: 0 !important;
+				}
+				.uni-swiper-dot-active{
+					width: 30upx !important;
+				}
+			}
+		}
 	}
+	
 	// 全局的button样式
 	.btn-primary {
 		margin-top: 96upx;

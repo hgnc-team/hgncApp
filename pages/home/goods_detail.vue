@@ -8,13 +8,13 @@
 
 		<view class="content">
 			<!-- 轮播图 -->
-			<view class="swiper-view">
-				<swiper class="swiper" indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#ffffff">
+			<view class="swiper-list">
+				<swiper class="swiper" indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
+				 indicator-color="#dadada">
 					<swiper-item v-for="swiper in swiperList" :key="swiper.sid" @tap="toSwiper(swiper)">
 						<image mode="aspectFill" :src="swiper.img"></image>
 					</swiper-item>
 				</swiper>
-				<view class="keep-out"></view>
 			</view>
 			<view class="goods-info">
 				<!-- 商品价格积分 -->
@@ -126,22 +126,22 @@
 				swiperList: [{
 						sid: 0,
 						src: '自定义src0',
-						img: '../../../static/img/login/img_login_bg@3x.png'
+						img: '../../static/img/common/banner1.jpg',
 					},
 					{
 						sid: 1,
 						src: '自定义src1',
-						img: '../../../static/img/login/img_login_bg@3x.png'
+						img: '../../static/img/common/banner2.jpg'
 					},
 					{
 						sid: 2,
 						src: '自定义src2',
-						img: '../../../static/img/login/img_login_bg@3x.png'
+						img: '../../static/img/common/banner3.jpg'
 					},
 					{
 						sid: 3,
 						src: '自定义src3',
-						img: '../../../static/img/login/img_login_bg@3x.png'
+						img: '../../static/img/common/banner4.jpg'
 					}
 				],
 				//猜你喜欢列表
@@ -250,8 +250,22 @@
 		margin-bottom: 100upx;
 		.content {
 			
-			.swiper-view {
-				border: 1px solid #eee;
+			
+			.swiper-list {
+				width: 100%;
+				height: 346upx;
+				background-color: #fff;
+			
+				.swiper {
+					width: 100%;
+					height: 280upx;
+					background-color: #f0f0f0;
+			
+					image {
+						width: 100%;
+						height: 280upx;
+					}
+				}
 			}
 
 			.goods-info {
