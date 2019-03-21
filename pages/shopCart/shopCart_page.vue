@@ -374,7 +374,7 @@
 					height: 200upx;
 					display: flex;
 					.shangpin{
-						width: 750upx;
+						width: 760upx;
 						padding: 36upx 30upx;
 						display: flex;
 						border-bottom: 1px solid #f0f0f0;
@@ -469,6 +469,7 @@
 					font-size: 40upx;
 					margin-bottom: 36upx;
 					padding: 0 30upx;
+					box-sizing: border-box;
 				}			
 				.product-list {
 					width: 100%;
@@ -480,10 +481,8 @@
 			
 					.product {
 						width: 47.75%;
-						border-radius: 20upx;
 						background-color: #fff;
 						margin: 0 0 15upx 0;
-			
 						image {
 							width: 100%;
 							height: 246upx;

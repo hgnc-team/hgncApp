@@ -35,17 +35,19 @@
 		</view>
 		<!-- 占位 -->
 		<view class="place"></view>
+		<!--  #ifdef  H5  -->
 		<!-- 选项卡分类选择 -->
-		<!-- <view class="custom-tabs"> -->
-		
-		<!-- <topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu> -->
-		<!-- </view> -->
+		<view class="custom-tabs">
+			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu>
+		</view>
+		<!--  #endif    -->
 		<!-- 主体内容 -->
 		<view class="swiper-content">
 			<!-- <dropDownRefresh :on-refresh="onRefresh"></dropDownRefresh> -->
 			<!--  #ifdef  APP-PLUS  -->
-			<van-tabs :active="active" z-index="10000"  swipe-threshold="6" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
+			<van-tabs :active="active" z-index="10000" animated swipeable swipe-threshold="6" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
 				<van-tab :title="tab" v-for="(tab, i) in tabs.items" :key="i">
+			<!--  #endif    -->
 					<!-- 轮播图 -->
 					<view class="swiper-list">
 						<swiper class="swiper" indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
@@ -68,6 +70,7 @@
 							</view>
 						</view>
 					</view>
+			<!--  #ifdef  APP-PLUS  -->
 				</van-tab>
 			</van-tabs>
 			<!--  #endif    -->
@@ -83,12 +86,12 @@
 		uniIcon
 	} from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
-	// import topTabMenu from "../../components/common/topTabMenu.vue";
+	import topTabMenu from "../../components/common/topTabMenu.vue";
 	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
 	export default {
 		components: {
-			// topTabMenu,
+			topTabMenu,
 			uniIcon,
 			uniBadge,
 			mpvuePicker,
@@ -452,6 +455,7 @@
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
 			margin-bottom: 120upx;
+			/*  #ifdef  APP-PLUS  */
 			.custom-class{
 				background-color: #f0f0f0;
 				position: relative;
@@ -466,6 +470,7 @@
 					z-index: 20000;
 					
 				}
+				/*  #endif  */
 				.swiper-list {
 					width: 100%;
 					height: 346upx;
@@ -493,6 +498,7 @@
 						font-size: 40upx;
 						margin-bottom: 36upx;
 						padding: 0 30upx;
+						box-sizing: border-box;
 					}			
 					.product-list {
 						width: 100%;
@@ -547,7 +553,9 @@
 				
 					}
 				}
+				/*  #ifdef  APP-PLUS  */
 			}
+			/*  #endif  */
 		}
 		.loading-text {
 			width: 100%;
