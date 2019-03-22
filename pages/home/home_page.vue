@@ -453,7 +453,9 @@
 		.swiper-content {
 			width: 100%;
 			position: relative;
-			top: 88upx;
+			/* #ifdef H5 */
+			top: 176upx;
+			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
@@ -473,23 +475,8 @@
 					z-index: 20000;
 					
 				}
-				/*  #endif  */
-				.swiper-list {
-					width: 100%;
-					height: 346upx;
-					background-color: #fff;
+			/*  #endif  */
 				
-					.swiper {
-						width: 100%;
-						height: 280upx;
-						background-color: #f0f0f0;
-				
-						image {
-							width: 100%;
-							height: 280upx;
-						}
-					}
-				}
 				.goods-list {
 					background-color: #fff;
 					font-weight: 600;
@@ -556,7 +543,7 @@
 				
 					}
 				}
-				/*  #ifdef  APP-PLUS  */
+			/*  #ifdef  APP-PLUS  */
 			}
 			/*  #endif  */
 		}
