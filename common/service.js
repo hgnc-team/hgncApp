@@ -31,7 +31,7 @@ const login = function(userInfo) {
 	}
 	// 直接返回promise对象
 	console.log(vm.$http);
-	return vm.$http.post('/api/v1/user/login', data)
+	return vm.$http.post('/v1/api/user/login', data)
 }
 
 /**     
@@ -49,7 +49,7 @@ const register = function(parms) {
 		inviteCode: parms.inviteCode,
 		authCode: parms.code,
 	}
-	return vm.$http.post('/api/v1/user/signUp', data)
+	return vm.$http.post('/v1/api/user/signUp', data)
 }
 
 /**     
@@ -63,7 +63,7 @@ const getSms = function(parms) {
 		pwd: parms.password,
 		authCode: parms.authCode,
 	}
-	return vm.$http.post('/api/v1/sms/getSms', data)
+	return vm.$http.post('/v1/api/sms/sendSms', data)
 }
 
 /**     
@@ -79,7 +79,7 @@ const reSetPwd = function(parms) {
 		pwd: parms.password,
 		authCode: parms.code,
 	}
-	return vm.$http.post('/api/v1/user/changePwd', data)
+	return vm.$http.post('/v1/api/user/changePwd', data)
 }
 
 const LOGIN_MODULE = {

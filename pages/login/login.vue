@@ -38,7 +38,7 @@
 			</view>
 			
 			<view class="btn-primary">
-				<button :loading="loginData.loading" @tap="bindLogin"> {{ loginData.loading ? "登录中...":"登 录"}} </button>
+				<button @tap="bindLogin">登 录</button>
 			</view>
 			
 			<!-- 第三方登录 -->
@@ -84,7 +84,7 @@
 				</view>
 			</view>
 			<view class="btn-primary">
-				<button :loading="registerData.loading" @tap="bindRegister"> {{ registerData.loading ? "注册中...":"注 册"}} </button>
+				<button @tap="bindRegister">注 册</button>
 			</view>
 		</view>
 	</view>
@@ -104,12 +104,10 @@
 		data() {
 			return {
 				loginData: {
-					loading: false,
 					phone:"",
 					password:""
 				},
 				registerData: {
-					loading: false,
 					phone: "",
 					password: "",
 					password1: "",
@@ -237,34 +235,23 @@
 			        password: this.loginData.password
 			    };
 				// 登录
-				this.loginData.loading = true;
 				uni.showLoading({title: '登录中'});
 				service.login(parms).then(res => {
+					 // 请求成功
 					uni.hideLoading();
-					this.loginData.loading = false;
-					if(res.data.status === 200) {
-						const data = res.data.data;
-						// 用户角色等级
-						const userLevel = data.role || 0;
-						// 设置底部导航栏
-						this.setfooterBar(userLevel);
-						// 缓存用户数据
-						this.saveUserInfo(data);
-					} else {
-						// 登录失败
-						uni.showToast({
-							icon: 'none',
-							title: JSON.stringify(res.data.errorMsg),
-						});
-						return;
-					}
+					const data = res.data.data;
+					// 用户角色等级
+					const userLevel = data.role || 0;
+					// 设置底部导航栏
+					this.setfooterBar(userLevel);
+					// 缓存用户数据
+					this.saveUserInfo(data);
 				}).catch((err)=>{
+					 // 请求失败
 					uni.hideLoading();
-                    this.loginData.loading = false;
-                    // 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg,
+						title: err.data.data || err.errMsg,
 					});
 					return;
                 })
@@ -361,36 +348,30 @@
 				uni.showLoading({title: '注册中'});
 				service.register(parms).then(res => {
 					uni.hideLoading();
-					this.loginData.loading = false;
-					if(res.data.status === 200) {
-						const data = res.data.data;
-						util.alert({
-							// title:'注册',
-							content: "恭喜您,注册成功!", 
-							success: () => {
-								// 用户角色等级
-								const userLevel = data.role || 0;
-								// 设置底部导航栏
-								this.setfooterBar(userLevel);
-								// 缓存用户数据
-								this.saveUserInfo(data);							
-							} 
-						})
-					} else {
-						// 登录失败
-						uni.showToast({
-							icon: 'none',
-							title: res.data.errorMsg,
-						});
-						return;
-					}
+					util.alert({
+						// title:'注册',
+						content: "恭喜您,注册成功!", 
+						success: () => {						
+							// 切换到登录tab
+							this.changeTab('login');
+							// 将手机号带到登录tab中
+							this.loginData.phone = this.registerData.phone;
+							// 清空注册数据
+							this.registerData = {
+								phone: "",
+								password: "",
+								password1: "",
+								code: "",
+								inviteCode: ""
+							}
+						} 
+					})
 				}).catch((err)=>{
 					uni.hideLoading();
-                    this.loginData.loading = false;
                     // 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg,
+						title: err.data.data || err.errMsg,
 					});
 					return;
                 })
@@ -436,33 +417,29 @@
 						phone: this.registerData.phone
 					} 
 					service.getSms(parms).then(res => {
-						if(res.data && res.data.status === 200) {
-							this.timerId = setInterval(() => {
-								this.smsbtn.status = false;
-								var codeTime = this.smsbtn.codeTime;
-								codeTime--;
-								this.smsbtn.codeTime = codeTime;
-								this.smsbtn.text = codeTime + "S";
-								if (codeTime < 1) {
-									clearInterval(this.timerId);
-									this.smsbtn.text = "重新获取";
-									this.smsbtn.codeTime = 60;
-									this.smsbtn.status = true;
-								}
-							},
-							1000);
-						} else {
-							uni.showToast({
-								icon: 'none',
-								title: res.data.errmsg,
-							});
-							return;
-						}
+						uni.showToast({
+							icon: 'none',
+							title: '验证码发送成功!',
+						});
+						this.timerId = setInterval(() => {
+							this.smsbtn.status = false;
+							var codeTime = this.smsbtn.codeTime;
+							codeTime--;
+							this.smsbtn.codeTime = codeTime;
+							this.smsbtn.text = codeTime + "S";
+							if (codeTime < 1) {
+								clearInterval(this.timerId);
+								this.smsbtn.text = "重新获取";
+								this.smsbtn.codeTime = 60;
+								this.smsbtn.status = true;
+							}
+						},
+						1000);
 					}).catch((err)=>{
 						// 请求失败
 						uni.showToast({
 							icon: 'none',
-							title: err.errMsg,
+							title: err.data.data || err.errMsg,
 						});
 						return;
 					});

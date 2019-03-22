@@ -8,9 +8,9 @@ import store from "./store";
 // 设置http 
 import http from './common/http/';
 //设置baseUrl
-// #ifdef H5
-http.config.baseUrl = "10.90.131.120:7002";
-// #endif
+
+// http.config.baseUrl = "http://10.90.131.120:7002";
+
 /* #ifdef APP-PLUS */
 http.config.baseUrl = "http://yapi.maiyidesan.cn:3000/mock/15";
 /* #endif */
@@ -18,9 +18,9 @@ http.config.baseUrl = "http://yapi.maiyidesan.cn:3000/mock/15";
 //设置请求前拦截器
 http.interceptor.request = (config) => {
     //添加通用参数
-//     config.header = {
-//         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-//     }
+    config.header = {
+        'Content-Type':'application/json;charset=UTF-8'
+    }
 }
 //设置请求结束后拦截器
 http.interceptor.response = (response) => {

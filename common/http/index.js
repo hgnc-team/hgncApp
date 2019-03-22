@@ -3,15 +3,13 @@
  * 基于 Promise 对象实现更简单的 request 使用方式，支持请求和响应拦截
  */
 
-/*
 
-*/
 export default {
 	config: {
-		baseUrl: "https://unidemo.dcloud.net.cn/",
+		// baseUrl: "",
 		header: {
 			'Content-Type':'application/json;charset=UTF-8',
-			'Content-Type':'application/x-www-form-urlencoded'
+			// 'Content-Type':'application/x-www-form-urlencoded'
 		},  
 		data: {},
 		method: "GET",
@@ -31,7 +29,7 @@ export default {
 		}
 		options.baseUrl = options.baseUrl || this.config.baseUrl
 		options.dataType = options.dataType || this.config.dataType
-		options.url = options.baseUrl + options.url
+		options.url = options.baseUrl ? (options.baseUrl + options.url) : options.url
 		options.data = options.data || {}
 		options.method = options.method || this.config.method
 		//TODO 加密数据
@@ -78,7 +76,7 @@ export default {
 			
 			// 统一的请求日志记录
 			_reqlog(_config)
-
+			console.log(_config);
 			uni.request(_config);
 		});
 	},

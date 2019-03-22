@@ -210,9 +210,12 @@
 							content: res.data.data, 
 							success: () => {
 								// 跳转至登录页面？把手机号密码带过去？
-								uni.redirectTo({
-									url: `./login?phone=${this.pwdData.phone}&password=${this.pwdData.password}`
-								})								
+// 								uni.redirectTo({
+// 									url: `./login?phone=${this.pwdData.phone}&password=${this.pwdData.password}`
+// 								})	
+								uni.navigateBack({
+									
+								})
 							} 
 						})
 					} else {
