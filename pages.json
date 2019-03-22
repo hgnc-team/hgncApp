@@ -256,6 +256,11 @@
 				"name": "swiper", //模式名称
 				"path": "pages/index", //启动页面，必选
 				"query": "" //启动参数，在页面的onLoad函数里面得到
+			},
+			{
+				"name": "goodsdetail", //模式名称
+				"path": "pages/home/goods_detail", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
 			}
 		]
 	}

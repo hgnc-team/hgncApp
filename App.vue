@@ -54,6 +54,8 @@
 		.uni-navbar__content {
 			padding: 0 30upx;
 			box-sizing: border-box;
+			box-shadow: none;
+			border: none;
 		}
 	}
 	// 全局多列选择的样式
@@ -103,6 +105,9 @@
 		justify-content: center;
 		align-items: center;
 		
+	}
+	.text-color-gray{
+		color: #666 !important;
 	}
 	.text-color-white{
 		color: #fff !important;

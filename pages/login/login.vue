@@ -120,7 +120,10 @@
 					status: true,
 					codeTime: 60
 				},
-				providerList: [],
+				providerList: [{
+					value: "weixin",
+					image: "../../static/img/login/icon_login_weixin@2x.png"
+				}],
 				hasProvider: true,
 				positionTop: 0
 			};
@@ -479,7 +482,6 @@
 		    this.initProvider();
 			this.initPosition();
 			// 获取路由参数
-			console.log("option", option);
 			this.loginData.phone = option.phone || "";
 			this.loginData.password = option.password || "";
 			

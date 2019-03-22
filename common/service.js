@@ -21,7 +21,7 @@ const STATE_KEY = 'STATE_KEY';
   * @method 登录   
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
-  * @return {promise} 返回一个requestTask对象   
+  * @return {promise} 返回一个promise对象   
   * @throws   
   */
 const login = function(userInfo) {
@@ -29,8 +29,6 @@ const login = function(userInfo) {
 		phoneNum: userInfo.phone,
 		pwd: userInfo.password
 	}
-	// 直接返回promise对象
-	console.log(vm.$http);
 	return vm.$http.post('/v1/api/user/login', data)
 }
 
@@ -40,7 +38,7 @@ const login = function(userInfo) {
   * @param {String} pwd  密码
   * @param {String} inviteCode  邀请码
   * @param {String} authCode  验证码
-  * @return {promise} 返回一个requestTask对象     
+  * @return {promise} 返回一个promise对象     
   **/
 const register = function(parms) {
 	let data = {
@@ -55,7 +53,7 @@ const register = function(parms) {
 /**     
   * @method 发送验证码  
   * @param {String} phoneNum  手机号
-  * @return {promise} 返回一个requestTask对象    
+  * @return {promise} 返回一个promise对象    
   **/
 const getSms = function(parms) {
 	let data = {
@@ -71,13 +69,37 @@ const getSms = function(parms) {
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
   * @param {String} authCode  验证码
-  * @return {promise} 返回一个requestTask对象     
+  * @return {promise} 返回一个promise对象     
   **/
 const reSetPwd = function(parms) {
 	let data = {
 		phoneNum: parms.phone,
 		pwd: parms.password,
 		authCode: parms.code,
+	}
+	return vm.$http.post('/v1/api/user/changePwd', data)
+}
+
+/**     
+  * @method 查询购物车列表   
+  * @param {String} userId  用户id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getCartList = function(parms) {
+	let data = {
+		userId: parms.userId,
+	}
+	return vm.$http.post('/v1/api/user/changePwd', data)
+}
+
+/**     
+  * @method 添加商品至购物车   
+  * @param {String} userId  用户id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const addToCart = function(parms) {
+	let data = {
+		userId: parms.userId,
 	}
 	return vm.$http.post('/v1/api/user/changePwd', data)
 }

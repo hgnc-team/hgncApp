@@ -1,6 +1,6 @@
 <template>
 	<view class="custom-swiper">
-		<view class="swiper-wrap">
+		<view class="swiper-wrap" :class="isDotsInside?'inside-wrap':''">
 			<swiper class="swiper" autoplay="true" circular="true" current="swiperCurrent" @change="changeSwiper">
 				<swiper-item v-for="(swiper, index) in swiperList" :key="index" @tap="toSwiper(swiper)">
 					<image mode="aspectFill" :src="swiper.img" lazy-load></image>
@@ -22,6 +22,10 @@
 				default: () => {
 					return []
 				}
+			},
+			isDotsInside: {
+				type: Boolean,
+				default: true
 			}
 		},
 		data() {
@@ -50,7 +54,10 @@
 			width: 100%;
 			height: 396upx;
 			background-color: #fff;
-		
+			position: relative;
+			&.inside-wrap{
+				height: 346upx;
+			}
 			.swiper {
 				width: 100%;
 				height: 346upx;
@@ -61,24 +68,26 @@
 					height: 346upx;
 				}
 			}
-		}
-		.dots{
-			width: 100%;
-			height: 50upx;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			.dot{
-				width: 8upx;
-				height: 8upx;
-				background-color: #dadada;
-				margin:8upx;
-				&.active{
-					width: 24upx;
-					background-color: #242424;
+			.dots{
+				width: 100%;
+				height: 50upx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: absolute;
+				bottom: 0upx;
+				.dot{
+					width: 8upx;
+					height: 8upx;
+					background-color: #dadada;
+					margin:8upx;
+					&.active{
+						width: 24upx;
+						background-color: #242424;
+					}
 				}
+				
 			}
-			
 		}
 	}
 </style>

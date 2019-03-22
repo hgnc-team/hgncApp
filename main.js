@@ -12,7 +12,7 @@ import http from './common/http/';
 // http.config.baseUrl = "http://10.90.131.120:7002";
 
 /* #ifdef APP-PLUS */
-http.config.baseUrl = "http://yapi.maiyidesan.cn:3000/mock/15";
+http.config.baseUrl = "http://server.maiyidesan.cn";
 /* #endif */
 
 //设置请求前拦截器

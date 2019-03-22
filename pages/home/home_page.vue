@@ -49,7 +49,7 @@
 				<van-tab :title="tab" v-for="(tab, i) in tabs.items" :key="i">
 			<!--  #endif    -->
 					<!-- 轮播图 -->
-					<customSwiper :swiperList="swiperList" @toSwiper="toSwiper"></customSwiper>
+					<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 					<!-- <view class="swiper-list">
 						<swiper class="swiper" circular indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
 						 indicator-color="#dadada">
