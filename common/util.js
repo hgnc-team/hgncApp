@@ -5,7 +5,7 @@
  * @date 2019-3-11   
  * @version V1.0  
  */
-
+import store from '../store/index.js'
 /**     
   * @method 表单优雅校验   
   * @param {String} error 错误提示  
@@ -106,9 +106,41 @@ const graceChecker = {
 	},
 }
 
-// 模拟跳转底部nav页面的首页
-var navigator = function(){
-	
+// 模拟底部nav页面跳转
+// "附近"直接跳转page页，其他的跳转index页面，改变下标去模拟
+const switchTab = function(type){
+	// 底部四导航按钮
+	const MENU_LEN_4 = 4;
+	// 底部五导航按钮
+	const MENU_LEN_5 = 5;
+	if (type === 'home') {
+		// 跳转首页
+		store.commit("change_page", 0);
+		uni.navigateTo({
+			url:"/pages/index"
+		})
+	} else if(type === 'vipCenter') {
+		// 跳转会员中心 ，下标比为2
+		store.commit("change_page", 2);
+		uni.navigateTo({
+			url:"/pages/index"
+		})
+	} else if(type === 'cart') {
+		// 跳转购物车
+		console.log(store.state.footer_store.footer_nav_len)
+		let cart_index = store.state.footer_store.footer_nav_len === MENU_LEN_4 ? 2 : 3;
+		store.commit("change_page", cart_index);
+		uni.navigateTo({
+			url:"/pages/index"
+		})
+	} else if (type === 'mine') {
+		// 跳转我的
+		let mine_index = store.state.footer_store.footer_nav_len === MENU_LEN_4 ? 3 : 4;
+		store.commit("change_page", mine_index);
+		uni.navigateTo({
+			url:"/pages/index"
+		})
+	} 
 }
 
 /**     
@@ -148,6 +180,7 @@ const confirm = function(parms) {
 
 export default {
 	graceChecker,
+	switchTab,
 	alert,
 	confirm
 }

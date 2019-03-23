@@ -107,6 +107,7 @@
 		uniNavBar
 	} from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
+	import util from '../../common/util.js';
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	export default {
 		components: {
@@ -116,8 +117,11 @@
 		},
 		data() {
 			return {
-				titleBg: 'rgba(0,0,0,1)',
-				textColor: 'rgba(255,255,255,1)',
+				goodsId:"",
+				title: "",
+				price: 0,
+				detail: "",
+				pointRate: "",
 				//轮播
 				swiperList: [{
 						sid: 0,
@@ -173,16 +177,31 @@
 			}
 		},
 		methods: {
-			initData(id){
-				service.getGoodsDetail().then();
+			init(id){
+				// let id = [id];
+				uni.showLoading();
+				service.getGoodListById([id]).then(res=>{
+					console.log(res);
+					uni.hideLoading();
+					let data = res.data.data;
+					this.goodsId = data.id;
+					this.title = data.title;
+					this.price = data.price;
+					this.detail = data.detail;
+					this.pointRate = data.pointRate;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.data.data || err.errMsg,
+					})
+				})
 			},
 			/**  
 			 * 左侧按钮点击事件  
 			 */
 			onClickLeft() {
-				uni.navigateBack({
-
-				})
+				uni.navigateBack()
 			},
 			/**  
 			 * 右侧按钮点击事件  
@@ -200,18 +219,15 @@
 			},
 			// 跳转购物车
 			toCart(){
-				console.log(222)
-				this.$store.commit("change_page", 2)
-				uni.navigateTo({
-					url:"../index"
-				})
-				
+				util.switchTab("cart");
 			},
 			// 加入购物车
 			addToCart(){
-				uni.showToast({
-					title:"加入购物车"
-				})
+				let data = {
+					userId: this.$store.userId,
+					goodsId: this.goodsId
+				}
+				service.addToCart()
 			},
 			toBuy(){
 				uni.showToast({
@@ -221,7 +237,7 @@
 		},
 		onLoad(e) {
 			console.log(e)
-			// this.initData(e.id);
+			this.init(e.id);
 		},
 		
 	}

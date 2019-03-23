@@ -155,9 +155,9 @@ const getGoodListBySearch = function(parms) {
   * @param {String} userId  用户id  
   * @return {promise} 返回一个promise对象     
   **/
-const getCartList = function(parms) {
+const getCartList = function(userId) {
 	let data = {
-		userId: parms.userId,
+		userId: userId,
 	}
 	return vm.$http.post('/v1/api/cart/list', data)
 }
@@ -170,6 +170,7 @@ const getCartList = function(parms) {
 const addToCart = function(parms) {
 	let data = {
 		userId: parms.userId,
+		goodsId: parms.goodsId
 	}
 	return vm.$http.post('/v1/api/user/changePwd', data)
 }

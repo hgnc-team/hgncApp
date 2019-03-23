@@ -54,9 +54,7 @@
 					})
 					return
 				}
-				console.log(index);
 				this.$store.commit("change_page",index);
-				console.log(this.$store.state.footer_store.now_page_index)
 			}
 		},
 		computed:{
@@ -84,6 +82,7 @@
 					default:
 						break;
 				}
+				this.$store.commit("change_nav_len", length);
 			},
 			footer_nav(){
 				return this.$store.state.footer_store.footer_nav

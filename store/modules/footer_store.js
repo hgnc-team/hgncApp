@@ -32,6 +32,7 @@ export default {
 			
 		],
 		now_page_index:0,
+		footer_nav_len: 4
 	},
 	mutations:{
 		change_nav_list(state,data){
@@ -39,6 +40,9 @@ export default {
 		},
 		change_page(state,index){
 			state.now_page_index = index;
+		},
+		change_nav_len(state, len){
+			state.footer_nav_len = len;
 		}
 	},
 	actions:{
