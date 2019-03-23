@@ -37,27 +37,20 @@
 		<view class="place"></view>
 		<!--  #ifdef  H5  -->
 		<!-- 选项卡分类选择 -->
-		<view class="custom-tabs">
-			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu>
+		<view class="custom-tabs uni-flex">
+			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs" class="uni-inline-item" :isShowClassification="true"></topTabMenu>
 		</view>
 		<!--  #endif    -->
 		<!-- 主体内容 -->
 		<view class="swiper-content">
 			<!-- <dropDownRefresh :on-refresh="onRefresh"></dropDownRefresh> -->
 			<!--  #ifdef  APP-PLUS  -->
-			<van-tabs :active="active" z-index="10000" animated swipeable swipe-threshold="6" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
-				<van-tab :title="tab" v-for="(tab, i) in tabs.items" :key="i">
+			<van-tabs :active="active" z-index="10000" animated swipeable swipe-threshold="5" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
+				<van-tab :title="tab.name" v-for="(tab, i) in tabs.items" :key="i">
 			<!--  #endif    -->
 					<!-- 轮播图 -->
 					<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
-					<!-- <view class="swiper-list">
-						<swiper class="swiper" circular indicator-dots="true" autoplay="true" circular="true" indicator-active-color="#242424"
-						 indicator-color="#dadada">
-							<swiper-item v-for="swiper in swiperList" :key="swiper.sid" @tap="toSwiper(swiper)">
-								<image mode="aspectFill" :src="swiper.img" lazy-load></image>
-							</swiper-item>
-						</swiper>
-					</view> -->
+					<!-- 商品列表 -->
 					<view class="goods-list">
 						<view class="title">好物热卖</view>
 						<view class="product-list">
@@ -77,7 +70,6 @@
 			<!--  #endif    -->
 			<bottomInfo></bottomInfo>
 			<view class="loading-text">{{loadingText}}</view>
-			
 		</view>
 	</view>
 </template>
@@ -91,6 +83,7 @@
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
+	import service from '../../common/service.js';
 	export default {
 		components: {
 			topTabMenu,
@@ -229,19 +222,30 @@
 			}
 			let end_goods_id = this.productList[len - 1].goods_id;
 			for (let i = 1; i <= 10; i++) {
-// 				let goods_id = end_goods_id + i;
-// 				let p = {
-// 					goods_id: goods_id,
-// 					img: '../../static/img/common/' + ((goods_id + 1) % 10 == 0 ? 10 : (goods_id + 1) % 10) + '.jpg',
-// 					name: '商品名称商品名称商品名称商品名称商品名称',
-// 					price: '￥168',
-// 					slogan: '1235人付款'
-// 				};
 				this.productList.push(this.productList[i]);
 			}
 		},
 		methods: {
 			init() {
+				this.initBar();
+			},
+			// 初始化navBar
+			initBar(){
+				let parms = {
+					"classScheme": "cat1"
+				}
+				service.getGoodTopClass(parms).then(res=>{
+					let data = res.data.data;
+					this.tabs.items = data;
+				}).catch(err=>{
+					uni.showToast({
+						icon:"none",
+						title: "获取顶部导航数据失败"
+					})
+				})
+			},
+			// 获取推荐数据
+			getHotListByBar(){
 				
 			},
 			// 二级联动
@@ -268,14 +272,14 @@
 			//消息页跳转
 			goMessagesPage() {
 				uni.navigateTo({
-					url: '../../home/messages'
+					url: '/pages/home/messages'
 				})
 			},
 			//搜索跳转
 			toSearch() {
 				uni.hideKeyboard();
 				uni.navigateTo({
-					url: '../../home/search'
+					url: '/pages/home/search'
 				})
 			},
 			// 切换选项卡
@@ -286,6 +290,7 @@
 			},
 			//轮播图跳转
 			toSwiper(e) {
+				this.initBar()
 				uni.showToast({
 					title: e.src
 				});
@@ -299,37 +304,13 @@
 			//商品跳转
 			toGoods(e) {
 				uni.navigateTo({
-					url: '../../home/goods_detail'
+					url: `/pages/home/goods_detail?id=${e.id}`
 				})
-			},
-			// 			//更新分类指示器
-			// 			categoryChange(event) {
-			// 				this.currentPageindex = event.detail.current;
-			// 			},
-			// 			//分类图片加载完毕
-			// 			categoryImgLoad(e){
-			// 				this.categoryImg = this.categoryImg?this.categoryImg+1:1;
-			// 				//完成加载11个分类图片开始计算分类高度，若分类图片不足10个则修改此处的10。
-			// 				if(this.categoryImg==10){
-			// 					this.getCategoryHeight();
-			// 				}
-			// 			},
-			// 			//更新分类高度
-			// 			getCategoryHeight() {
-			// 				let view = uni.createSelectorQuery().select('.category-list');
-			// 				view.fields(
-			// 					{
-			// 						size: true
-			// 					},
-			// 					data => {
-			// 						this.categoryHeight = data.height + 'px';
-			// 					}
-			// 				).exec();
-			// 			}
+			}
 		},
-		onLoad() {
+		created() {
 			this.init();
-		},
+		}
 	}
 </script>
 
@@ -347,19 +328,6 @@
 		align-items: center;
 		justify-content: center;
 		background-color: #fff;
-
-		.status {
-			width: 100%;
-			height: 0;
-			/*  #ifdef  APP-PLUS  */
-			height: var(--status-bar-height); //表示状态栏的高度。
-			/*  #endif  */
-			background-color: #000;
-			position: fixed;
-			top: 0;
-			z-index: 999;
-		}
-
 		.header {
 			width: 100%;
 			height: 88upx;
@@ -449,7 +417,7 @@
 			background-color: #ff570a;
 			height: 88upx;
 		}
-
+	
 		.swiper-content {
 			width: 100%;
 			position: relative;
@@ -475,7 +443,6 @@
 					z-index: 20000;
 					
 				}
-			/*  #endif  */
 				
 				.goods-list {
 					background-color: #fff;
@@ -543,9 +510,77 @@
 				
 					}
 				}
-			/*  #ifdef  APP-PLUS  */
 			}
 			/*  #endif  */
+			
+			/* #ifdef H5 */
+			.goods-list {
+				background-color: #fff;
+				font-weight: 600;
+			
+				.title {
+					width: 100%;
+					height: 60upx;
+					color: #242424;
+					font-size: 40upx;
+					margin-bottom: 36upx;
+					padding: 0 30upx;
+					box-sizing: border-box;
+				}			
+				.product-list {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					flex-wrap: wrap;
+					padding: 0 30upx;
+					box-sizing: border-box;
+			
+					.product {
+						width: 47.75%;
+						border-radius: 20upx;
+						background-color: #fff;
+						margin: 0 0 15upx 0;
+			
+						image {
+							width: 100%;
+							height: 246upx;
+							background-color: #f0f0f0;
+						}
+			
+						.name {
+							width: 100%;
+							padding: 10upx 0;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 2;
+							overflow: hidden;
+							font-weight: 400;
+							font-size: 26upx;
+						}
+			
+						.info {
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							width: 100%;
+							font-weight: 100;
+			
+							.price {
+								color: #4c9bfa;
+								font-size: 30upx;
+								font-weight: 600;
+							}
+			
+							.slogan {
+								color: #c2c2c2;
+								font-size: 24upx;
+							}
+						}
+					}
+			
+				}
+			}
+			/* #endif */
 		}
 		.loading-text {
 			width: 100%;

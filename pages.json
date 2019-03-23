@@ -74,7 +74,23 @@
 					"titleNView": false
 				}
 			}
-		}, {
+		},{
+			"path": "subCategory_nav",
+			"style": {
+				"navigationBarTitleText": "商品分类导航",
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},{
+			"path": "subCategory",
+			"style": {
+				"navigationBarTitleText": "商品分类",
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},{
 			"path": "goods_detail",
 			"style": {
 				"navigationBarTitleText": "商品详情",

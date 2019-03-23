@@ -81,6 +81,76 @@ const reSetPwd = function(parms) {
 }
 
 /**     
+  * @method 获取商品顶级分类列表   
+  * @param {String} classScheme   cat1  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getGoodTopClass = function(parms) {
+	let data = {
+		classScheme: parms.classScheme,
+	}
+	return vm.$http.post('v1/api/goods/topClass', data)
+}
+
+/**     
+  * @method 获取商品二级分类列表   
+  * @param {Array} topClass   ["0","1"]  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getGoodSecondClass = function(parms) {
+	let data = {
+		topClass: parms.topClass,
+	}
+	return vm.$http.post('v1/api/goods/secondClass', data)
+}
+
+
+/**     
+  * @method 根据商品类型获取商品列表   
+  * @param {String} type   商品类型   
+  * @param {Number} page   列表页数   1
+  * @param {Number} pageSize   一页商品数   默认为10条
+  * @return {promise} 返回一个promise对象     
+  **/
+const getGoodListByType = function(parms) {
+	let data = {
+		type: parms.type,
+		page: parms.page,
+		pageSize: 10
+	}
+	return vm.$http.post('v1/api/goods/goodsPageList', data)
+}
+
+/**     
+  * @method 根据商品id获取商品详情   
+  * @param {Array} ids   商品ID数组   
+  * @return {promise} 返回一个promise对象     
+  **/
+const getGoodListById = function(parms) {
+	let data = {
+		ids: parms.ids,
+	}
+	return vm.$http.post('v1/api/goods/goodsList', data)
+}
+
+/**     
+  * @method 根据商品title模糊搜索商品（带分页）   
+  * @param {String} title   ["0","1"]  
+  * @param {Number} page   列表页数   1
+  * @param {Number} pageSize   一页商品数   默认为2条 
+  **/
+const getGoodListBySearch = function(parms) {
+	let data = {
+		title: parms.title,
+		page: parms.page,
+		pageSize: "2",
+	}
+	return vm.$http.post('v1/api/goods/search', data)
+}
+
+
+
+/**     
   * @method 查询购物车列表   
   * @param {String} userId  用户id  
   * @return {promise} 返回一个promise对象     
@@ -89,7 +159,7 @@ const getCartList = function(parms) {
 	let data = {
 		userId: parms.userId,
 	}
-	return vm.$http.post('/v1/api/user/changePwd', data)
+	return vm.$http.post('/v1/api/cart/list', data)
 }
 
 /**     
@@ -104,6 +174,20 @@ const addToCart = function(parms) {
 	return vm.$http.post('/v1/api/user/changePwd', data)
 }
 
+/**     
+  * @method 添加商品至购物车   
+  * @param {String} userId  用户id 
+  * @param {Array | undefined} goodsIds - undefined时，清空用户所有购物车中的商品
+  * @return {promise} 返回一个promise对象     
+  **/
+const deleteFromCart = function(parms) {
+	let data = {
+		userId: parms.userId,
+		goodsIds: parms.ids
+	}
+	return vm.$http.post('/v1/api/cart/delete', data)
+}
+
 const LOGIN_MODULE = {
 	login,
 	register,
@@ -111,6 +195,10 @@ const LOGIN_MODULE = {
 	reSetPwd
 }
 const HOME_MODULE = {
+	getGoodTopClass,
+	getGoodSecondClass,
+	getGoodListByType,
+	getGoodListById
 	
 }
 const NEARBY_MODULE = {
@@ -120,7 +208,9 @@ const VIPCENTER_MODULE = {
 	
 }
 const SHOPCART_MODULE = {
-	
+	getCartList,
+	addToCart,
+	deleteFromCart
 }
 const MINE_MODULE = {
 	

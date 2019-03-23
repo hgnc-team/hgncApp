@@ -5,11 +5,11 @@
 				<image src="../static/img/logo.png" mode="widthFix"></image>
 			</view>
 			<view class="text">
-				嬴鱼
+				鹏鱼
 			</view>
 		</view>
 		<view class="copright">
-			Copyright © 2019 嬴鱼.All rights reserved
+			Copyright © 2019 鹏鱼.All rights reserved
 		</view>
 	</view>
 </template>

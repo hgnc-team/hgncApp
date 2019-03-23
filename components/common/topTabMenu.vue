@@ -1,14 +1,17 @@
 <template>
 	<view class="top-menu-control">
 		<scroll-view scroll-x="true" @scroll="scroll" scroll-left="scrollLeft">
-			<view class="top-menu-view">
+			<view class="top-menu-view" :class="isShowClassification?'ShowClassificationClass':''">
 				<view :id="'tabNum' + index" v-for="(item, index) in values" class="menu-one-view" :class="[currentIndex==index ? 'menu-one-act' : 'menu-one']" :key="index" @click="swichMenu(index)">
-					<view class="menu-one-txt">{{item}}</view>
+					<view class="menu-one-txt">{{item.name}}</view>
 					<view class="menu-one-bottom">
 						<view class="menu-one-bottom-color"></view>
 					</view>
 				</view>
 			</view>	
+			<view class="classification" @tap="toSecondClassPage" v-if="isShowClassification">
+				分类
+			</view>
 		</scroll-view>
 	</view>
 </template>
@@ -27,6 +30,10 @@
 					return [];
 				}
 			},
+			isShowClassification: {
+				type: Boolean,
+				default: false
+			}
 		},
 		data() {
 			return {
@@ -82,6 +89,12 @@
 					}).exec();
 				})
 			},
+			// 去二级分类页面
+			toSecondClassPage(){
+				uni.navigateTo({
+					url: "/pages/home/subCategory_nav"
+				})
+			}
 		},
 	}
 </script>
@@ -105,12 +118,16 @@
 		.top-menu-view {
 			padding:0 20upx;
 			box-sizing: border-box;
-// 			display: flex;
-// 			align-items: center;
-// 			justify-content: center;
 			white-space: nowrap;
 			/* 在这里设置导航条高度 */
 			height: 100%;
+			width: 100%;
+			&.ShowClassificationClass{
+				width: calc(100% -100upx);
+				.menu-one-view:last-child{
+					padding-right: 20upx !important;
+				}
+			}
 			.menu-one-view {
 				display: inline-block;
 				white-space: nowrap;
@@ -153,7 +170,30 @@
 						}
 					}
 				}
+				&:last-child{
+					padding-right: 120upx;
+				}
 			}
+			// .menu-one-view:last-child
 		}
+		
+		.classification{
+			width: 100upx;
+			height: 86upx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-left:1upx solid #666;
+			box-shadow: 0upx 0upx 1upx 1upx #999;
+			background-color: #fff;
+			position: fixed;
+			z-index: 1000;
+			right: 0upx;
+			top: 88upx;
+			/*  #ifdef  APP-PLUS  */
+			top: calc(var(--status-bar-height) + 88upx);
+			/* #endif */
+		}
+		
 	}	
 </style> 

@@ -12,7 +12,7 @@ import http from './common/http/';
 // http.config.baseUrl = "http://10.90.131.120:7002";
 
 /* #ifdef APP-PLUS */
-http.config.baseUrl = "http://server.maiyidesan.cn";
+http.config.baseUrl = "http://server.maiyidesan.cn/";
 /* #endif */
 
 //设置请求前拦截器
@@ -40,15 +40,6 @@ Vue.component('statusBar',statusBar);
 Vue.component('bottomInfo',bottomInfo);
 
 App.mpType = 'app'
-function switch_loading(tf){
-	if(tf){
-		store.commit("switch_loading",tf)
-	}else{
-		store.commit("switch_loading")
-
-	}
-}
-Vue.prototype.$loading = switch_loading;
 Vue.prototype.$store = store;
 Vue.prototype.$http = http;
 const app = new Vue({
