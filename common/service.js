@@ -143,7 +143,7 @@ const getGoodListBySearch = function(parms) {
 	let data = {
 		title: parms.title,
 		page: parms.page,
-		pageSize: "2",
+		pageSize: 10,
 	}
 	return vm.$http.post('v1/api/goods/search', data)
 }
@@ -199,7 +199,8 @@ const HOME_MODULE = {
 	getGoodTopClass,
 	getGoodSecondClass,
 	getGoodListByType,
-	getGoodListById
+	getGoodListById,
+	getGoodListBySearch
 	
 }
 const NEARBY_MODULE = {

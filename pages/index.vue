@@ -47,8 +47,12 @@
 </script>
 
 <style lang="scss">
+	page{
+		width: 100%;
+		height: 100%;
+	}
 	.indexPage {
 		width: 100%;
-		// height: auto;
+		height: 100%;;
 	}
 </style>

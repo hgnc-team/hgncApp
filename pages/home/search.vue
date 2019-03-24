@@ -4,14 +4,14 @@
 		<view class="status" :style="{position:headerPosition}"></view>
 		<!-- 搜索框 关键字 -->
 		<view class="search_wrap">
-			<view class="header-wrap uni-flex">
-				<view class="back uni-inline-item"  :class="isShowIcon?'active':''">
+			<view class="header-wrap uni-flex uni-row">
+				<view class="back uni-inline-item" @tap="goBack">
 					<uni-icon type="back"></uni-icon>
 				</view>
 				
 				<view class="search-box uni-inline-item">
 					<!-- mSearch组件 如果使用原样式，删除组件元素-->
-					<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)" @input="inputChange"
+					<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)"
 					 @confirm="doSearch(false)" v-model="keyword" radius="0"></mSearch>
 					<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
 								
@@ -28,18 +28,8 @@
 				</view>
 			</view>
 			
-			<view class="search-keyword" @touchstart="blur">
-				<scroll-view class="keyword-list-box" v-show="isShowKeywordList" scroll-y>
-					<view class="keyword-entry" hover-class="keyword-entry-tap" v-for="row in keywordList" :key="row.keyword">
-						<view class="keyword-text" @tap="doSearch(row.keyword)">
-							<rich-text :nodes="row.htmlStr"></rich-text>
-						</view>
-						<view class="keyword-img" @tap="setkeyword(row)">
-							<image src="../../static/HM-search/back.png"></image>
-						</view>
-					</view>
-				</scroll-view>
-				<scroll-view class="keyword-box" v-show="!isShowKeywordList" scroll-y>
+			<view class="search-keyword" @touchstart="blur" v-show="!isShowKeywordList">
+				<scroll-view class="keyword-box" scroll-y>
 					<view class="keyword-block" v-if="oldKeywordList.length>0">
 						<view class="keyword-list-header">
 							<view>历史搜索</view>
@@ -67,24 +57,26 @@
 					</view>
 				</scroll-view>
 			</view>
+			
+			<!-- 搜索到的商品 -->
+			<view class="goods-wrap">
+				<view class="tabs">
+					
+				</view>
+				<view class="content">
+					
+				</view>
+			</view>
 		</view>
 		
-		<!-- 搜索到的商品 -->
-		<view class="goods-wrap">
-			<view class="tabs">
-				
-			</view>
-			<view class="content">
-				
-			</view>
-		</view>
 	</view>
 </template>
 
 <script>
+	import { uniIcon } from '@dcloudio/uni-ui';
+	import service from '../../common/service.js';
 	//引用mSearch组件，如不需要删除即可
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
-	import { uniIcon } from '@dcloudio/uni-ui';
 	export default {
 		components: {
 			uniIcon,
@@ -98,10 +90,11 @@
 				keyword: "",
 				oldKeywordList: [],
 				hotKeywordList: [],
-				keywordList: [],
+				goodsList: [],
 				forbid: '',
 				isShowKeywordList: false,
-				isShowIcon: false
+				isShowIcon: false,
+				page:1
 			}
 		},
 		onLoad() {
@@ -144,25 +137,6 @@
 			loadHotKeyword() {
 				//定义热门搜索关键字，可以自己实现ajax请求数据再赋值
 				this.hotKeywordList = ['键盘', '鼠标', '显示器', '电脑主机', '蓝牙音箱', '笔记本电脑', '鼠标垫', 'USB', 'USB3.0'];
-			},
-			//监听输入
-			inputChange(event) {
-				//兼容引入组件时传入参数情况
-				var keyword = event.detail ? event.detail.value : event;
-				if (!keyword) {
-					this.keywordList = [];
-					this.isShowKeywordList = false;
-					this.isShowIcon = false;
-					return;
-				}
-				this.isShowKeywordList = true;
-				//以下示例截取淘宝的关键字，请替换成你的接口
-// 				uni.request({
-// 					url: 'https://suggest.taobao.com/sug?code=utf-8&q=' + keyword, //仅为示例
-// 					success: (res) => {
-// 						this.keywordList = this.drawCorrelativeKeyword(res.data.result, keyword);
-// 					}
-// 				});
 			},
 			//高亮关键字
 			drawCorrelativeKeyword(keywords, keyword) {
@@ -209,14 +183,13 @@
 			//执行搜索
 			doSearch(key) {
 				key = key ? key : this.keyword ? this.keyword : this.defaultKeyword;
+				console.log("key",key);
+				console.log("this.keyword",this.keyword)
+				console.log("this.defaultKeyword",this.defaultKeyword)
 				this.keyword = key;
 				this.saveKeyword(key); //保存为历史 
 				this.isShowIcon = true;
-				uni.showToast({
-					title: key,
-					icon: 'none',
-					duration: 2000
-				});
+				this.getGoodsList(key)
 				//以下是示例跳转淘宝搜索，可自己实现搜索逻辑
 // 				//#ifdef APP-PLUS
 // 				plus.runtime.openURL(encodeURI('taobao://s.taobao.com/search?q=' + key));
@@ -256,6 +229,28 @@
 						this.oldKeywordList = OldKeys; //更新历史搜索
 					}
 				});
+			},
+			getGoodsList(key){
+				const data = {
+					title: key,
+					page: this.page
+				}
+				uni.showLoading();
+				service.getGoodListBySearch(data).then(res=>{
+					console.log(res);
+					uni.hideLoading();
+					let data = res.data.data;
+					
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.data.data || err.errMsg,
+					})
+				})
+			},
+			goBack(){
+				uni.navigateBack()
 			}
 		}
 	}
@@ -289,20 +284,13 @@
 				justify-content: center;
 				border-bottom: 1px solid #f6f6f6;
 				.back {
-					width: 0upx;
+					width: 80upx;
+					height: 100%;
 					justify-content: center;
-					transition: all 0.2s linear;
-					visibility: hidden;
-					&.active{
-						width: 80upx;
-						visibility: visible;
-						transform-origin: center right;
-					}
 				}
 				.search-box{
-					width: 95%;
+					flex: 1 1 0%;
 					height: 88upx;
-					display: flex;
 					padding: 10upx;
 					justify-content: center;
 					box-sizing: border-box;
@@ -355,6 +343,7 @@
 			padding: 0 3%;
 			margin: 0;
 			background-color: #ffffff;
+			box-sizing: border-box;
 		}
 
 		.placeholder-class {
@@ -371,6 +360,7 @@
 			padding-top: 5px;
 			border-radius: 10px 10px 0 0;
 			background-color: #fff;
+			box-sizing: border-box;
 		}
 
 		.keyword-entry-tap {
@@ -418,6 +408,7 @@
 
 		.keyword-box .keyword-block {
 			padding: 5px 0;
+			box-sizing: border-box;
 		}
 
 		.keyword-box .keyword-block .keyword-list-header {
@@ -427,6 +418,7 @@
 			color: #333;
 			display: flex;
 			justify-content: space-between;
+			box-sizing: border-box;
 		}
 
 		.keyword-box .keyword-block .keyword-list-header image {
@@ -440,6 +432,7 @@
 			display: flex;
 			flex-flow: wrap;
 			justify-content: flex-start;
+			box-sizing: border-box;
 		}
 
 		.keyword-box .keyword-block .hide-hot-tis {
@@ -459,6 +452,7 @@
 			font-size: 14px;
 			background-color: rgb(242, 242, 242);
 			color: #6b6b6b;
+			box-sizing: border-box;
 		}
 	}
 </style>

@@ -37,46 +37,42 @@
 		</view>
 		<!-- 占位 -->
 		<view class="place"></view>
-		<!-- 内容 -->
-		<view class="uni-tab-bar swiper-content">
-			<view class="custom-tabs">
-				<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
-					<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''" :id="'tar'+index"
-					 :data-current="index" @click="tapTab">
-						{{tab.name}}
-						<view class="bottom-line"></view>
-					 </view>
-				</scroll-view>
-			</view>
-			<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
-				<swiper-item v-for="(tab,index1) in newsitems" :key="index1">
-					<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">		
-						<!-- 轮播图 -->
-						<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
-						<view class="goods-list">
-							<view class="title">好物热卖</view>
-							<!-- 商品列表 -->
-							<view class="product-list">
-								<view class="product" v-for="(newsitem,index2) in tab.data" :key="index2">		
-									<image mode="widthFix" :src="newsitem.img"></image>
-									<view class="name">{{newsitem.name}}</view>
-									<view class="info">
-										<view class="price">{{newsitem.price}}</view>
-										<view class="slogan">{{newsitem.slogan}}</view>
-									</view>	
+		<!--  #ifdef  H5  -->
+		<!-- 选项卡分类选择 -->
+		<view class="custom-tabs uni-flex">
+			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs" class="uni-inline-item" :isShowClassification="true"></topTabMenu>
+		</view>
+		<!--  #endif    -->
+		<!-- 主体内容 -->
+		<view class="swiper-content">
+			<!-- <dropDownRefresh :on-refresh="onRefresh"></dropDownRefresh> -->
+			<!--  #ifdef  APP-PLUS  -->
+			<van-tabs :active="active" z-index="10000" animated swipeable swipe-threshold="5" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
+				<van-tab :title="tab.name" v-for="(tab, i) in tabs.items" :key="i">
+			<!--  #endif    -->
+					<!-- 轮播图 -->
+					<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
+					<!-- 商品列表 -->
+					<view class="goods-list">
+						<view class="title">好物热卖</view>
+						<view class="product-list">
+							<view class="product" v-for="product in productList" :key="product.goods_id" @tap="toGoods(product)">
+								<image mode="widthFix" :src="product.img"></image>
+								<view class="name">{{product.name}}</view>
+								<view class="info">
+									<view class="price">{{product.price}}</view>
+									<view class="slogan">{{product.slogan}}</view>
 								</view>
 							</view>
 						</view>
-						<view class="uni-tab-bar-loading">
-							{{tab.loadingText}}
-						</view>
-					</scroll-view>
-				</swiper-item>
-			</swiper>
+					</view>
+			<!--  #ifdef  APP-PLUS  -->
+				</van-tab>
+			</van-tabs>
+			<!--  #endif    -->
 			<bottomInfo></bottomInfo>
 			<view class="loading-text">{{loadingText}}</view>
 		</view>
-		
 	</view>
 </template>
 <script>
@@ -90,149 +86,6 @@
 	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
 	import service from '../../common/service.js';
-	const tpl = {
-		data0: {
-			goods_id: 0,
-			img: '../../static/img/common/good1.jpg',
-			name: '老街口-红糖麻花500g/袋',
-			price: '￥58',
-			slogan: '1096人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '../../static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '../../static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '../../static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '../../static/img/common/banner4.jpg'
-				}
-			]
-		},
-		data1: {
-			goods_id: 1,
-			img: '../../static/img/common/good2.jpg',
-			name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-			price: '￥68',
-			slogan: '686人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '../../static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '../../static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '../../static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '../../static/img/common/banner4.jpg'
-				}
-			]
-		},
-		data2: {
-			goods_id: 2,
-			img: '../../static/img/common/good3.jpg',
-			name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-			price: '￥368',
-			slogan: '1234人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '../../static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '../../static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '../../static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '../../static/img/common/banner4.jpg'
-				}
-			]
-		},
-		data3: {
-			goods_id: 3,
-			img: '../../static/img/common/good4.jpg',
-			name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-			price: '￥668',
-			slogan: '678人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '../../static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '../../static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '../../static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '../../static/img/common/banner4.jpg'
-				}
-			]
-		},
-		data4: {
-			goods_id: 4,
-			img: '../../static/img/common/good5.jpg',
-			name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-			price: '￥218',
-			slogan: '52244人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '../../static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '../../static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '../../static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '../../static/img/common/banner4.jpg'
-				}
-			]
-			
-		}
-	};
 	export default {
 		components: {
 			topTabMenu,
@@ -244,12 +97,7 @@
 		},
 		data() {
 			return {
-				scrollLeft: 0,
-				isClickChange: false,
-				tabIndex: 0,
-				newsitems: [],
-				tabBars: [],
-				
+				active: 0,
 				picker: {
 					mode: 'selector',
 					deepLength: 0, // 几级联动
@@ -257,6 +105,13 @@
 					pickerValueArray: [], // picker 数组值
 					pickerText: '全国',
 					themeColor: '#000', // 颜色主题
+				},
+				tabs: {
+					// 选项卡
+					items: ['全部', '推荐', '手机', '电脑', '箱包', '时装时装', '男装', '女装'],
+					productList: [],
+					current: 0,
+					
 				},
 				//轮播
 				swiperList: [{
@@ -338,6 +193,7 @@
 						slogan: '35人付款'
 					}
 				],
+				currentPageindex: 0,
 				headerPosition: "fixed",
 				loadingText: "正在加载..."
 
@@ -384,9 +240,7 @@
 				}
 				service.getGoodTopClass(parms).then(res=>{
 					let data = res.data.data;
-					this.tabBars = data;
-					this.newsitems = this.randomfn();
-					console.log(this.newsitems);
+					this.tabs.items = data;
 				}).catch(err=>{
 					uni.showToast({
 						icon:"none",
@@ -456,92 +310,6 @@
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${e.id}`
 				})
-			},
-			loadMore(e) {
-				setTimeout(() => {
-					this.addData(e);
-				}, 1200);
-			},
-			addData(e) {
-				if (this.newsitems[e].data.length > 30) {
-					this.newsitems[e].loadingText = '没有更多了';
-					return;
-				}
-				for (let i = 1; i <= 10; i++) {
-					this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
-				}
-			},
-			async changeTab(e) {
-				let index = e.target.current;
-				if(this.newsitems[index].data.length === 0){
-					this.addData(index)
-				}
-				if (this.isClickChange) {
-					this.tabIndex = index;
-					this.isClickChange = false;
-					return;
-				}
-				let tabBar = await this.getElSize("tab-bar"),
-					tabBarScrollLeft = tabBar.scrollLeft;
-				let width = 0;
-			
-				for (let i = 0; i < index; i++) {
-					let result = await this.getElSize('tar'+i);
-					width += result.width;
-				}
-				let winWidth = uni.getSystemInfoSync().windowWidth,
-					nowElement = await this.getElSize('tar'+index),
-					nowWidth = nowElement.width;
-				if (width + nowWidth - tabBarScrollLeft > winWidth) {
-					this.scrollLeft = width + nowWidth - winWidth;
-				}
-				if (width < tabBarScrollLeft) {
-					this.scrollLeft = width;
-				}
-				this.isClickChange = false;
-				this.tabIndex = index; //一旦访问data就会出问题
-			},
-			getElSize(id) { //得到元素的size
-				return new Promise((res, rej) => {
-					uni.createSelectorQuery().select("#" + id).fields({
-						size: true,
-						scrollOffset: true
-					}, (data) => {
-						res(data);
-					}).exec();
-				})
-			},
-			async tapTab(e) { //点击tab-bar
-				let tabIndex = e.target.dataset.current;
-				if(this.newsitems[tabIndex].data.length === 0){
-					this.addData(tabIndex)
-				}
-				if (this.tabIndex === tabIndex) {
-					return false;
-				} else {
-					let tabBar = await this.getElSize("tab-bar"),
-						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-					this.scrollLeft = tabBarScrollLeft;
-					this.isClickChange = true;
-					this.tabIndex = tabIndex;
-				}
-			},
-			randomfn() {
-				let ary = [];
-				for (let i = 0, length = this.tabBars.length; i < length; i++) {
-					let aryItem = {
-						loadingText: '加载更多...',
-						data: []
-					};
-					if(i < 1){
-						for (let j = 1; j <= 10; j++) {
-							aryItem.data.push(tpl['data' + Math.floor(Math.random() * 5)]);
-						}
-					}
-					ary.push(aryItem);
-				}
-				console.log(ary);
-				return ary;
 			}
 		},
 		created() {
@@ -559,7 +327,7 @@
 
 	.homePage {
 		width: 100%;
-		height: 100%;
+		height: auto;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -659,44 +427,98 @@
 			width: 100%;
 			position: relative;
 			/* #ifdef H5 */
-			top: 88upx;
+			top: 176upx;
 			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
-			.custom-tabs{
-				height: 80upx;
-				background-color: #fff;
-				z-index: 100;
-				.uni-swiper-tab{
-					line-height: 80upx;
-					height: 80upx;
-					border:none;
-					.swiper-tab-list{
-						width:auto;
-						position: relative;
-						font-size: 28upx;
-						color: #707070;
-						padding: 0 20upx;
+			margin-bottom: 120upx;
+			/*  #ifdef  APP-PLUS  */
+			.custom-class{
+				background-color: #f0f0f0;
+				position: relative;
+				.nav-class{
+					.tab-class{
+						display: flex;
+						align-items: center;
+						justify-content: center;
+					}
+				}
+				.nav-class{
+					z-index: 20000;
+					
+				}
+				
+				.goods-list {
+					background-color: #fff;
+					font-weight: 600;
+				
+					.title {
+						width: 100%;
+						height: 60upx;
+						color: #242424;
+						font-size: 40upx;
+						margin-bottom: 36upx;
+						padding: 0 30upx;
 						box-sizing: border-box;
-						&.active{
-							color: #242424;
-							font-size: 30upx;
-							.bottom-line{
-								width: 20%;
-								height: 6upx;
-								position: absolute;
-								bottom: -16upx;
-								left: 50%;
-								transform: translateX(-50%);
-								background-color: #242424;
+					}			
+					.product-list {
+						width: 100%;
+						display: flex;
+						justify-content: space-between;
+						flex-wrap: wrap;
+						padding: 0 30upx;
+						box-sizing: border-box;
+				
+						.product {
+							width: 47.75%;
+							border-radius: 20upx;
+							background-color: #fff;
+							margin: 0 0 15upx 0;
+				
+							image {
+								width: 100%;
+								height: 246upx;
+								background-color: #f0f0f0;
+							}
+				
+							.name {
+								width: 100%;
+								padding: 10upx 0;
+								display: -webkit-box;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 2;
+								overflow: hidden;
+								font-weight: 400;
+								font-size: 26upx;
+							}
+				
+							.info {
+								display: flex;
+								justify-content: space-between;
+								align-items: center;
+								width: 100%;
+								font-weight: 100;
+				
+								.price {
+									color: #4c9bfa;
+									font-size: 30upx;
+									font-weight: 600;
+								}
+				
+								.slogan {
+									color: #c2c2c2;
+									font-size: 24upx;
+								}
 							}
 						}
+				
 					}
 				}
 			}
-	
+			/*  #endif  */
 			
+			/* #ifdef H5 */
 			.goods-list {
 				background-color: #fff;
 				font-weight: 600;
@@ -763,6 +585,7 @@
 			
 				}
 			}
+			/* #endif */
 		}
 		.loading-text {
 			width: 100%;
