@@ -178,9 +178,10 @@
 		},
 		methods: {
 			init(id){
-				// let id = [id];
+				let ids = [];
+				ids.push(id)
 				uni.showLoading();
-				service.getGoodListById([id]).then(res=>{
+				service.getGoodListById({ids: ids}).then(res=>{
 					console.log(res);
 					uni.hideLoading();
 					let data = res.data.data;

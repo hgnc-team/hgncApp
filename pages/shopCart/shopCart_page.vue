@@ -93,7 +93,7 @@
 <script>
 	var startX = 0;
 	var endX = 0;
-	import checkBox from '../../components/common/custom-checkbox.vue';
+	import service from '../../common/service.js';
 	import {
 		uniIcon,
 		uniNavBar
@@ -102,8 +102,7 @@
 	export default {
 		components: {
 			uniIcon,
-			uniNavBar,
-			checkBox
+			uniNavBar
 		},
 		data() {
 			return {
@@ -219,6 +218,42 @@
 			};
 		},
 		methods: {
+			init(){
+				// 获取购物车商品列表
+				this.getCartList();
+			},
+			getCartList(){
+				uni.showLoading();
+				// let userId = this.$store.state.userId;
+				let userId = "e8b46f10-43c8-11e9-9de7-55194d563065";
+				service.getCartList(userId).then(res=>{
+					uni.hideLoading();
+					const data = res.data.data;
+					console.log(res)
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: 'none',
+						title: err.data.data || err.errMsg,
+					});
+				})
+			},
+			// 获取商品推荐列表
+			getRecommendList(){
+				uni.showLoading();
+				let userId = this.$store.state.userId;
+				service.getCartList(userId).then(res=>{
+					uni.hideLoading();
+					const data = res.data.data;
+					console.log(res)
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: 'none',
+						title: err.data.data || err.errMsg,
+					});
+				})
+			},
 			touchS(e) {
 				startX = e.mp.changedTouches[0].clientX;
 			},
@@ -253,7 +288,6 @@
 					this.rightText = "编辑";
 					// 执行删除逻辑
 				}
-				console.log(this.rightText)
 			},
 			// 单击结算
 			jiesuan() {
@@ -355,6 +389,9 @@
 					this._totalPrice()
 				}
 			}
+		},
+		created() {
+			this.init();
 		}
 	};
 </script>

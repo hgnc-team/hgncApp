@@ -12,7 +12,7 @@
 				<view class="search-box uni-inline-item">
 					<!-- mSearch组件 如果使用原样式，删除组件元素-->
 					<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)"
-					 @confirm="doSearch(false)" v-model="keyword" radius="0"></mSearch>
+					 @confirm="doSearch(false)" v-model="keyword" radius="0" @input="clear"></mSearch>
 					<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
 								
 					<!-- <view class="input-box">
@@ -28,7 +28,7 @@
 				</view>
 			</view>
 			
-			<view class="search-keyword" @touchstart="blur" v-show="!isShowKeywordList">
+			<view class="search-keyword" @touchstart="blur" v-show="!isShowSearchList">
 				<scroll-view class="keyword-box" scroll-y>
 					<view class="keyword-block" v-if="oldKeywordList.length>0">
 						<view class="keyword-list-header">
@@ -59,13 +59,62 @@
 			</view>
 			
 			<!-- 搜索到的商品 -->
-			<view class="goods-wrap">
-				<view class="tabs">
-					
+			<view class="goods-wrap" v-if="isShowSearchList">
+				<view class="tabs filters uni-flex uni-row">
+					<view class="default uni-flex-item flex-center-center uni-center" :class="currentTab=='default'?'active':''" @tap="changeTab('default')"> 
+						默认
+						<view class="bottom-line"></view>
+					</view>
+					<view class="sales uni-flex-item flex-center-center uni-center" :class="currentTab=='sales'?'active':''" @tap="changeTab('sales')">
+						销量
+						<view class="bottom-line"></view>
+					</view>
+					<view class="price uni-flex-item flex-center-center uni-center" :class="currentTab=='price'?'active':''" @tap="changeTab('price')">
+						价格
+						<view class="bottom-line"></view>
+					</view>
 				</view>
 				<view class="content">
-					
+					<view class="hasData" v-if="hasData">
+						<view class="total  flex-center-center uni-center uni-text-small">
+							共计{{totalNum}}个相关产品
+						</view>
+						<view class="product-list common-ma-30">
+							<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
+								<image mode="widthFix" :src="item.imageUrl"></image>
+								<view class="name">{{item.title}}</view>
+								<view class="info">
+									<view class="price">{{item.price}}</view>
+									<view class="slogan">{{item.type}}</view>
+								</view>	
+							</view>
+						</view>
+					</view>
+					<view class="hasNoData"  v-if="!hasData">
+						<view class="notice">
+							<view class="icon"></view>
+							<view>
+								抱歉,未找到{{keyword}}相关产品
+							</view>
+						</view>
+						<view class="place-bar"></view>
+						<!-- 推荐商品列表 -->
+						<view class="Recommend-goods-list" v-if="RecommendGoodsList.length > 0">
+							<view class="title uni-h4">推荐商品</view>
+							<view class="product-list common-ma-30">
+								<view class="product" v-for="(item, index) in RecommendGoodsList" :key="index" @tap="toGoods(item)">		
+									<image mode="widthFix" :src="item.img"></image>
+									<view class="name">{{item.name}}</view>
+									<view class="info">
+										<view class="price">{{item.price}}</view>
+										<view class="slogan">{{item.slogan}}</view>
+									</view>	
+								</view>
+							</view>
+						</view>
+					</view>				
 				</view>
+				
 			</view>
 		</view>
 		
@@ -91,10 +140,70 @@
 				oldKeywordList: [],
 				hotKeywordList: [],
 				goodsList: [],
+				RecommendGoodsList:[{
+						goods_id: 0,
+						img: '../../static/img/common/good1.jpg',
+						name: '老街口-红糖麻花500g/袋',
+						price: '￥58',
+						slogan: '1096人付款'
+					},
+					{
+						goods_id: 1,
+						img: '../../static/img/common/good2.jpg',
+						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
+						price: '￥68',
+						slogan: '686人付款'
+					},
+					{
+						goods_id: 2,
+						img: '../../static/img/common/good3.jpg',
+						name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
+						price: '￥368',
+						slogan: '1234人付款'
+					},
+					{
+						goods_id: 3,
+						img: '../../static/img/common/good4.jpg',
+						name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
+						price: '￥668',
+						slogan: '678人付款'
+					},
+					{
+						goods_id: 4,
+						img: '../../static/img/common/good5.jpg',
+						name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
+						price: '￥218',
+						slogan: '52244人付款'
+					},
+					{
+						goods_id: 5,
+						img: '../../static/img/common/good6.jpg',
+						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
+						price: '￥288',
+						slogan: '232人付款'
+					},
+					{
+						goods_id: 6,
+						img: '../../static/img/common/good7.jpg',
+						name: '进口智利三文鱼400g',
+						price: '￥216',
+						slogan: '3235人付款'
+					},
+					{
+						goods_id: 7,
+						img: '../../static/img/common/good8.jpg',
+						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
+						price: '￥58',
+						slogan: '35人付款'
+					}
+				],
 				forbid: '',
-				isShowKeywordList: false,
+				currentTab: 'default',
+				isShowSearchList: false,
 				isShowIcon: false,
-				page:1
+				hasData: false,
+				totalNum: 0,
+				page:1,
 			}
 		},
 		onLoad() {
@@ -180,6 +289,13 @@
 			hotToggle() {
 				this.forbid = this.forbid ? '' : '_forbid';
 			},
+			clear(keyword){
+				if(!keyword){
+					console.log(123);
+					this.isShowSearchList = false;
+					this.keyword = "";
+				}
+			},
 			//执行搜索
 			doSearch(key) {
 				key = key ? key : this.keyword ? this.keyword : this.defaultKeyword;
@@ -189,14 +305,7 @@
 				this.keyword = key;
 				this.saveKeyword(key); //保存为历史 
 				this.isShowIcon = true;
-				this.getGoodsList(key)
-				//以下是示例跳转淘宝搜索，可自己实现搜索逻辑
-// 				//#ifdef APP-PLUS
-// 				plus.runtime.openURL(encodeURI('taobao://s.taobao.com/search?q=' + key));
-// 				//#endif
-// 				//#ifdef H5
-// 				window.location.href = 'taobao://s.taobao.com/search?q=' + key
-// 				//#endif
+				this.getGoodsList(key);
 			},
 			//保存关键字到历史记录
 			saveKeyword(keyword) {
@@ -230,23 +339,63 @@
 					}
 				});
 			},
+			changeTab(type){
+				if(this.currentTab != type){
+					this.currentTab = type;
+				}
+			},
+			// 查询产品列表
 			getGoodsList(key){
 				const data = {
 					title: key,
 					page: this.page
 				}
-				uni.showLoading();
+				this.isShowSearchList = true;
+				uni.showLoading({
+					title: "加载中..."
+				});
 				service.getGoodListBySearch(data).then(res=>{
-					console.log(res);
 					uni.hideLoading();
 					let data = res.data.data;
-					
+					this.totalNum = data.total;
+					console.log(this.totalNum);
+					if(data.data.length > 0) {
+						this.hasData = true;
+						this.goodsList = data.data;
+					} else {
+						this.hasData = false;
+						// this.getRecommendGoodsList();
+					}
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
 						title:  err.data.data || err.errMsg,
 					})
+				})
+			},
+			// 获取推荐产品列表
+			getRecommendGoodsList(key){
+				const data = {
+					title: key,
+					page: this.page
+				}
+				uni.showLoading();
+				service.getGoodListBySearch(data).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					this.RecommendGoodsList = data.data;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.data.data || err.errMsg,
+					})
+				})
+			},
+			toGoods(item){
+				uni.navigateTo({
+					url: `/pages/home/goods_detail?id=${item.id}`
 				})
 			},
 			goBack(){
@@ -273,16 +422,24 @@
 			z-index: 999;
 		}
 		.search_wrap{
-			margin-top: 0;
+			padding-top: 0;
 			/*  #ifdef  APP-PLUS  */
-			margin-top: var(--status-bar-height);//表示状态栏的高度。
+			padding-top: var(--status-bar-height);//表示状态栏的高度。
 			/*  #endif  */
 			.header-wrap{
+				width: 100%;
 				height:88upx;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				border-bottom: 1px solid #f6f6f6;
+				background-color: #fff;
+				position: fixed;
+				top: 0;
+				/*  #ifdef  APP-PLUS  */
+				top: var(--status-bar-height);
+				/*  #endif  */
+				z-index: 1000;
 				.back {
 					width: 80upx;
 					height: 100%;
@@ -294,6 +451,9 @@
 					padding: 10upx;
 					justify-content: center;
 					box-sizing: border-box;
+					.search .content{
+						background-color: #f0f0f0;
+					}
 				}
 				.cart {
 					width: 0upx;
@@ -353,61 +513,21 @@
 		.search-keyword {
 			width: 100%;
 			background-color: rgb(242, 242, 242);
-		}
-
-		.keyword-list-box {
-			height: calc(100vh - 55px);
-			padding-top: 5px;
-			border-radius: 10px 10px 0 0;
-			background-color: #fff;
+			padding-top: 88upx;
+			/*  #ifdef  APP-PLUS  */
+			padding-top: calc(var(--status-bar-height) + 88upx);
+			/*  #endif  */
 			box-sizing: border-box;
 		}
 
-		.keyword-entry-tap {
-			background-color: #eee;
-		}
-
-		.keyword-entry {
-			width: 94%;
-			height: 40px;
-			margin: 0 3%;
-			font-size: 15px;
-			color: #333;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			border-bottom: solid 1px #e7e7e7;
-		}
-
-		.keyword-entry image {
-			width: 30px;
-			height: 30px;
-		}
-
-		.keyword-entry .keyword-text,
-		.keyword-entry .keyword-img {
-			height: 40px;
-			display: flex;
-			align-items: center;
-		}
-
-		.keyword-entry .keyword-text {
-			width: 90%;
-		}
-
-		.keyword-entry .keyword-img {
-			width: 10%;
-			justify-content: center;
-		}
-
 		.keyword-box {
-			height: calc(100vh - 55px);
-			border-radius: 10px 10px 0 0;
+			height: calc(100vh - 88upx);
+			border-radius: 10upx 10upx 0 0;
 			background-color: #fff;
 		}
 
 		.keyword-box .keyword-block {
-			padding: 5px 0;
+			padding: 5upx 0;
 			box-sizing: border-box;
 		}
 
@@ -453,6 +573,120 @@
 			background-color: rgb(242, 242, 242);
 			color: #6b6b6b;
 			box-sizing: border-box;
+		}
+		.goods-wrap{
+			.tabs{
+				width: 100%;
+				height: 80upx;
+				background-color: #fff;
+				position: fixed;
+				top: 88upx;
+				/*  #ifdef  APP-PLUS  */
+				top: calc(var(--status-bar-height) + 88upx);
+				/*  #endif  */
+				z-index: 1000;
+				border-bottom: 1upx solid #f0f0f0;
+				.uni-flex-item {
+					color:#666;
+					position: relative;
+					.bottom-line{
+						display: none; 
+					}
+				}
+				.active{
+					color:#242424;
+					.bottom-line{
+						display: block;
+						width: 10%;
+						height: 6upx;
+						position: absolute;
+						bottom: 0;
+						left: 50%;
+						transform: translateX(-50%);
+						background-color: #242424;
+					}
+				}
+			}
+			.content{
+				padding-top: 168upx;
+				/*  #ifdef  APP-PLUS  */
+				padding-top: calc(var(--status-bar-height) + 168upx);
+				/*  #endif  */
+				.hasData{
+					.total{
+						height: 50upx;
+						background-color: #f0f0f0;
+						color: #666;
+					}	
+				}
+				.hasNoData{
+					.notice{
+						width: 100%;
+						height: 264upx;
+						text-align: center;
+						color: #999;
+						.icon{
+							width: 100%;
+							height: 196upx;
+						}
+					}
+					.Recommend-goods-list{
+						.title{
+							padding: 20upx 30upx;
+							box-sizing: border-box;
+						}
+					}
+				}
+				.product-list{
+					background-color: #fff;
+					display: flex;
+					justify-content: space-between;
+					flex-wrap: wrap;
+					box-sizing: border-box;			
+					.product {
+						width: 47.75%;
+						// border-radius: 20upx;
+						background-color: #fff;
+						margin: 0 0 15upx 0;
+							
+						image {
+							width: 100%;
+							height: 246upx;
+							background-color: #f0f0f0;
+						}
+							
+						.name {
+							width: 100%;
+							padding: 10upx 0;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 2;
+							overflow: hidden;
+							font-weight: 400;
+							font-size: 26upx;
+						}
+							
+						.info {
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							width: 100%;
+							font-weight: 100;
+							
+							.price {
+								color: #4c9bfa;
+								font-size: 30upx;
+								font-weight: 600;
+							}
+							
+							.slogan {
+								color: #c2c2c2;
+								font-size: 24upx;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 </style>

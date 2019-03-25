@@ -57,7 +57,7 @@
 							<view class="title">好物热卖</view>
 							<!-- 商品列表 -->
 							<view class="product-list">
-								<view class="product" v-for="(newsitem,index2) in tab.data" :key="index2">		
+								<view class="product" v-for="(newsitem,index2) in tab.data" :key="index2" @tap="toGoods(newsitem)">		
 									<image mode="widthFix" :src="newsitem.img"></image>
 									<view class="name">{{newsitem.name}}</view>
 									<view class="info">

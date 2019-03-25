@@ -106,6 +106,12 @@
 		align-items: center;
 		
 	}
+	// 占位条
+	.place-bar{
+		width: 100%;
+		height: 30upx;
+		background-color: #f0f0f0;
+	}
 	.text-color-gray{
 		color: #666 !important;
 	}
