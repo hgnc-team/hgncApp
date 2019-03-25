@@ -38,45 +38,47 @@
 		<!-- 占位 -->
 		<view class="place"></view>
 		<!-- 内容 -->
-		<view class="uni-tab-bar swiper-content">
-			<view class="custom-tabs">
-				<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
-					<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''" :id="'tar'+index"
-					 :data-current="index" @click="tapTab">
-						{{tab.name}}
-						<view class="bottom-line"></view>
-					 </view>
-				</scroll-view>
-			</view>
-			<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
-				<swiper-item v-for="(tab,index1) in newsitems" :key="index1">
-					<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">		
-						<!-- 轮播图 -->
-						<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
-						<view class="goods-list">
-							<view class="title">好物热卖</view>
-							<!-- 商品列表 -->
-							<view class="product-list">
-								<view class="product" v-for="(newsitem,index2) in tab.data" :key="index2" @tap="toGoods(newsitem)">		
-									<image mode="widthFix" :src="newsitem.img"></image>
-									<view class="name">{{newsitem.name}}</view>
-									<view class="info">
-										<view class="price">{{newsitem.price}}</view>
-										<view class="slogan">{{newsitem.slogan}}</view>
-									</view>	
+		<view class="swiper-content">
+			<view class="uni-tab-bar">
+				<view class="custom-tabs">
+					<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
+						<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''" :id="'tar'+index"
+						 :data-current="index" @click="tapTab">
+							{{tab.name}}
+							<view class="bottom-line"></view>
+						 </view>
+					</scroll-view>
+				</view>
+				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
+					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
+						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">		
+							<!-- 轮播图 -->
+							<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
+							<view class="goods-list">
+								<view class="title">好物热卖</view>
+								<!-- 商品列表 -->
+								<view class="product-list">
+									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)">		
+										<image mode="scaleToFill" :src="item.img"></image>
+										<view class="name">{{item.name}}</view>
+										<view class="info">
+											<view class="price">{{item.price}}</view>
+											<view class="slogan">{{item.slogan}}</view>
+										</view>	
+									</view>
 								</view>
 							</view>
-						</view>
-						<view class="uni-tab-bar-loading">
-							{{tab.loadingText}}
-						</view>
-					</scroll-view>
-				</swiper-item>
-			</swiper>
-			<bottomInfo></bottomInfo>
-			<view class="loading-text">{{loadingText}}</view>
+							<bottomInfo></bottomInfo>
+							<view class="uni-tab-bar-loading">
+								{{tab.loadingText}}
+							</view>
+						</scroll-view>
+					</swiper-item>
+				</swiper>
+				<bottomInfo></bottomInfo>
+				<view class="loading-text">{{loadingText}}</view>
+			</view>
 		</view>
-		
 	</view>
 </template>
 <script>
@@ -247,7 +249,7 @@
 				scrollLeft: 0,
 				isClickChange: false,
 				tabIndex: 0,
-				newsitems: [],
+				dataList: [],
 				tabBars: [],
 				
 				picker: {
@@ -362,7 +364,7 @@
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
-			// uni.showToast({title: '触发上拉加载'});
+			uni.showToast({title: '触发上拉加载'});
 			let len = this.productList.length;
 			if (len >= 40) {
 				this.loadingText = "到底了";
@@ -385,8 +387,8 @@
 				service.getGoodTopClass(parms).then(res=>{
 					let data = res.data.data;
 					this.tabBars = data;
-					this.newsitems = this.randomfn();
-					console.log(this.newsitems);
+					this.dataList = this.randomfn();
+					console.log(this.dataList);
 				}).catch(err=>{
 					uni.showToast({
 						icon:"none",
@@ -463,17 +465,17 @@
 				}, 1200);
 			},
 			addData(e) {
-				if (this.newsitems[e].data.length > 30) {
-					this.newsitems[e].loadingText = '没有更多了';
+				if (this.dataList[e].data.length > 30) {
+					this.dataList[e].loadingText = '没有更多了';
 					return;
 				}
 				for (let i = 1; i <= 10; i++) {
-					this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
+					this.dataList[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
 				}
 			},
 			async changeTab(e) {
 				let index = e.target.current;
-				if(this.newsitems[index].data.length === 0){
+				if(this.dataList[index].data.length === 0){
 					this.addData(index)
 				}
 				if (this.isClickChange) {
@@ -513,7 +515,7 @@
 			},
 			async tapTab(e) { //点击tab-bar
 				let tabIndex = e.target.dataset.current;
-				if(this.newsitems[tabIndex].data.length === 0){
+				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
 				if (this.tabIndex === tabIndex) {
@@ -657,6 +659,7 @@
 	
 		.swiper-content {
 			width: 100%;
+			height: 100%;
 			position: relative;
 			/* #ifdef H5 */
 			top: 88upx;
@@ -668,6 +671,13 @@
 				height: 80upx;
 				background-color: #fff;
 				z-index: 100;
+				position: fixed;
+				/* #ifdef H5 */
+				top: 88upx;
+				/* #endif */	
+				/*  #ifdef  APP-PLUS  */
+				top: calc(var(--status-bar-height) + 88upx);
+				/*  #endif  */
 				.uni-swiper-tab{
 					line-height: 80upx;
 					height: 80upx;
@@ -675,13 +685,13 @@
 					.swiper-tab-list{
 						width:auto;
 						position: relative;
-						font-size: 28upx;
+						font-size: 26upx;
 						color: #707070;
 						padding: 0 20upx;
 						box-sizing: border-box;
 						&.active{
 							color: #242424;
-							font-size: 30upx;
+							font-size: 27upx;
 							.bottom-line{
 								width: 20%;
 								height: 6upx;
@@ -695,7 +705,10 @@
 					}
 				}
 			}
-	
+			
+			.swiper-box{
+				height: calc(100% - 120upx);
+			}
 			
 			.goods-list {
 				background-color: #fff;
@@ -726,7 +739,7 @@
 			
 						image {
 							width: 100%;
-							height: 246upx;
+							height: 300upx;
 							background-color: #f0f0f0;
 						}
 			
@@ -763,16 +776,18 @@
 			
 				}
 			}
+			.uni-tab-bar-loading{
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 60upx;
+				color: #979797;
+				font-size: 24upx;
+				background-color: #f0f0f0;
+				padding: 0;
+			}
 		}
-		.loading-text {
-			width: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 60upx;
-			color: #979797;
-			font-size: 24upx;
-			background-color: #f0f0f0;
-		}
+		
 	}
 </style>
