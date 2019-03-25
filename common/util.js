@@ -142,6 +142,25 @@ const switchTab = function(type){
 		})
 	} 
 }
+/**
+  * @method  进入有权限的页面之前判断当前是否登录 
+  **/
+const guardToLogin = function() {
+	return new Promise((reslove, reject)=>{
+		// 获取登录状态
+		const hasLogin = store.state.hasLogin;
+		if(hasLogin) {
+			reslove();
+		} else {
+			// 未登录跳转登录页面
+			uni.navigateTo({
+				url: "/pages/login/login",
+				animationType: "slide-in-bottom"
+			});
+			reject();
+		}
+	})
+}
 
 /**     
   * @method  alert确认框       
@@ -181,6 +200,7 @@ const confirm = function(parms) {
 export default {
 	graceChecker,
 	switchTab,
+	guardToLogin,
 	alert,
 	confirm
 }

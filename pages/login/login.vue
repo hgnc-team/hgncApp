@@ -459,10 +459,13 @@
 					if(index >= 2) {
 						index += 1;
 					}
+					// 触发设置导航
 					this.$store.dispatch(barType);
+					// 切换导航下标
 					this.$store.commit("change_page",index);
 					return;
 				}
+				// 触发设置导航
 				this.$store.dispatch(barType);
 			},
 			// 缓存用户数据

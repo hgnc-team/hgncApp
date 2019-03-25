@@ -176,7 +176,7 @@ const addToCart = function(parms) {
 }
 
 /**     
-  * @method 添加商品至购物车   
+  * @method 删除购物车中的商品  
   * @param {String} userId  用户id 
   * @param {Array | undefined} goodsIds - undefined时，清空用户所有购物车中的商品
   * @return {promise} 返回一个promise对象     

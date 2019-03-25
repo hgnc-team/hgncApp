@@ -54,6 +54,13 @@
 					})
 					return
 				}
+				// 切换底部导航做权限判定，登录后才可进入(会员中心页，购物车，我的)
+				if(index === 2 || index === 3 || index === 4) {
+					this.$guardToLogin().then(()=>{
+						this.$store.commit("change_page",index);
+					})
+					return
+				}
 				this.$store.commit("change_page",index);
 			}
 		},
