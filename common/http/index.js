@@ -49,7 +49,7 @@ export default {
 				response.config = _config
 				if (process.env.NODE_ENV === 'development') {
 					if (statusCode === 200) {
-						console.log("【" + _config.requestId + "】 结果：" + JSON.stringify(response.data))
+						// console.log("【" + _config.requestId + "】 结果：" + JSON.stringify(response.data))
 					}
 				}
 				if (this.interceptor.response) {
@@ -59,7 +59,7 @@ export default {
 					}
 				}
 				// 统一的响应日志记录
-				_reslog(response)
+				// _reslog(response)
 				if (statusCode === 200) { //成功
 					resolve(response);
 				} else {
@@ -75,8 +75,8 @@ export default {
 			}
 			
 			// 统一的请求日志记录
-			_reqlog(_config)
-			console.log(_config);
+			// _reqlog(_config)
+			// console.log(_config);
 			uni.request(_config);
 		});
 	},

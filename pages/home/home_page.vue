@@ -384,12 +384,17 @@
 				let parms = {
 					"classScheme": "cat1"
 				}
+				uni.showLoading({
+					title: "加载中..."
+				})
 				service.getGoodTopClass(parms).then(res=>{
+					uni.hideLoading();
 					let data = res.data.data;
 					this.tabBars = data;
 					this.dataList = this.randomfn();
 					console.log(this.dataList);
 				}).catch(err=>{
+					uni.hideLoading();
 					uni.showToast({
 						icon:"none",
 						title: "获取顶部导航数据失败"
@@ -708,6 +713,8 @@
 			
 			.swiper-box{
 				height: calc(100% - 120upx);
+				padding-top: 88upx;
+				box-sizing: border-box;
 			}
 			
 			.goods-list {
