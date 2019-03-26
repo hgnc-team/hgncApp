@@ -5,7 +5,9 @@
 		<!-- 导航栏 -->
 		<!-- <uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
 		 @click-right="onClickRight" right-icon="redo" title="商品详情"></uni-nav-bar> -->
-
+		
+		<share :shareObj="shareObj" ref="shareChild"></share>
+		
 		<view class="content">
 			<!-- 轮播图 -->
 			<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :height="520"></customSwiper>
@@ -79,13 +81,13 @@
 		<view class="goods-footer uni-flex">
 			<view class="btn cart uni-flex-item">
 				<uni-icon type="star" @click="toCart"></uni-icon>
-				<uni-badge :text="total_num" type="primary"></uni-badge>
+				<uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge>
 			</view>
 			<view class="btn add-to-cart uni-flex-item uni-center" @click="addToCart">
-				<button>加入购物车</button>
+				加入购物车
 			</view>
 			<view class="btn to-buy uni-flex-item uni-center" @click="toBuy">
-				<button>立即购买</button>
+				立即购买
 			</view>
 		</view>
 		
@@ -102,20 +104,37 @@
 	import service from '../../common/service.js';
 	import util from '../../common/util.js';
 	import customSwiper from "../../components/common/custom-swiper.vue";
+	
+	import share from "../../components/common/share.vue";
 	export default {
 		components: {
 			uniIcon,
 			uniBadge,
 			uniNavBar,
-			customSwiper
+			customSwiper,
+			share
 		},
 		data() {
 			return {
-				goodsId:"",
-				title: "",
-				price: 0,
-				detail: "",
-				pointRate: "",
+				// 商品内容
+				goods: {
+					goodsId:"",
+					title: "",
+					price: 0,
+					detail: "",
+					pointRate: "",
+				},
+				// 分享的内容
+				shareObj:{
+					// 分享链接
+					strShareUrl: "",
+					// 分享标题
+					strShareTitle: "",
+					// 内容描述
+					strShareSummary: "",
+					// 分享图标
+					strShareImageUrl: ""
+				},
 				//轮播
 				swiperList: [{
 						sid: 0,
@@ -171,12 +190,23 @@
 			}
 		},
 		onNavigationBarButtonTap(e) {
-			console.log(e)
-			uni.showToast({
-				title: e.index === 0 ? "你点了分享按钮" : "你点了收藏按钮",
-				icon: "none"
-			})
-			
+			if(this.goods.goodsId) {
+				// 定义分享内容
+				this.shareObj = {
+					// 分享链接
+					strShareUrl: "https://uniapp.dcloud.io",
+					// 分享标题
+					strShareTitle: this.goods.title,
+					// 内容描述
+					strShareSummary: this.goods.detail,
+					// 分享图标
+					strShareImageUrl: this.goods.imageUrl
+				}
+				// 调用分享组件里面的分享方法
+				if(e.index === 0) {
+					this.$refs.shareChild.openShareBox();
+				}
+			}
 		},
 		computed:{
 			// 注入vuex的计算方法
@@ -192,11 +222,14 @@
 				service.getGoodListById({ids: ids}).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					this.goodsId = data[0].id;
-					this.title = data[0].title;
-					this.price = data[0].price;
-					this.detail = data[0].detail;
-					this.pointRate = data[0].pointRate;
+					this.goods = {
+						goodsId: data[0].id,
+						title: data[0].title,
+						price: data[0].price,
+						detail: data[0].detail,
+						pointRate: data[0].pointRate,
+					}
+			
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -397,11 +430,16 @@
 			position: fixed;
 			bottom: 0;
 			background-color: #fff;
+			.btn{
+				font-size: 30upx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 			.cart{
 				padding-left: 30upx;
 				box-sizing: border-box;
-				text-align: left;
-				line-height: 100upx;
+				justify-content: start;
 				position: relative;
 				.uni-badge{
 					position: absolute;
@@ -410,27 +448,13 @@
 				}
 			}
 			.add-to-cart{
-				button{
-					background-color: #fff;
-					color: #242424;
-				}
+				background-color: #fff;
+				color: #242424;
 			}
 			.to-buy{
-				button{
-					background-color: #242424;;
-					color: #fff;
-				}
-			}
-			uni-button{
-				width: 100%;
-				height: 100%;
-				border-radius: 0;
-				line-height: 100upx;
-				border: none;
-				&::after{
-					border:none;
-					border-radius: 0;
-				}
+				background-color: #242424;;
+				color: #fff;
+				
 			}
 		}
 	}

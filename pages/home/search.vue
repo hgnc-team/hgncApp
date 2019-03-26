@@ -81,7 +81,7 @@
 						</view>
 						<view class="product-list common-ma-30">
 							<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
-								<image mode="widthFix" :src="item.imageUrl"></image>
+								<image mode="scaleToFill" :src="item.imageUrl"></image>
 								<view class="name">{{item.title}}</view>
 								<view class="info">
 									<view class="price">{{item.price}}</view>
@@ -406,6 +406,8 @@
 </script>
 <style lang="scss">
 	page{
+		width: 100%;
+		height: 100%;
 		background-color: #fff;
 	}
 	.searchPage{
