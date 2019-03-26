@@ -1,5 +1,5 @@
 <template>
-	<view class="custom-swiper">
+	<view class="custom-swiper" :style="getHeight">
 		<view class="swiper-wrap" :class="isDotsInside?'inside-wrap':''">
 			<swiper class="swiper" autoplay="true" circular="true" current="swiperCurrent" @change="changeSwiper">
 				<swiper-item v-for="(swiper, index) in swiperList" :key="index" @tap="toSwiper(swiper)">
@@ -26,6 +26,11 @@
 			isDotsInside: {
 				type: Boolean,
 				default: true
+			},
+			height: {
+				type: Number,
+				default: 396
+				
 			}
 		},
 		data() {
@@ -34,7 +39,9 @@
 			}
 		},
 		computed: {
-		
+			getHeight(){
+				return `height: ${uni.upx2px(this.height)}px`;
+			}
 		},
 		methods: {
 			//点击其中一个 menu
@@ -52,20 +59,21 @@
 	.custom-swiper{
 		.swiper-wrap {
 			width: 100%;
-			height: 396upx;
+			height: 100%;
 			background-color: #fff;
 			position: relative;
-			&.inside-wrap{
-				height: 346upx;
+			&.inside-wrap{	
+				.swiper {
+					height: 100%;				
+				}
 			}
 			.swiper {
 				width: 100%;
-				height: 346upx;
+				height: calc(100% - 50upx);
 				background-color: #f0f0f0;
-		
 				image {
-					width: 100%;
-					height: 346upx;
+					width: 100%;			
+					height: 100%;		
 				}
 			}
 			.dots{
