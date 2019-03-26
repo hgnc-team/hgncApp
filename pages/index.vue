@@ -35,12 +35,10 @@
 			}
 		},
 		onLoad() {
-
+			
 		},
 		methods: {
-			open_loading() {
-				this.$loading()
-			}
+			
 		}
 		
 	}

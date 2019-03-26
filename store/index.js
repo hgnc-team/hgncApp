@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import footer_store from "./modules/footer_store.js"
+import footer_store from "./modules/footer_store.js";
+import shopCart_store from "./modules/shopCart_store.js"
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -23,14 +24,14 @@ const store = new Vuex.Store({
 	},
 	mutations: {
 		// 登录动作
-		login(state, data) {
+		LOGIN(state, data) {
 		    state.userName = data.userName || '新用户';
 			state.userLevel = data.userLevel;
 			state.userId = data.id;
 		    state.hasLogin = true;
 		},
 		// 退出登录
-		logout(state) {  
+		LOGOUT(state) {  
             state.hasLogin = false;   
             state.userName = '';  
 			state.userLevel = 1;  
@@ -40,7 +41,8 @@ const store = new Vuex.Store({
 		
 	},
 	modules:{
-		footer_store
+		footer_store,
+		shopCart_store
 	}
 })
 

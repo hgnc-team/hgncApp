@@ -130,8 +130,8 @@
 			}
 		},
 		methods:{
-			// 将 `this.login()` 映射为 `this.$store.commit('login')`
-			...mapMutations(['login']), 
+			// 注入vuex的两个方法
+			...mapMutations(['LOGIN', 'INIT_GOODS']), 
 			// 初始化第三方登录图标
 			initProvider() {
 			    // const filters = ['weixin', 'qq', 'sinaweibo'];
@@ -246,10 +246,14 @@
 					const data = res.data.data;
 					// 用户角色等级
 					const userLevel = data.role || 0;
+					console.log(data);
+					// 获取购物车数据
+					this.getGoodsData(data.id);
 					// 设置底部导航栏
 					this.setfooterBar(userLevel);
 					// 缓存用户数据
 					this.saveUserInfo(data);
+
 				}).catch((err)=>{
 					 // 请求失败
 					uni.hideLoading();
@@ -449,6 +453,28 @@
 					});
 				}
 			},
+			// 获取购物车数据
+			getGoodsData(userId){
+				if(!userId) {
+					return
+				}
+				service.getCartList(userId).then(res => {
+					console.log(res);
+					const data = res.data.data;
+					console.log("data", data);
+					if(data.data.length > 0) {
+						// 同步购物车数据;
+						this.INIT_GOODS(data.data);
+					}
+				}).catch((err)=>{
+// 					// 请求失败
+// 					uni.showToast({
+// 						icon: 'none',
+// 						title: err.data.data || err.errMsg,
+// 					});
+// 					return;
+				});
+			},
 			// 设置不同的tabbar
 			setfooterBar(userLevel) {
 				// 用户等级大于1的才能看到会员中心
@@ -468,7 +494,7 @@
 			// 缓存用户数据
 			saveUserInfo(data) {
 				// 同步store里面的用户名称，等级
-				this.login(data);
+				this.LOGIN(data);
 				this.goBack();
 			},
 			// 返回登录前一页

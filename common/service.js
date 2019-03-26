@@ -172,7 +172,7 @@ const addToCart = function(parms) {
 		userId: parms.userId,
 		goodsId: parms.goodsId
 	}
-	return vm.$http.post('/v1/api/user/changePwd', data)
+	return vm.$http.post('/v1/api/cart/add', data)
 }
 
 /**     

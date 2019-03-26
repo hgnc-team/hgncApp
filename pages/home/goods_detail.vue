@@ -1,14 +1,14 @@
 <template>
 	<view class="goodsDetailPage">
 		<!-- 状态栏 -->
-		<statusBar></statusBar>
+		<!-- <statusBar></statusBar> -->
 		<!-- 导航栏 -->
-		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
-		 @click-right="onClickRight" right-icon="redo" title="商品详情"></uni-nav-bar>
+		<!-- <uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
+		 @click-right="onClickRight" right-icon="redo" title="商品详情"></uni-nav-bar> -->
 
 		<view class="content">
 			<!-- 轮播图 -->
-			<customSwiper :swiperList="swiperList" @toSwiper="toSwiper"></customSwiper>
+			<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :height="520"></customSwiper>
 			<view class="goods-info">
 				<!-- 商品文字描述 -->
 				<view class="info-item">
@@ -76,42 +76,36 @@
 			</view>
 			<bottomInfo></bottomInfo>
 		</view>
-		<!-- #ifdef H5 -->
 		<view class="goods-footer uni-flex">
-			<view class="cart uni-flex-item uni-center" @click="toCart">
-				<uni-icon type="star"></uni-icon>
+			<view class="btn cart uni-flex-item">
+				<uni-icon type="star" @click="toCart"></uni-icon>
+				<uni-badge :text="total_num" type="primary"></uni-badge>
 			</view>
-			<view class="add-to-cart uni-flex-item uni-center" @click="addToCart">
-				<button type="primary">加入购物车</button>
+			<view class="btn add-to-cart uni-flex-item uni-center" @click="addToCart">
+				<button>加入购物车</button>
 			</view>
-			<view class="to-buy uni-flex-item uni-center" @click="toBuy">
-				<button type="warn">立即购买</button>
+			<view class="btn to-buy uni-flex-item uni-center" @click="toBuy">
+				<button>立即购买</button>
 			</view>
 		</view>
-		<!-- #endif -->
-
-		<!-- #ifdef APP-PLUS -->
-		<van-goods-action>
-			<van-goods-action-icon icon="cart-o" text="购物车" info="6" @click="toCart" />
-			<van-goods-action-button id="cartBtn" text="加入购物车" type="warning" @click="addToCart" />
-			<van-goods-action-button id="buyBtn" text="立即购买" @click="toBuy" />
-		</van-goods-action>
-		<!-- #endif -->
-
+		
 	</view>
 </template>
 
 <script>
 	import {
 		uniIcon,
+		uniBadge,
 		uniNavBar
 	} from '@dcloudio/uni-ui';
+	import { mapMutations, mapGetters } from 'vuex';
 	import service from '../../common/service.js';
 	import util from '../../common/util.js';
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	export default {
 		components: {
 			uniIcon,
+			uniBadge,
 			uniNavBar,
 			customSwiper
 		},
@@ -176,20 +170,33 @@
 				],
 			}
 		},
+		onNavigationBarButtonTap(e) {
+			console.log(e)
+			uni.showToast({
+				title: e.index === 0 ? "你点了分享按钮" : "你点了收藏按钮",
+				icon: "none"
+			})
+			
+		},
+		computed:{
+			// 注入vuex的计算方法
+			...mapGetters(["total_num"])
+		},
 		methods: {
+			// 注入vuex的加入购物车方法
+			...mapMutations(['ADD_GOODS']),
 			init(id){
 				let ids = [];
 				ids.push(id)
 				uni.showLoading();
 				service.getGoodListById({ids: ids}).then(res=>{
-					console.log(res);
 					uni.hideLoading();
 					let data = res.data.data;
-					this.goodsId = data.id;
-					this.title = data.title;
-					this.price = data.price;
-					this.detail = data.detail;
-					this.pointRate = data.pointRate;
+					this.goodsId = data[0].id;
+					this.title = data[0].title;
+					this.price = data[0].price;
+					this.detail = data[0].detail;
+					this.pointRate = data[0].pointRate;
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -220,24 +227,45 @@
 			},
 			// 跳转购物车
 			toCart(){
-				util.switchTab("cart");
+				// 判断是否登录
+				this.$guardToLogin().then(()=>{
+					util.switchTab("shopCart");
+				}).catch(()=>{});
 			},
 			// 加入购物车
 			addToCart(){
-				let data = {
-					userId: this.$store.userId,
-					goodsId: this.goodsId
-				}
-				service.addToCart()
+				// 判断是否登录
+				this.$guardToLogin().then(()=>{
+					let parms = {
+						userId: this.$store.state.userId,
+						goodsId: this.goodsId
+					}
+					service.addToCart(parms).then(res=>{
+						uni.showToast({
+							title:"加入购物车成功"
+						});
+						let data = res.data.data;
+						// 同步vuex数据
+						// this.ADD_GOODS(data);
+					}).catch(err=>{
+						uni.hideLoading();
+						uni.showToast({
+							icon:"none",
+							title: err.data.data || err.errMsg
+						})
+					})
+				}).catch(()=>{});
 			},
 			toBuy(){
-				uni.showToast({
-					title:"立即购买"
-				})
+				// 判断是否登录
+				this.$guardToLogin().then(()=>{
+					uni.showToast({
+						title:"立即购买"
+					})
+				}).catch(()=>{});
 			}
 		},
 		onLoad(e) {
-			console.log(e)
 			this.init(e.id);
 		},
 		
@@ -363,24 +391,46 @@
 			}
 		}
 
-		/* #ifdef H5 */
 		.goods-footer {
 			width: 100%;
 			height: 100upx;
 			position: fixed;
 			bottom: 0;
 			background-color: #fff;
-			button{
+			.cart{
+				padding-left: 30upx;
+				box-sizing: border-box;
+				text-align: left;
+				line-height: 100upx;
+				position: relative;
+				.uni-badge{
+					position: absolute;
+					top: 16upx;
+					left: 60upx;
+				}
+			}
+			.add-to-cart{
+				button{
+					background-color: #fff;
+					color: #242424;
+				}
+			}
+			.to-buy{
+				button{
+					background-color: #242424;;
+					color: #fff;
+				}
+			}
+			uni-button{
 				width: 100%;
 				height: 100%;
 				border-radius: 0;
-			}
-		}
-		/* #endif */
-		
-		.custom-class{
-			#cartBtn{
-				background-color: #4c9bfa !important;
+				line-height: 100upx;
+				border: none;
+				&::after{
+					border:none;
+					border-radius: 0;
+				}
 			}
 		}
 	}
