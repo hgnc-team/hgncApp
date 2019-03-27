@@ -40,12 +40,12 @@ const login = function(userInfo) {
   * @param {String} authCode  验证码
   * @return {promise} 返回一个promise对象     
   **/
-const register = function(parms) {
+const register = function(params) {
 	let data = {
-		phoneNum: parms.phone,
-		pwd: parms.password,
-		inviteCode: parms.inviteCode,
-		authCode: parms.code,
+		phoneNum: params.phone,
+		pwd: params.password,
+		inviteCode: params.inviteCode,
+		authCode: params.code,
 	}
 	return vm.$http.post('/v1/api/user/signUp', data)
 }
@@ -55,11 +55,11 @@ const register = function(parms) {
   * @param {String} phoneNum  手机号
   * @return {promise} 返回一个promise对象    
   **/
-const getSms = function(parms) {
+const getSms = function(params) {
 	let data = {
-		phoneNum: parms.phone,
-		pwd: parms.password,
-		authCode: parms.authCode,
+		phoneNum: params.phone,
+		pwd: params.password,
+		authCode: params.authCode,
 	}
 	return vm.$http.post('/v1/api/sms/sendSms', data)
 }
@@ -71,11 +71,11 @@ const getSms = function(parms) {
   * @param {String} authCode  验证码
   * @return {promise} 返回一个promise对象     
   **/
-const reSetPwd = function(parms) {
+const reSetPwd = function(params) {
 	let data = {
-		phoneNum: parms.phone,
-		pwd: parms.password,
-		authCode: parms.code,
+		phoneNum: params.phone,
+		pwd: params.password,
+		authCode: params.code,
 	}
 	return vm.$http.post('/v1/api/user/changePwd', data)
 }
@@ -85,9 +85,9 @@ const reSetPwd = function(parms) {
   * @param {String} classScheme   cat1  
   * @return {promise} 返回一个promise对象     
   **/
-const getGoodTopClass = function(parms) {
+const getGoodTopClass = function(params) {
 	let data = {
-		classScheme: parms.classScheme,
+		classScheme: params.classScheme,
 	}
 	return vm.$http.post('v1/api/goods/topClass', data)
 }
@@ -97,9 +97,9 @@ const getGoodTopClass = function(parms) {
   * @param {Array} topClass   ["0","1"]  
   * @return {promise} 返回一个promise对象     
   **/
-const getGoodSecondClass = function(parms) {
+const getGoodSecondClass = function(params) {
 	let data = {
-		topClass: parms.topClass,
+		topClass: params.topClass,
 	}
 	return vm.$http.post('v1/api/goods/secondClass', data)
 }
@@ -112,10 +112,10 @@ const getGoodSecondClass = function(parms) {
   * @param {Number} pageSize   一页商品数   默认为10条
   * @return {promise} 返回一个promise对象     
   **/
-const getGoodListByType = function(parms) {
+const getGoodListByType = function(params) {
 	let data = {
-		type: parms.type,
-		page: parms.page,
+		type: params.type,
+		page: params.page,
 		pageSize: 10
 	}
 	return vm.$http.post('v1/api/goods/goodsPageList', data)
@@ -126,9 +126,9 @@ const getGoodListByType = function(parms) {
   * @param {Array} ids   商品ID数组   
   * @return {promise} 返回一个promise对象     
   **/
-const getGoodListById = function(parms) {
+const getGoodListById = function(params) {
 	let data = {
-		ids: parms.ids,
+		ids: params.ids,
 	}
 	return vm.$http.post('v1/api/goods/goodsList', data)
 }
@@ -139,10 +139,10 @@ const getGoodListById = function(parms) {
   * @param {Number} page   列表页数   1
   * @param {Number} pageSize   一页商品数   默认为2条 
   **/
-const getGoodListBySearch = function(parms) {
+const getGoodListBySearch = function(params) {
 	let data = {
-		title: parms.title,
-		page: parms.page,
+		title: params.title,
+		page: params.page,
 		pageSize: 10,
 	}
 	return vm.$http.post('v1/api/goods/search', data)
@@ -167,10 +167,10 @@ const getCartList = function(userId) {
   * @param {String} userId  用户id  
   * @return {promise} 返回一个promise对象     
   **/
-const addToCart = function(parms) {
+const addToCart = function(params) {
 	let data = {
-		userId: parms.userId,
-		goodsId: parms.goodsId
+		userId: params.userId,
+		goodsId: params.goodsId
 	}
 	return vm.$http.post('/v1/api/cart/add', data)
 }
@@ -181,12 +181,91 @@ const addToCart = function(parms) {
   * @param {Array | undefined} goodsIds - undefined时，清空用户所有购物车中的商品
   * @return {promise} 返回一个promise对象     
   **/
-const deleteFromCart = function(parms) {
+const deleteFromCart = function(params) {
 	let data = {
-		userId: parms.userId,
-		goodsIds: parms.ids
+		userId: params.userId,
+		goodsIds: params.ids
 	}
 	return vm.$http.post('/v1/api/cart/delete', data)
+}
+
+/**     
+  * @method 查询地址列表  
+  * @param {String} userId  用户id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const getAddressList = function(params) {
+	let data = {
+		userId: params.userId
+	}
+	return vm.$http.post('/v1/api/address/list', data)
+}
+
+/**     
+  * @method 编辑地址信息  
+  * @param {String} id  地址行id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const editAddress = function(params) {
+	let data = {
+		"id": params.id,
+		"params": {
+			province: params.province,
+			city: params.city,
+			region:  params.region,
+			street:  params.street,
+			detail:  params.detail,
+			receiver:  params.receiver,
+			phone:  params.phone,
+			default:  params.default || false,
+			tag: params.tag,
+		}
+	}
+	return vm.$http.post('/v1/api/address/edit', data)
+}
+
+/**     
+  * @method 新增地址  
+  * @param {String} province  省份 
+  * @param {String} city  市
+  * @param {String} region  区
+  * @param {String} street  街道
+  * @param {String} detail  地址详情
+  * @param {String} receiver  收件人
+  * @param {String} phone  手机号
+  * @param {Boolean} default  是否默认
+  * @param {String} tag  标签   家|公司
+  * @return {promise} 返回一个promise对象     
+  **/
+const addAddress = function(params) {
+	let data = {
+		"userId": params.userId,
+		"params": {
+			province: params.province,
+			city: params.city,
+			region:  params.region,
+			street:  params.street,
+			detail:  params.detail,
+			receiver:  params.receiver,
+			phone:  params.phone,
+			default:  params.default || false,
+			tag: params.tag,
+		}
+	
+	}
+	return vm.$http.post('/v1/api/address/add', data)
+}
+
+/**     
+  * @method 删除用户名下地址信息  
+  * @param {String} userId  用户id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const deteteAddress = function(params) {
+	let data = {
+		userId: params.userId
+	}
+	return vm.$http.post('/v1/api/address/del', data)
 }
 
 const LOGIN_MODULE = {
@@ -215,7 +294,10 @@ const SHOPCART_MODULE = {
 	deleteFromCart
 }
 const MINE_MODULE = {
-	
+	getAddressList,
+	editAddress,
+	addAddress,
+	deteteAddress
 }
 export default {
 	...LOGIN_MODULE,

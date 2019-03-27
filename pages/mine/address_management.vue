@@ -13,12 +13,14 @@
 					</view>
 					<view class="btn-group">
 						<view class="set-default uni-flex">
-							<view class="checkbox uni-flex-item">
-								<radio :value="item.default+''" :checked="index === current"></radio>
-							</view>
-							<text class="uni-text common-pl-20">
-								设为默认
-							</text>
+							<label class="uni-flex">
+								<view class="checkbox uni-flex-item">
+									<radio :value="item.default+''" :checked="index === current"></radio>
+								</view>
+								<text class="uni-text common-pl-20">
+									设为默认
+								</text>
+							</label>
 						</view>
 						<view class="btn-right uni-flex">
 							<view class="edit flex-center-center common-mr-20" @tap="edit(item)">
@@ -51,6 +53,7 @@
 	import {
 		uniIcon
 	} from '@dcloudio/uni-ui';
+	import service from '../../common/service.js';
 	export default{
 		components: {
 			uniIcon
@@ -81,6 +84,27 @@
 			}
 		},
 		methods:{
+			init(){
+				let params = {
+					// userId: this.$store.state.usrId,
+					userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603"
+				}
+				// 获取用户收获地址列表
+				uni.showLoading();
+				service.getAddressList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					console.log(res);
+							
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.data.data || err.errMsg,
+					})
+				})
+			},
 			radioChange(evt) {
 				console.log(evt)
 				for (let i = 0; i < this.addressList.length; i++) {
@@ -104,6 +128,9 @@
 					url:"address_edit?flag=0"
 				})
 			}
+		},
+		onLoad() {
+			this.init()
 		}
 	}
 </script>

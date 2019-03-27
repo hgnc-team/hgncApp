@@ -217,10 +217,9 @@
 					}
 				];
 				// 校验数据
-				let that = this;
 				let isUserInvalid = false;
-				_.forEach(checkList, function(item){
-					const isValid = that.isValidFn(item.name, item.rules, "loginData");
+				_.forEach(checkList, (item) => {
+					const isValid = this.isValidFn(item.name, item.rules, "loginData");
 					if (!isValid) {
 					    uni.showToast({
 					        icon: 'none',
