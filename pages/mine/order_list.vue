@@ -1,21 +1,41 @@
 <template>
 	<view class="orderListPage">
-		<!-- 状态栏 -->
-		<statusBar></statusBar>
-		<!-- 导航栏 -->
-		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
-		title="订单列表"></uni-nav-bar>
-		<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs"></topTabMenu>
+		<view class="tabs">
+			<uni-segmented-control :current="tabs.current" :values="tabs.items" v-on:clickItem="changeTabs" :styleType="tabs.styleType" :activeColor="tabs.activeColor"></uni-segmented-control>
+		</view>
 		<!-- 列表内容 -->
 		<view class="content">
-			<view class="order-item" v-for="(item, index) in orderList" :key="index">
-				<view class="title">
-					<view class="uni-h5">
+			<view class="order-item" v-for="(item, index) in orderList" :key="index" >
+				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
+					<view class="title uni-h5 uni-flex-item">
 						{{item.title}}
 					</view>
-					<view class="tags">
-						<uni-tag type="success" :text="item.status" size="small" inverted="true" mark="true" circle="true"></uni-tag>
+					<view class="status uni-inline-item">
+						{{item.status}}
 					</view>
+				</view>
+				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
+					<view class="image uni-inline-item" >
+						<image :src="item.src" mode="aspectFit"></image>
+					</view>
+					<view class="info uni-flex-item">
+						<view class="name uni-h5">
+							{{item.name}}
+						</view>
+						<view class="code uni-text-small text-color-gray uni-column uni-flex">
+							<text>订单编号:{{item.orderNum}}</text>
+							<text>订单时间:{{item.orderTime}}</text>
+						</view>
+						<view class="address  uni-text-small text-color-gray">
+							送货地址：{{item.address}}
+						</view>
+					</view>
+				</view>
+				<view class="total" style="text-align: right;">
+					合计:{{item.price}}
+				</view>
+				<view class="btn" style="text-align: right;" @tap="toGoodsDetail(item.id)">
+					<button type="primary" size="mini">再来一单</button>
 				</view>
 			</view>
 		</view>
@@ -26,30 +46,30 @@
 	import {
 		uniTag,
 		uniIcon,
-		uniNavBar
+		uniNavBar,
+		uniSegmentedControl
 	} from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
-	import topTabMenu from "../../components/common/topTabMenu.vue";
 	export default {
 		components: {
 			uniTag,
-			uniIcon,
-			uniNavBar,
-			topTabMenu
+			uniSegmentedControl		
 		},
 		data() {
 			return {	
 				tabs: {
 					// 选项卡
 					items: ['全部', '待付款', '待发货', '待收货', '交易成功'],
-					current: 0
+					current: 0,
+					styleType: "line",
+					activeColor: '#007aff'
 				},
 				orderList: [{
 					name: "大藏小玩",
 					title: "放送的是多少",
 					id: 1,
 					status: "已完成",
-					url: '../../static/img/common/logo.png',
+					url: '/static/img/common/logo.png',
 					orderNum: "201856464646644",
 					orderTime: "2018-12-04 12.15",
 					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
@@ -59,7 +79,7 @@
 					title: "放送的是多少",
 					id: 1,
 					status: "已完成",
-					url: '../../static/img/common/logo.png',
+					url: '/static/img/common/logo.png',
 					orderNum: "201856464646644",
 					orderTime: "2018-12-04 12.15",
 					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
@@ -69,7 +89,7 @@
 					title: "放送的是多少",
 					id: 1,
 					status: "已完成",
-					url: '../../static/img/common/logo.png',
+					url: '/static/img/common/logo.png',
 					orderNum: "201856464646644",
 					orderTime: "2018-12-04 12.15",
 					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
@@ -79,7 +99,7 @@
 					title: "放送的是多少",
 					id: 1,
 					status: "已完成",
-					url: '../../static/img/common/logo.png',
+					url: '/static/img/common/logo.png',
 					orderNum: "201856464646644",
 					orderTime: "2018-12-04 12.15",
 					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
@@ -90,22 +110,6 @@
 		methods: {
 			initData(id){
 				service.getGoodsDetail().then();
-			},
-			/**  
-			 * 左侧按钮点击事件  
-			 */
-			onClickLeft() {
-				uni.navigateBack({
-	
-				})
-			},
-			/**  
-			 * 右侧按钮点击事件  
-			 */
-			onClickRight() {
-				uni.showToast({
-					title: "分享"
-				})
 			},		
 			// 切换选项卡
 			changeTabs(index) {
@@ -113,6 +117,19 @@
 					this.tabs.current = index;
 				}
 			},
+			// 订单详情
+			toOrderDetail(){
+				uni.navigateTo({
+					url: "/pages/mine/order_detail"
+				})
+			},
+			// 商品详情
+			toGoodsDetail(){
+				uni.navigateTo({
+					url: "/pages/home/goods_detail"
+				})
+			}
+			
 		},
 		onLoad(e) {
 			console.log(e)
@@ -125,16 +142,57 @@
 
 <style lang="scss">
 	.orderListPage{
-		.uni-navbar__header{
-			height: 120upx;
+		.tabs{
+			width: 100%;
+			height: 88upx;
+			position: fixed;
+			/* #ifdef H5 */
+			top: 88upx;
+			/* #endif */	
+			/*  #ifdef  APP-PLUS  */
+			top: calc(var(--status-bar-height) + 88upx);
+			/* #endif */
+			z-index: 1000;
+			background-color: #fff;
+			.segmented-control{
+				width: 100%;
+				height: 100%;
+			}
 		}
 		.content{
+			/* #ifdef H5 */
+			padding-top: 88upx;
+			/* #endif */	
+			/*  #ifdef  APP-PLUS  */
+			padding-top: calc(var(--status-bar-height) + 88upx); 
+			/* #endif */	
 			.order-item{
 				width: 100%;
-				height: 300upx;
 				border: 1px solid #eee;
-				.title{
-					height: 100upx;
+				padding: 0 30upx;
+				box-sizing: border-box;
+				.title-wrap{
+					width: 100%;
+					height: 88upx;
+					border-bottom: 1upx solid #f0f0f0;		
+					.title{
+						line-height: 88upx;
+					}
+					.status{
+						width: 100upx;
+					}
+				}
+				.order-info{
+					.image{
+						width: 130upx;
+						height: 130upx;
+						margin-right: 20upx;
+						
+						image{
+							width: 100%;
+							height: 100%;
+						}
+					}
 				}
 			}
 		}

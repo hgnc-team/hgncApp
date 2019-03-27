@@ -229,10 +229,7 @@
 		},{
 			"path": "order_list",
 			"style": {
-				"navigationBarTitleText": "订单列表",
-				"app-plus": {
-					"titleNView": false
-				}
+				"navigationBarTitleText": "我的订单"
 			}
 		},{
 			"path": "order_detail",
