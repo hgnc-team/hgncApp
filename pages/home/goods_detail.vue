@@ -79,7 +79,7 @@
 			<bottomInfo></bottomInfo>
 		</view>
 		<view class="goods-footer uni-flex">
-			<view class="btn cart uni-flex-item">
+			<view class="cart uni-flex-item">
 				<uni-icon type="star" @click="toCart"></uni-icon>
 				<uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge>
 			</view>
@@ -273,7 +273,9 @@
 						userId: this.$store.state.userId,
 						goodsId: this.goodsId
 					}
+					uni.showLoading()
 					service.addToCart(parms).then(res=>{
+						uni.hideLoading();
 						uni.showToast({
 							title:"加入购物车成功"
 						});
@@ -292,9 +294,10 @@
 			toBuy(){
 				// 判断是否登录
 				this.$guardToLogin().then(()=>{
-					uni.showToast({
-						title:"立即购买"
-					})
+					// 创建订单；
+					uni.navigateTo({
+						url: '/pages/shopCart/pay'
+					});
 				}).catch(()=>{});
 			}
 		},
@@ -439,7 +442,9 @@
 			.cart{
 				padding-left: 30upx;
 				box-sizing: border-box;
-				justify-content: start;
+				display: flex;
+				align-items: center;
+				justify-content: start !important;
 				position: relative;
 				.uni-badge{
 					position: absolute;

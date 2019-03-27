@@ -31,8 +31,8 @@
 				</view>
 				<view class="input-item has-label-right uni-flex">
 					<input type="password" v-model="loginData.password" class="input-left uni-inline-item" placeholder="请输入密码"  data-val="password"/>
-					<view class="label-right uni-inline-item" style="border:none;">
-						<navigator url="pwd">忘记密码？</navigator>
+					<view class="label-right uni-inline-item" style="border:none;" @tap="toForgetPassword">
+						忘记密码？
 					</view>
 				</view>
 			</view>
@@ -256,6 +256,7 @@
 
 				}).catch((err)=>{
 					 // 请求失败
+					 console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
@@ -475,11 +476,16 @@
 // 					return;
 				});
 			},
+			toForgetPassword(){
+				uni.navigateTo({
+					url: "/pages/login/pwd"
+				})
+			},
 			// 设置不同的tabbar
 			setfooterBar(userLevel) {
 				// 用户等级大于1的才能看到会员中心
 				let barType =  userLevel >= 1 ? "menu_5" : "menu_4";
-				let index = this.targetPageIndex || this.$store.state.footer_store.now_page_index;
+				let index =  this.targetPageIndex || this.$store.state.footer_store.now_page_index;
 				if(userLevel >= 1) {
 					// 由于插入"会员中心",占据下边为2的位置,所以原本下标为2以后的都要往后挪一位;
 					if(index >= 2) {
@@ -510,8 +516,7 @@
 			// 获取路由参数
 			this.loginData.phone = option.phone || "";
 			this.loginData.password = option.password || "";
-			this.targetPageIndex = option.targetPageIndex || ";"
-			
+			this.targetPageIndex = option.targetPageIndex != 'undefined' ? option.targetPageIndex : 0;		
 		}
 	}
 </script>
