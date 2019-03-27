@@ -116,35 +116,35 @@
 						</view>
 					</view>
 				</view>	
-				<view class="pay-type-item uni-flex">
+				<view class="pay-type-item uni-flex" :class="!isJfPayAvailable?'disabled':''">
 					<view class="title uni-flex uni-flex-item">
 						<view class="icon uni-inline-item">
 							<uni-icon type="info" color="blue"></uni-icon>
 						</view>
 						<view class="name uni-inline-item">
-							积分支付（余额364）
+							积分支付（余额{{jBalance}}）
 						</view>
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
-						<text class="uni-inline-item red">余额不足</text>
+						<text class="uni-inline-item red" v-if="!isJfPayAvailable">余额不足</text>
 						<view class="checkbox uni-inline-item">
-							<radio value="jf" :checked="payType === 'jf'" ></radio>
+							<radio value="jf" :checked="payType === 'jf'" :disabled="!isJfPayAvailable"></radio>
 						</view>
 					</view>
 				</view>	
-				<view class="pay-type-item uni-flex">
+				<view class="pay-type-item uni-flex" :class="!isMbPayAvailable?'disabled':''">
 					<view class="title uni-flex uni-flex-item">
 						<view class="icon uni-inline-item">
 							<uni-icon type="info" color="blue"></uni-icon>
 						</view>
 						<view class="name uni-inline-item">
-							M币支付（余额664）
+							M币支付（余额{{mBalance}}）
 						</view>
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
-						<text class="uni-inline-item red">余额不足</text>
+						<text class="uni-inline-item red" v-if="!isMbPayAvailable">余额不足</text>
 						<view class="checkbox uni-inline-item">
-							<radio value="mb" :checked="payType === 'mb'" ></radio>
+							<radio value="mb" :checked="payType === 'mb'"  :disabled="!isMbPayAvailable"></radio>
 						</view>
 					</view>
 				</view>	
@@ -154,7 +154,7 @@
 		<view class="footer uni-flex">
 			<view class="total uni-flex-item flex-center-center">
 				<text>共计：</text>
-				<text class="text-price">699M币</text>
+				<text class="text-price">{{total}}M币</text>
 			</view>
 			<view class="buy  uni-flex-item flex-center-center" @tap="toPay">
 				去付款
@@ -214,10 +214,30 @@
 					// 滚动条
 					scrollLeft: 0,
 				}],
-				payType: "zfb"
+				// 支付方式
+				payType: "zfb",
+				// 积分余额
+				jBalance: 0,
+				// m币余额
+				mBalance: 0,
+				// 总价
+				total:0,
 			}
 		},
+		computed: {
+			isJfPayAvailable() {
+				return this.jBalance >= this.total; 
+			},
+			isMbPayAvailable() {
+				return this.mBalance >= this.total; 
+			},
+		},
 		methods: {
+			init(){
+				this.jBalance = 450;
+				this.mBalance = 650;
+				this.total = 505;
+			},
 			// 去地址管理页面
 			toAddress(){
 				uni.navigateTo({
@@ -339,6 +359,9 @@
 				})
 			}
 		},
+		onLoad() {
+			this.init();
+		}
 	}
 </script>
 
@@ -452,7 +475,12 @@
 					margin-left: 20upx;
 				}
 				.red{
-					color: red;
+					color: #ff5011;
+				}
+				&.disabled{
+					.name{
+						color:#bbb;
+					}
 				}
 			}
 		}
