@@ -245,9 +245,9 @@
 				"navigationBarTitleText": "账号信息"
 			}
 		},{
-			"path": "secondary_password",
+			"path": "gesture_lock",
 			"style": {
-				"navigationBarTitleText": "密码管理"
+				"navigationBarTitleText": "二级密码管理"
 			}
 		},{
 			"path": "change_telphone",

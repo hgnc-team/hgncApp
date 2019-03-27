@@ -16,6 +16,8 @@ const store = new Vuex.Store({
 		userLevel: 1,
 		// 用户id
 		userId: "",
+		// 是否校验用户密码
+		isCheckPassword: false,
 		// 全局的自定义标题栏的样式
 		titleNView: Object.freeze({
 			bg: '#242424',
@@ -35,7 +37,11 @@ const store = new Vuex.Store({
             state.hasLogin = false;   
             state.userName = '';  
 			state.userLevel = 1;  
-        }  
+        },
+		// 设置密码校验状态
+		SET_PASSWORD_CHECKSTATUS(state, status) {
+			state.isCheckPassword = status;
+		}
 	},
 	actions: {
 		

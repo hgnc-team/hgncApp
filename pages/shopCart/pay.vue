@@ -250,15 +250,16 @@
 					uni.showToast({
 						title: "积分支付"
 					})
-					
+					this.jfPay();
 				} else {
 					// 支付宝支付
 					uni.showToast({
 						title: "Mb支付宝支付"
 					})
+					this.mbPay();
 				}
 				
-				this.toResult();
+				// this.toResult();
 			},
 			// 支付宝支付
 			alipay(){
@@ -301,16 +302,34 @@
 			},
 			// 积分支付
 			jfPay(){
-				
+				// 是否检验二级密码
+				if(this.$store.state.isCheckPassword) {
+					// 调用支付流程
+					
+					
+					this.toResult();
+				} else {
+					// 
+					this.toSecond();
+				}
 			},
 			// M币支付
 			mbPay(){
-				
+				// 是否检验二级密码
+				if(this.$store.state.isCheckPassword) {
+					// 调用支付流程
+					
+					
+					this.toResult();
+				} else {
+					// 
+					this.toSecond();
+				}
 			},
 			// 去二级密码页面
 			toSecond(){
 				uni.navigateTo({
-					url: "/pages/shopCart/order_result"
+					url: "/pages/mine/gesture_lock?mode=check"
 				})
 			},
 			// 支付成功
