@@ -106,6 +106,9 @@
 		align-items: center;
 		
 	}
+	.flex-right{
+		justify-content: flex-end;
+	}
 	// 占位条
 	.place-bar{
 		width: 100%;
@@ -120,12 +123,15 @@
 	}
 	.common-pa-30{
 		padding: 30upx;
+		box-sizing: border-box;
 	}
 	.common-pl-20{
 		padding-left: 20upx;
+		box-sizing: border-box;
 	}
 	.common-pr-20{
 		padding-right: 20upx;
+		box-sizing: border-box;
 	}
 	.common-ma-30{
 		margin: 30upx;

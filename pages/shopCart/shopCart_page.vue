@@ -293,10 +293,7 @@
 			jiesuan() {
 				console.log('跳转到支付详情页面');
 				uni.navigateTo({
-					url: '/pages/my/zhifu',
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
+					url: '/pages/shopCart/pay'
 				});
 			},
 			// 点击取消选中商品
@@ -364,7 +361,7 @@
 			// 去商品详情页
 			toDetail(id){
 				uni.navigateTo({
-					url: `home/goods_detail?id=${id}`
+					url: `/pages/home/goods_detail?id=${id}`
 				})
 			}
 			
@@ -380,6 +377,9 @@
 			minHeight() {
 				var systemInfo = uni.getSystemInfoSync();
 				return `min-height:${systemInfo.windowHeight}px`;
+			},
+			goodsList(){
+				return this.$store.state.shopCart_store.goodsList;
 			}
 		},
 		watch: { //深度监听所有数据，每次改变重新计算总价和总数
