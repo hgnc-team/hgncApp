@@ -120,10 +120,7 @@
 					status: true,
 					codeTime: 60
 				},
-				providerList: [{
-					value: "weixin",
-					image: "../../static/img/login/icon_login_weixin@2x.png"
-				}],
+				providerList: [],
 				hasProvider: true,
 				positionTop: 0,
 				targetPageIndex: 0
@@ -144,7 +141,7 @@
 			                    if (~filters.indexOf(res.provider[i])) {
 			                        this.providerList.push({
 			                            value: res.provider[i],
-			                            image: '../../static/img/login/' + `icon_login_${res.provider[i]}@2x` + '.png'
+			                            image: '/static/img/login/' + `icon_login_${res.provider[i]}@2x` + '.png'
 			                        });
 			                    }
 			                }
