@@ -1,8 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 import footer_store from "./modules/footer_store.js";
-import shopCart_store from "./modules/shopCart_store.js"
-Vue.use(Vuex)
+import shopCart_store from "./modules/shopCart_store.js";
+import address_store from "./modules/address_store.js";
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
 	state: {
@@ -48,7 +49,8 @@ const store = new Vuex.Store({
 	},
 	modules:{
 		footer_store,
-		shopCart_store
+		shopCart_store,
+		address_store
 	}
 })
 

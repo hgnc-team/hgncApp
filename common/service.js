@@ -258,12 +258,12 @@ const addAddress = function(params) {
 
 /**     
   * @method 删除用户名下地址信息  
-  * @param {String} userId  用户id 
+  * @param {String} id  地址id 
   * @return {promise} 返回一个promise对象     
   **/
-const deteteAddress = function(params) {
+const deleteAddress = function(params) {
 	let data = {
-		userId: params.userId
+		id: params.id
 	}
 	return vm.$http.post('/v1/api/address/del', data)
 }
@@ -297,7 +297,7 @@ const MINE_MODULE = {
 	getAddressList,
 	editAddress,
 	addAddress,
-	deteteAddress
+	deleteAddress
 }
 export default {
 	...LOGIN_MODULE,

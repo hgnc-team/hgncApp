@@ -1,21 +1,24 @@
 <template>
 	<view class="addressManagementPage">
-		<view class="address-list">
+		<view class="address-none" v-if="getAddressList.length == 0">
+			暂无收货地址
+		</view>
+		<view class="address-list" v-if="getAddressList.length > 0">
 			<radio-group @change="radioChange">
-				<view class="address-item" v-for="(item, index) in addressList" :key="index">
+				<view class="address-item" v-for="(item, index) in getAddressList" :key="index">
 					<view class="info">
 						<view class="uni-bold uni-h5">
-							{{item.name}} &nbsp;&nbsp;{{item.telPhone}}
+							{{item.receiver}} &nbsp;&nbsp;{{item.phone}}
 						</view>
 						<view class="uni-text-gray uni-text-small">
-							{{item.address}}
+							{{item.province}} &nbsp;{{item.city}} &nbsp;{{item.region}} &nbsp;{{item.detail}}
 						</view>
 					</view>
 					<view class="btn-group">
 						<view class="set-default uni-flex">
 							<label class="uni-flex">
 								<view class="checkbox uni-flex-item">
-									<radio :value="item.default+''" :checked="index === current"></radio>
+									<radio :value="item.id" :checked="item.default === 1"></radio>
 								</view>
 								<text class="uni-text common-pl-20">
 									设为默认
@@ -23,13 +26,13 @@
 							</label>
 						</view>
 						<view class="btn-right uni-flex">
-							<view class="edit flex-center-center common-mr-20" @tap="edit(item)">
+							<view class="edit flex-center-center common-mr-20" @tap="editAddress(item)">
 								<view class="icon">
 									<uni-icon type="compose" size="26"></uni-icon>
 								</view>
 								<text class="uni-text">编辑</text>
 							</view>
-							<view class="delete flex-center-center" @tap="deleteAddress(item)">
+							<view class="delete flex-center-center" @tap="deleteAddress(item.id)">
 								<view class="icon">
 									<uni-icon type="trash" size="26"></uni-icon>
 								</view>
@@ -53,6 +56,8 @@
 	import {
 		uniIcon
 	} from '@dcloudio/uni-ui';
+	import _ from "lodash";
+	import { mapMutations, mapGetters, mapActions } from 'vuex';
 	import service from '../../common/service.js';
 	export default{
 		components: {
@@ -60,30 +65,19 @@
 		},
 		data(){
 			return {
-				addressList: [
-					{
-						"name": "小米",
-						"telPhone": 14587080980808,
-						"address": "湖北省 武汉市 江夏区 流芳大道3434号",
-						"default": true
-					},
-					{
-						"name": "第三方",
-						"telPhone": 1566166666,
-						"address": "湖北省 武汉市 江夏区 流芳大道3434号",
-						"default": false
-					},
-					{
-						"name": "发给",
-						"telPhone": 145537080980808,
-						"address": "湖北省 武汉市 江夏区 流芳大道3434号",
-						"default": false
-					}
-				],
+				// 放到vuex中去管理了
+				// addressList: [],
 				current: 0
 			}
 		},
+		computed:{
+			// 注入vuex的计算方法
+			...mapGetters(["getAddressList"]),			
+		},
 		methods:{
+			// 注入vuex的方法
+			...mapMutations(['INIT_ADDRESS']),
+			...mapActions(['reSetAddressList']),
 			init(){
 				let params = {
 					// userId: this.$store.state.usrId,
@@ -94,38 +88,86 @@
 				service.getAddressList(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					console.log(res);
-							
+					if(data.length > 0) {
+						// this.addressList = data;
+						this.INIT_ADDRESS(data);
+					} 		
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title:  err.data.data || err.errMsg,
+						title: err.errMsg || err.data.data,
 					})
 				})
 			},
-			radioChange(evt) {
-				console.log(evt)
-				for (let i = 0; i < this.addressList.length; i++) {
-					if (this.addressList[i].default === evt.target.value + '') {
-						this.current = i;
-						break;
-					}
-				}
+			radioChange(e) {
+				console.log(e)
 				// 请求设置为默认接口
-			},
-			edit(item){
-				uni.navigateTo({
-					url:`address_edit?flag=1&name=${item.name}&telPhone=${item.telPhone}&address=${item.address}`
+				let params = {
+					id: e.detail.value,
+					default: true
+				}
+				uni.showLoading();
+				service.editAddress(params).then(res=>{
+					uni.hideLoading();
+					uni.showToast({
+						title: "已保存为默认"
+					})	
+					// 同步到vuex
+					this.reSetAddressList();
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg || err.data.data,
+					})
 				})
 			},
-			deleteAddress(item){
-				// 请求删除接口
+			editAddress(item){
+				uni.navigateTo({
+					url:`address_edit?mode=edit&id=${item.id}&receiver=${item.receiver}&phone=${item.phone}&province=${item.province}&city=${item.city}&region=${item.region}&detail=${item.detail}&default=${item.default}`
+				})
+			},
+			// 删除地址
+			deleteAddress(id){
+				var that = this;
+				console.log(this);
+				uni.showModal({
+					title: "确认",
+					content: "是否删除地址？",
+					success(res) {
+						if (res.confirm) {
+							let params = {
+								id: id,
+							}
+							uni.showLoading();
+							service.deleteAddress(params).then(res=>{
+								uni.hideLoading();
+								uni.showToast({
+									title: "地址已删除"
+								});
+								// 同步到vuex
+								that.reSetAddressList();
+							}).catch(err=>{
+								console.log(err)
+								uni.hideLoading();
+								uni.showToast({
+									icon: "none",
+									title:  err.errMsg || err.data.data,
+								})
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				})
+				
 			},
 			addAddress(){
 				uni.navigateTo({
-					url:"address_edit?flag=0"
+					url:"address_edit?mode=add"
 				})
 			}
 		},
@@ -142,15 +184,20 @@
 		background-color: #f5f5f5;
 	}
 	.addressManagementPage{
+		.address-none{
+			margin-top: 200upx;
+			text-align: center;
+			font-size: 36upx;
+			color: #666;
+		}
 		.address-list{
+			margin-bottom: 120upx;
 			.address-item{
 				width: 100%;
-				height: 214upx;
 				margin-bottom: 20upx;
 				background-color: #fff;
 				.info{
 					width: 100%;
-					height: 140upx;
 					border-bottom: 1upx solid #f5f5f5;
 					padding: 30upx;
 					box-sizing: border-box;
@@ -169,10 +216,11 @@
 		.bottom-btn{
 			width: 100%;
 			height: 100upx;
-			position: absolute;
+			position: fixed;
 			bottom: 0;
 			left: 0;
 			background-color: #fff;
+			border-top: 1upx solid #f0f0f0;
 			display: flex;
 			justify-content: center;
 			align-items: center;
