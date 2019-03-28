@@ -215,7 +215,7 @@
 				
 				let params = {
 					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603",
-					userId: this.$store.state.usrId,
+					userId: this.$store.state.userId,
 					id: this.id,
 					province: this.address.province,
 					city: this.address.city,

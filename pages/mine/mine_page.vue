@@ -131,7 +131,7 @@
 			// 管理密码
 			setSecondaryPassword(){
 				uni.navigateTo({
-					url: "../../mine/secondary_password"
+					url: "../../mine/gesture_lock?mode=set"
 				})
 			},
 			// 收货地址

@@ -80,7 +80,7 @@
 			...mapActions(['reSetAddressList']),
 			init(){
 				let params = {
-					userId: this.$store.state.usrId,
+					userId: this.$store.state.userId,
 					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603"
 				}
 				// 获取用户收获地址列表

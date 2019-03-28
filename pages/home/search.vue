@@ -81,7 +81,7 @@
 						</view>
 						<view class="product-list common-ma-30">
 							<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
-								<image mode="scaleToFill" :src="item.imageUrl"></image>
+								<image lazy-load mode="scaleToFill" :src="item.imageUrl"></image>
 								<view class="name">{{item.title}}</view>
 								<view class="info">
 									<view class="price">{{item.price}}</view>
