@@ -6,7 +6,7 @@
 		<view class="header" :style="{position:headerPosition}">
 			<!-- 切换地理位置 -->
 			<view class="location">
-				<view class="local" @click="showPicker">
+				<view class="local" @tap="showPicker">
 					<view class="text uni-ellipsis">{{picker.pickerText}}</view>
 					<view class="icon">
 						<uni-icon type="arrowdown" size="18"></uni-icon>

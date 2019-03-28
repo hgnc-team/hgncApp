@@ -427,7 +427,7 @@
 					service.getSms(parms).then(res => {
 						uni.showToast({
 							icon: 'none',
-							title: '验证码发送成功!',
+							title: '验证码已发送,请注意查收!',
 						});
 						this.timerId = setInterval(() => {
 							this.smsbtn.status = false;

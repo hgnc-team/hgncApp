@@ -6,11 +6,16 @@
 				<uni-icon type="location-filled"></uni-icon>
 			</view>
 			<view class="default-address uni-inline-item">
-				<view class="info uni-h5 uni-bold">
-					朱逢春&nbsp;&nbsp;1897109809
+				<!-- 有地址 -->
+				<view class="info uni-h5 uni-bold" v-if="isHaveAddress">
+					{{address.receiver}}&nbsp;&nbsp;{{address.phone}}
 				</view>
-				<view class="address-detail uni-text-small text-color-gray">
-					湖北省武汉市洪山区创业街645号12号楼湖北省武汉市洪山区创业街645号12号楼
+				<view class="address-detail uni-text-small text-color-gray" v-if="isHaveAddress">
+					{{address.province}} &nbsp;{{address.city}} &nbsp;{{address.region}} &nbsp;{{address.detail}}
+				</view>
+				<!-- 暂无地址 -->
+				<view class="text-color-gray uni-flex-item flex-center-center" v-if="!isHaveAddress">
+					暂无收货地址，请前往设置
 				</view>
 			</view>
 			<view class="icon-right uni-inline-item">
@@ -174,21 +179,19 @@
 		},
 		data(){
 			return {
-				rainColor: {
-					value: "",
-					mode: "bottom",
-					colorArr:[{
-						progress: 50,
-						color: "red"
-					},{
-						progress: 50,
-						color: "blue"
-					},{
-						progress: 50,
-						color: "green"
-					}],
-					w: 750
+				// 地址相关信息
+				address:{
+					id: "",
+					receiver: "",
+					phone: "",
+					province: "",
+					city: "",
+					region: "",
+					street: "",
+					detail: ""
 				},
+				// 是否有地址
+				isHaveAddress: true,
 				goodsList: [{
 					pro_id: 1,
 					pro_name: '老街口-红糖麻花500g/袋',
@@ -237,6 +240,33 @@
 				this.jBalance = 450;
 				this.mBalance = 650;
 				this.total = 505;
+				this.getAddress();
+			},
+			// 获取地址
+			getAddress(){
+				let params = {
+					userId: this.$store.state.usrId,
+				}
+				// 获取用户收获地址列表
+				uni.showLoading();
+				service.getAddressList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					if(data.length > 0) {
+						// 查找默认项
+						let defaultIndex = _.findIndex(data, item => item.default === 1);
+						this.address = defaultIndex > -1 ? data[defaultIndex] : data[0];
+					} else {
+						this.isHaveAddress = false;
+					}
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg || err.data.data,
+					})
+				})
 			},
 			// 去地址管理页面
 			toAddress(){
