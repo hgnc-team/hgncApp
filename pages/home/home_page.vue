@@ -36,7 +36,7 @@
 			</view>
 		</view>
 		<!-- 占位 -->
-		<view class="place"></view>
+		<!-- <view class="place"></view> -->
 		<!-- 内容 -->
 		<view class="swiper-content">
 			<view class="uni-tab-bar">
@@ -59,7 +59,7 @@
 								<!-- 商品列表 -->
 								<view class="product-list">
 									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)">		
-										<image mode="scaleToFill" :src="item.img"></image>
+										<image mode="scaleToFill" lazy-load :src="item.img"></image>
 										<view class="name">{{item.name}}</view>
 										<view class="info">
 											<view class="price">{{item.price}}</view>
@@ -614,21 +614,20 @@
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
-			.custom-tabs{
-				height: 80upx;
-				background-color: #fff;
-				z-index: 100;
-				position: fixed;
-				/* #ifdef H5 */
-				top: 88upx;
-				/* #endif */	
-				/*  #ifdef  APP-PLUS  */
-				top: calc(var(--status-bar-height) + 88upx);
-				/*  #endif  */
+			.custom-tabs{	
 				.uni-swiper-tab{
-					line-height: 80upx;
-					height: 80upx;
+					line-height: 88upx;
+					height: 88upx;
 					border:none;
+					background-color: #fff;
+					z-index: 100;
+					position: fixed;
+					/* #ifdef H5 */
+					top: 88upx;
+					/* #endif */	
+					/*  #ifdef  APP-PLUS  */
+					top: calc(var(--status-bar-height) + 88upx);
+					/* #endif */
 					.swiper-tab-list{
 						width:auto;
 						position: relative;
@@ -643,7 +642,7 @@
 								width: 20%;
 								height: 6upx;
 								position: absolute;
-								bottom: -16upx;
+								bottom: -20upx;
 								left: 50%;
 								transform: translateX(-50%);
 								background-color: #242424;
