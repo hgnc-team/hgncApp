@@ -23,7 +23,7 @@
 		data() {
 			return {
 				title: "手势图案",
-				password: [1,2,3,6,9],
+				password: [],
 				text: '请设定手势',
 				// 页面模式，set-设置二级密码，check-校验二级密码
 				mode: "set"		

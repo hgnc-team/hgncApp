@@ -59,20 +59,20 @@
 			// 设置二级密码
 			setSecondaryPassword(){
 				uni.navigateTo({
-					url: "secondary_password"
+					url: "pages/mine/gesture_lock"
 				})
 			},
 			//换绑手机
 			changeTelphone() {
 				uni.navigateTo({
-					url: `change_telphone`
+					url: `pages/minechange_telphone`
 				})
 			},
 			// 退出当前账号
 			logout(){
 				this.$store.commit('logout')
-				uni.navigateBack({
-					
+				uni.reLaunch({
+					url: "/pages/login/login"
 				})
 			}
 			

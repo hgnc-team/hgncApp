@@ -264,7 +264,7 @@
 					deepLength: 0, // 几级联动
 					pickerValueDefault: [], // 初始化值
 					pickerValueArray: [], // picker 数组值
-					pickerText: '全国',
+					pickerText: '武汉',
 					themeColor: '#000', // 颜色主题
 				},
 				//轮播

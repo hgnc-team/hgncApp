@@ -6,7 +6,7 @@
 				<uni-icon type="closeempty" size="36" @click="goBack"></uni-icon>
 			</view>
 			<view class="title uni-h2 uni-center text-color-white">
-				嬴鱼
+				鹏鱼
 			</view>
 			<view class="tabs">
 				<view class="uni-flex">
