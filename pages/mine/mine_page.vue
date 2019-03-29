@@ -48,6 +48,9 @@
 				<uni-list-item title="密码管理" @click="setSecondaryPassword" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
 			</uni-list>
 		</view>
+		<view class="version">
+			当前版本号: {{version}}
+		</view>
 	</view>
 </template>
 <script>
@@ -64,6 +67,7 @@
 		data() {
 			return {
 				userinfo: {},
+				version: "",
 				orderTypeLise: [
 					//name-标题 icon-图标 badge-角标
 					{
@@ -92,6 +96,7 @@
 		onLoad() {
 			//加载
 			this.init();
+			this.version = plus.runtime.version;
 		},
 		methods: {
 			init() {
@@ -321,6 +326,11 @@
 				height: 40upx
 			}
 		}
+	}
+	.version{
+		width: 100%;
+		margin-top: 50upx;
+		text-align: center;
 	}
 </style>
 

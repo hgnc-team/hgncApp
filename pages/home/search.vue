@@ -1,123 +1,126 @@
 <template>
 	<view class="searchPage">
 		<!-- 状态栏 -->
-		<view class="status" :style="{position:headerPosition}"></view>
-		<!-- 搜索框 关键字 -->
-		<view class="search_wrap">
-			<view class="header-wrap uni-flex uni-row">
-				<view class="back uni-inline-item" @tap="goBack">
-					<uni-icon type="back"></uni-icon>
+		<statusBar></statusBar>
+		<!-- 头部搜索框 -->
+		<view class="header-wrap uni-flex uni-row">
+			<view class="back uni-inline-item" @tap="goBack">
+				<uni-icon type="back"></uni-icon>
+			</view>
+			
+			<view class="search-box uni-inline-item">
+				<!-- mSearch组件 如果使用原样式，删除组件元素-->
+				<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)"
+				 @confirm="doSearch(false)" v-model="keyword" radius="0" @input="clear"></mSearch>
+				<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
+							
+				<!-- <view class="input-box">
+					<input type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
+					 placeholder-class="placeholder-class" confirm-type="search">
 				</view>
+				<view class="search-btn" @tap="doSearch(false)">搜索</view> -->
 				
-				<view class="search-box uni-inline-item">
-					<!-- mSearch组件 如果使用原样式，删除组件元素-->
-					<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)"
-					 @confirm="doSearch(false)" v-model="keyword" radius="0" @input="clear"></mSearch>
-					<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
-								
-					<!-- <view class="input-box">
-						<input type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
-						 placeholder-class="placeholder-class" confirm-type="search">
+				<!-- 原样式 end -->
+			</view>
+			<view class="cart uni-inline-item"  :class="isShowIcon?'active':''">
+				<uni-icon type="star"></uni-icon>
+			</view>
+		</view>
+		
+		<!-- 历史搜索 热门搜索-->
+		<view class="search-keyword" @touchstart="blur" v-show="!isShowSearchList">
+			<view class="keyword-box">
+				<view class="keyword-block" v-if="oldKeywordList.length>0">
+					<view class="keyword-list-header">
+						<view>历史搜索</view>
+						<view>
+							<image @tap="oldDelete" src="/static/HM-search/delete.png"></image>
+						</view>
 					</view>
-					<view class="search-btn" @tap="doSearch(false)">搜索</view> -->
-					
-					<!-- 原样式 end -->
+					<view class="keyword">
+						<view v-for="key in oldKeywordList" @tap="doSearch(key)" :key="key">{{key}}</view>
+					</view>
 				</view>
-				<view class="cart uni-inline-item"  :class="isShowIcon?'active':''">
-					<uni-icon type="star"></uni-icon>
+				<view class="keyword-block">
+					<view class="keyword-list-header">
+						<view>热门搜索</view>
+						<view>
+							<image @tap="hotToggle" :src="'/static/HM-search/attention'+forbid+'.png'"></image>
+						</view>
+					</view>
+					<view class="keyword" v-if="forbid==''">
+						<view v-for="key in hotKeywordList" @tap="doSearch(key)" :key="key">{{key}}</view>
+					</view>
+					<view class="hide-hot-tis" v-else>
+						<view>当前搜热门搜索已隐藏</view>
+					</view>
 				</view>
 			</view>
+		</view>
 			
-			<view class="search-keyword" @touchstart="blur" v-show="!isShowSearchList">
-				<scroll-view class="keyword-box" scroll-y>
-					<view class="keyword-block" v-if="oldKeywordList.length>0">
-						<view class="keyword-list-header">
-							<view>历史搜索</view>
-							<view>
-								<image @tap="oldDelete" src="../../static/HM-search/delete.png"></image>
-							</view>
-						</view>
-						<view class="keyword">
-							<view v-for="key in oldKeywordList" @tap="doSearch(key)" :key="key">{{key}}</view>
-						</view>
-					</view>
-					<view class="keyword-block">
-						<view class="keyword-list-header">
-							<view>热门搜索</view>
-							<view>
-								<image @tap="hotToggle" :src="'../../static/HM-search/attention'+forbid+'.png'"></image>
-							</view>
-						</view>
-						<view class="keyword" v-if="forbid==''">
-							<view v-for="key in hotKeywordList" @tap="doSearch(key)" :key="key">{{key}}</view>
-						</view>
-						<view class="hide-hot-tis" v-else>
-							<view>当前搜热门搜索已隐藏</view>
-						</view>
-					</view>
-				</scroll-view>
+		<!-- 搜索到的商品 -->
+		<view class="goods-wrap" v-if="isShowSearchList">
+			<view class="tabs filters uni-flex uni-row">
+				<view class="default uni-flex-item flex-center-center uni-center" :class="currentTab=='default'?'active':''" @tap="changeTab('default')"> 
+					默认
+					<view class="bottom-line"></view>
+				</view>
+				<view class="sales uni-flex-item flex-center-center uni-center" :class="currentTab=='sales'?'active':''" @tap="changeTab('sales')">
+					销量
+					<view class="bottom-line"></view>
+				</view>
+				<view class="price uni-flex-item flex-center-center uni-center" :class="currentTab=='price'?'active':''" @tap="changeTab('price')">
+					价格
+					<view class="bottom-line"></view>
+				</view>
 			</view>
-			
-			<!-- 搜索到的商品 -->
-			<view class="goods-wrap" v-if="isShowSearchList">
-				<view class="tabs filters uni-flex uni-row">
-					<view class="default uni-flex-item flex-center-center uni-center" :class="currentTab=='default'?'active':''" @tap="changeTab('default')"> 
-						默认
-						<view class="bottom-line"></view>
+			<view class="content">
+				<view class="hasData" v-if="hasData">
+					<view class="total  flex-center-center uni-center uni-text-small">
+						共计{{totalNum}}个相关产品
 					</view>
-					<view class="sales uni-flex-item flex-center-center uni-center" :class="currentTab=='sales'?'active':''" @tap="changeTab('sales')">
-						销量
-						<view class="bottom-line"></view>
-					</view>
-					<view class="price uni-flex-item flex-center-center uni-center" :class="currentTab=='price'?'active':''" @tap="changeTab('price')">
-						价格
-						<view class="bottom-line"></view>
+					<view class="product-list common-ma-30">
+						<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
+							<!-- <image lazy-load class="lazy" mode="scaleToFill" :src="item.imageUrl"></image> -->
+							<view class="uni-media-list-logo">
+								<image class="image" :class="{lazy:!item.show}" :data-index="index" @load="onLoad" :src="item.show?item.imageUrl:''" />
+								<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
+							</view>
+							
+							<view class="name">{{item.title}}</view>
+							<view class="info">
+								<view class="price">{{item.price}}</view>
+								<view class="slogan">{{item.type}}</view>
+							</view>	
+						</view>
 					</view>
 				</view>
-				<view class="content">
-					<view class="hasData" v-if="hasData">
-						<view class="total  flex-center-center uni-center uni-text-small">
-							共计{{totalNum}}个相关产品
+				<view class="hasNoData"  v-if="!hasData">
+					<view class="notice">
+						<view class="icon"></view>
+						<view>
+							抱歉,未找到{{keyword}}相关产品
 						</view>
+					</view>
+					<view class="place-bar"></view>
+					<!-- 推荐商品列表 -->
+					<view class="Recommend-goods-list" v-if="RecommendGoodsList.length > 0">
+						<view class="title uni-h4">推荐商品</view>
 						<view class="product-list common-ma-30">
-							<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
-								<image lazy-load mode="scaleToFill" :src="item.imageUrl"></image>
-								<view class="name">{{item.title}}</view>
+							<view class="product" v-for="(item, index) in RecommendGoodsList" :key="index" @tap="toGoods(item)">		
+								<image mode="widthFix" :src="item.img"></image>
+								<view class="name">{{item.name}}</view>
 								<view class="info">
 									<view class="price">{{item.price}}</view>
-									<view class="slogan">{{item.type}}</view>
+									<view class="slogan">{{item.slogan}}</view>
 								</view>	
 							</view>
 						</view>
 					</view>
-					<view class="hasNoData"  v-if="!hasData">
-						<view class="notice">
-							<view class="icon"></view>
-							<view>
-								抱歉,未找到{{keyword}}相关产品
-							</view>
-						</view>
-						<view class="place-bar"></view>
-						<!-- 推荐商品列表 -->
-						<view class="Recommend-goods-list" v-if="RecommendGoodsList.length > 0">
-							<view class="title uni-h4">推荐商品</view>
-							<view class="product-list common-ma-30">
-								<view class="product" v-for="(item, index) in RecommendGoodsList" :key="index" @tap="toGoods(item)">		
-									<image mode="widthFix" :src="item.img"></image>
-									<view class="name">{{item.name}}</view>
-									<view class="info">
-										<view class="price">{{item.price}}</view>
-										<view class="slogan">{{item.slogan}}</view>
-									</view>	
-								</view>
-							</view>
-						</view>
-					</view>				
-				</view>
-				
+				</view>				
 			</view>
+			
 		</view>
-		
 	</view>
 </template>
 
@@ -134,69 +137,12 @@
 		},
 		data() {
 			return {
-				headerPosition:"fixed",
 				defaultKeyword: "",
 				keyword: "",
 				oldKeywordList: [],
 				hotKeywordList: [],
 				goodsList: [],
-				RecommendGoodsList:[{
-						goods_id: 0,
-						img: '../../static/img/common/good1.jpg',
-						name: '老街口-红糖麻花500g/袋',
-						price: '￥58',
-						slogan: '1096人付款'
-					},
-					{
-						goods_id: 1,
-						img: '../../static/img/common/good2.jpg',
-						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-						price: '￥68',
-						slogan: '686人付款'
-					},
-					{
-						goods_id: 2,
-						img: '../../static/img/common/good3.jpg',
-						name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-						price: '￥368',
-						slogan: '1234人付款'
-					},
-					{
-						goods_id: 3,
-						img: '../../static/img/common/good4.jpg',
-						name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-						price: '￥668',
-						slogan: '678人付款'
-					},
-					{
-						goods_id: 4,
-						img: '../../static/img/common/good5.jpg',
-						name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-						price: '￥218',
-						slogan: '52244人付款'
-					},
-					{
-						goods_id: 5,
-						img: '../../static/img/common/good6.jpg',
-						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
-						price: '￥288',
-						slogan: '232人付款'
-					},
-					{
-						goods_id: 6,
-						img: '../../static/img/common/good7.jpg',
-						name: '进口智利三文鱼400g',
-						price: '￥216',
-						slogan: '3235人付款'
-					},
-					{
-						goods_id: 7,
-						img: '../../static/img/common/good8.jpg',
-						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
-						price: '￥58',
-						slogan: '35人付款'
-					}
-				],
+				RecommendGoodsList:[],
 				forbid: '',
 				currentTab: 'default',
 				isShowSearchList: false,
@@ -204,18 +150,26 @@
 				hasData: false,
 				totalNum: 0,
 				page:1,
+				// 图片懒加载
+				show: false,
+				// 图片默认路径
+				placeholderSrc: "/static/img/logo@2x.png",
+				// 设备屏幕高度
+				windowHeight: 0
 			}
 		},
 		onLoad() {
 			this.init();
+			// 获取设备高度
+			this.windowHeight = uni.getSystemInfoSync().windowHeight;
 		},
-		onPageScroll(e){
-			//兼容iOS端下拉时顶部漂移
-			if(e.scrollTop>=0){
-				this.headerPosition = "fixed";
-			}else{
-				this.headerPosition = "absolute";
-			}
+		onPageScroll() {
+			this.load()
+		},
+		computed:{
+// 			totalNum(){
+// 				return this.goodsList.length;
+// 			}
 		},
 		methods: {
 			init() {
@@ -299,9 +253,9 @@
 			//执行搜索
 			doSearch(key) {
 				key = key ? key : this.keyword ? this.keyword : this.defaultKeyword;
-				console.log("key",key);
-				console.log("this.keyword",this.keyword)
-				console.log("this.defaultKeyword",this.defaultKeyword)
+// 				console.log("key",key);
+// 				console.log("this.keyword",this.keyword)
+// 				console.log("this.defaultKeyword",this.defaultKeyword)
 				this.keyword = key;
 				this.saveKeyword(key); //保存为历史 
 				this.isShowIcon = true;
@@ -312,7 +266,7 @@
 				uni.getStorage({
 					key: 'OldKeys',
 					success: (res) => {
-						console.log(res.data);
+						// console.log(res.data);
 						var OldKeys = JSON.parse(res.data);
 						var findIndex = OldKeys.indexOf(keyword);
 						if (findIndex == -1) {
@@ -342,10 +296,12 @@
 			changeTab(type){
 				if(this.currentTab != type){
 					this.currentTab = type;
+					this.getGoodsList(this.keyword);
 				}
 			},
 			// 查询产品列表
 			getGoodsList(key){
+				this.goodsList = [];
 				const data = {
 					title: key,
 					page: this.page
@@ -358,13 +314,21 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					this.totalNum = data.total;
-					console.log(this.totalNum);
+					// console.log(this.totalNum);
 					if(data.data.length > 0) {
 						this.hasData = true;
-						this.goodsList = data.data;
+						const  goodsList = data.data;
+						this.goodsList = _.concat(goodsList, goodsList, goodsList,goodsList, goodsList);
+						_.forEach(this.goodsList, item => {
+							item.show = false;
+							item.loaded = false;
+						});
+						setTimeout(() => {
+							this.load();
+						}, 100)
 					} else {
 						this.hasData = false;
-						// this.getRecommendGoodsList();
+						this.getRecommendGoodsList();
 					}
 				}).catch(err=>{
 					uni.hideLoading();
@@ -381,22 +345,102 @@
 					page: this.page
 				}
 				uni.showLoading();
-				service.getGoodListBySearch(data).then(res=>{
+// 				service.getGoodListBySearch(data).then(res=>{
+// 					uni.hideLoading();
+// 					let data = res.data.data;
+// 					this.RecommendGoodsList = data.data;
+// 				}).catch(err=>{
+// 					uni.hideLoading();
+// 					uni.showToast({
+// 						icon: "none",
+// 						title:  err.errMsg || err.data.data,
+// 					})
+// 				})
+				
+				setTimeout(()=>{
 					uni.hideLoading();
-					let data = res.data.data;
-					this.RecommendGoodsList = data.data;
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon: "none",
-						title:  err.errMsg || err.data.data,
-					})
-				})
+					this.RecommendGoodsList = [{
+							goods_id: 0,
+							img: '../../static/img/common/good1.jpg',
+							name: '老街口-红糖麻花500g/袋',
+							price: '￥58',
+							slogan: '1096人付款'
+						},
+						{
+							goods_id: 1,
+							img: '../../static/img/common/good2.jpg',
+							name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
+							price: '￥68',
+							slogan: '686人付款'
+						},
+						{
+							goods_id: 2,
+							img: '../../static/img/common/good3.jpg',
+							name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
+							price: '￥368',
+							slogan: '1234人付款'
+						},
+						{
+							goods_id: 3,
+							img: '../../static/img/common/good4.jpg',
+							name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
+							price: '￥668',
+							slogan: '678人付款'
+						},
+						{
+							goods_id: 4,
+							img: '../../static/img/common/good5.jpg',
+							name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
+							price: '￥218',
+							slogan: '52244人付款'
+						},
+						{
+							goods_id: 5,
+							img: '../../static/img/common/good6.jpg',
+							name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
+							price: '￥288',
+							slogan: '232人付款'
+						},
+						{
+							goods_id: 6,
+							img: '../../static/img/common/good7.jpg',
+							name: '进口智利三文鱼400g',
+							price: '￥216',
+							slogan: '3235人付款'
+						},
+						{
+							goods_id: 7,
+							img: '../../static/img/common/good8.jpg',
+							name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
+							price: '￥58',
+							slogan: '35人付款'
+						}
+					]
+				}, 1000);
 			},
 			toGoods(item){
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${item.id}`
 				})
+			},
+			// 图片懒加载
+			load() {
+				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
+					_.forEach(images, (image, index)=>{
+						if (image.top <= this.windowHeight) {
+							let item = Object.assign({}, this.goodsList[image.dataset.index]);
+							item.show = true;
+							// 重新刷新数据
+							this.$set(this.goodsList, image.dataset.index, item);
+						}
+					})
+				}).exec()
+			},
+			onLoad(e) {
+				// 图片url为空就不会执行这里
+				let item = Object.assign({}, this.goodsList[e.target.dataset.index]);
+				item.loaded = true;
+				this.$set(this.goodsList, e.target.dataset.index, item);
 			},
 			goBack(){
 				uni.navigateBack()
@@ -407,71 +451,55 @@
 <style lang="scss">
 	page{
 		width: 100%;
-		height: 100%;
+		height: 120%;
 		background-color: #fff;
 	}
 	.searchPage{
-		
-		.status {
+		width: 100%;
+		height: 100%;
+		background-color: #fff;
+		.header-wrap{
 			width: 100%;
-			height: 0;
-			/*  #ifdef  APP-PLUS  */
-			height: var(--status-bar-height);//表示状态栏的高度。
-			/*  #endif  */
-			background-color: #ff570a;
+			height:88upx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-bottom: 1px solid #f6f6f6;
+			background-color: #fff;
 			position: fixed;
 			top: 0;
-			z-index: 999;
-		}
-		.search_wrap{
-			padding-top: 0;
 			/*  #ifdef  APP-PLUS  */
-			padding-top: var(--status-bar-height);//表示状态栏的高度。
+			top: var(--status-bar-height);
 			/*  #endif  */
-			.header-wrap{
-				width: 100%;
-				height:88upx;
-				display: flex;
-				align-items: center;
+			z-index: 1000;
+			.back {
+				width: 80upx;
+				height: 100%;
 				justify-content: center;
-				border-bottom: 1px solid #f6f6f6;
-				background-color: #fff;
-				position: fixed;
-				top: 0;
-				/*  #ifdef  APP-PLUS  */
-				top: var(--status-bar-height);
-				/*  #endif  */
-				z-index: 1000;
-				.back {
-					width: 80upx;
-					height: 100%;
-					justify-content: center;
+			}
+			.search-box{
+				flex: 1 1 0%;
+				height: 88upx;
+				padding: 10upx;
+				justify-content: center;
+				box-sizing: border-box;
+				.search .content{
+					background-color: #f0f0f0;
 				}
-				.search-box{
-					flex: 1 1 0%;
-					height: 88upx;
-					padding: 10upx;
-					justify-content: center;
-					box-sizing: border-box;
-					.search .content{
-						background-color: #f0f0f0;
-					}
-				}
-				.cart {
-					width: 0upx;
-					justify-content: center;
-					transition: all 0.2s linear;
-					visibility: hidden;
-					&.active{
-						width: 100upx;
-						visibility: visible;
-						transform-origin:center left;
-					}
+			}
+			.cart {
+				width: 0upx;
+				justify-content: center;
+				transition: all 0.2s linear;
+				visibility: hidden;
+				&.active{
+					width: 100upx;
+					visibility: visible;
+					transform-origin:center left;
 				}
 			}
 		}
 		
-
 		.search-box .input-box {
 			width: 85%;
 			flex-shrink: 1;
@@ -514,7 +542,7 @@
 
 		.search-keyword {
 			width: 100%;
-			background-color: rgb(242, 242, 242);
+			// background-color: rgb(242, 242, 242);
 			padding-top: 88upx;
 			/*  #ifdef  APP-PLUS  */
 			padding-top: calc(var(--status-bar-height) + 88upx);
@@ -523,7 +551,7 @@
 		}
 
 		.keyword-box {
-			height: calc(100vh - 88upx);
+			// height: calc(100vh - 88upx);
 			border-radius: 10upx 10upx 0 0;
 			background-color: #fff;
 		}
@@ -650,12 +678,25 @@
 						// border-radius: 20upx;
 						background-color: #fff;
 						margin: 0 0 15upx 0;
-							
-						image {
+						.placeholder {
+							opacity: 0.3;
+							transition: opacity 0.4s linear;
+						}
+						
+						.placeholder.loaded {
+							opacity: 0;
+						}
+						
+						.uni-media-list-logo {
 							width: 100%;
 							height: 246upx;
-							background-color: #f0f0f0;
+							position: relative;
 						}
+						
+						.uni-media-list-logo .image {
+							position: absolute;
+						}
+						
 							
 						.name {
 							width: 100%;

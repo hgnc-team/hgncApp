@@ -43,7 +43,7 @@
 				<view class="custom-tabs">
 					<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
 						<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''" :id="'tar'+index"
-						 :data-current="index" @click="tapTab">
+						 :data-current="index" @tap="tapTab">
 							{{tab.name}}
 							<view class="bottom-line"></view>
 						 </view>
@@ -59,7 +59,11 @@
 								<!-- 商品列表 -->
 								<view class="product-list">
 									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)">		
-										<image mode="scaleToFill" lazy-load :src="item.img"></image>
+										<!-- <image mode="scaleToFill" lazy-load :src="item.img"></image> -->
+										<view class="uni-media-list-logo">
+											<image class="image" :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
+											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
+										</view>
 										<view class="name">{{item.name}}</view>
 										<view class="info">
 											<view class="price">{{item.price}}</view>
@@ -251,7 +255,10 @@
 				tabIndex: 0,
 				dataList: [],
 				tabBars: [],
-				
+				// 图片默认路径
+				placeholderSrc: "/static/img/logo@2x.png",
+				// 设备屏幕高度
+				windowHeight: 0,
 				picker: {
 					mode: 'selector',
 					deepLength: 0, // 几级联动
@@ -297,6 +304,7 @@
 			} else {
 				this.headerPosition = "absolute";
 			}
+			this.load();
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
@@ -306,16 +314,17 @@
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
-			uni.showToast({title: '触发上拉加载'});
-			let len = this.productList.length;
-			if (len >= 40) {
-				this.loadingText = "到底了";
-				return false;
-			}
-			let end_goods_id = this.productList[len - 1].goods_id;
-			for (let i = 1; i <= 10; i++) {
-				this.productList.push(this.productList[i]);
-			}
+			this.load();
+			// uni.showToast({title: '触发上拉加载'});
+// 			let len = this.productList.length;
+// 			if (len >= 40) {
+// 				this.loadingText = "到底了";
+// 				return false;
+// 			}
+// 			let end_goods_id = this.productList[len - 1].goods_id;
+// 			for (let i = 1; i <= 10; i++) {
+// 				this.productList.push(this.productList[i]);
+// 			}
 		},
 		methods: {
 			init() {
@@ -333,8 +342,14 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					this.tabBars = data;
+					this.tabBars.unshift({
+						id: "ALL",
+						name:"分类"
+					})
 					this.dataList = this.randomfn();
-					console.log(this.dataList);
+					setTimeout(() => {
+						this.load();
+					}, 100)
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -385,6 +400,7 @@
 			changeTabs(index) {
 				if (this.tabs.current !== index) {
 					this.tabs.current = index;
+					this.load()
 				}
 			},
 			//轮播图跳转
@@ -409,7 +425,7 @@
 			loadMore(e) {
 				setTimeout(() => {
 					this.addData(e);
-				}, 1200);
+				}, 1000);
 			},
 			addData(e) {
 				if (this.dataList[e].data.length > 30) {
@@ -461,7 +477,18 @@
 				})
 			},
 			async tapTab(e) { //点击tab-bar
+				console.log(e)
+			
 				let tabIndex = e.target.dataset.current;
+				// 将分类放到此处，点击跳转分类页
+				if(tabIndex - 0 === 0) {
+					uni.navigateTo({
+						url: "/pages/home/subCategory_nav"
+					})
+					return
+				}
+				
+				
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
@@ -484,17 +511,53 @@
 					};
 					if(i < 1){
 						for (let j = 1; j <= 10; j++) {
-							aryItem.data.push(tpl['data' + Math.floor(Math.random() * 5)]);
+							let item = tpl['data' + Math.floor(Math.random() * 5)];
+							item.show = false;
+							item.loaded = false;
+							aryItem.data.push(item);
+							
 						}
 					}
 					ary.push(aryItem);
 				}
-				console.log(ary);
 				return ary;
-			}
+			},
+			// 图片懒加载
+			load() {
+				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
+					images.forEach((image, index) => {
+						if (image.top <= this.windowHeight) {
+							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
+							item.show = true;
+							// 重新刷新数据
+							this.$set(this.dataList[this.tabIndex].data, image.dataset.index, item);
+						}
+					})
+				}).exec()
+			},
+			onLoad(e) {
+				// this.dataList[e.target.dataset.index].data.loaded = true;
+				// 图片url为空就不会执行这里
+				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
+				item.loaded = true;
+				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
+			},
+		},
+		onShow() {
+// 			if (!this.show) {
+// 				this.show = true
+				setTimeout(() => {
+					this.load()
+				}, 1000)
+			// }
 		},
 		created() {
 			this.init();
+			// 获取设备高度
+			this.windowHeight = uni.getSystemInfoSync().windowHeight;
+			setTimeout(() => {
+				this.load()
+			}, 1000)
 		}
 	}
 </script>
@@ -556,6 +619,7 @@
 					color: #666;
 					padding-left: 50upx;
 					font-size: 30upx;
+					border-radius: 4upx;
 				}
 
 				.icon {
@@ -684,11 +748,23 @@
 						border-radius: 20upx;
 						background-color: #fff;
 						margin: 0 0 15upx 0;
-			
-						image {
+						.placeholder {
+							opacity: 0.3;
+							transition: opacity 0.4s linear;
+						}
+						
+						.placeholder.loaded {
+							opacity: 0;
+						}
+						
+						.uni-media-list-logo {
 							width: 100%;
 							height: 300upx;
-							background-color: #f0f0f0;
+							position: relative;
+						}
+						
+						.uni-media-list-logo .image {
+							position: absolute;
 						}
 			
 						.name {

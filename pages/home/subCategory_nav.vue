@@ -9,11 +9,11 @@
 			</view>
 			
 			<view class="search-box uni-inline-item">	
-				<view class="icon">
-					<uni-icon type="search" size="20"></uni-icon>
-				</view>
-				<view class="input-box">
-					<input type="text" :placeholder="defaultKeyword" @focus="toSearch">
+				<view class="input-box" @tap="toSearch()">
+					<view class="icon">
+						<uni-icon type="search" size="20"></uni-icon>
+					</view>
+					{{defaultKeyword}}
 				</view>
 			</view>
 		</view>
@@ -34,7 +34,7 @@
 						</view>
 						<view :id="index==0?'first':''" class="nav-right-item" v-for="(item, index) in subCategoryList" :key="index" @tap="toSubCategory(categoryActive, item.id)">
 							<image :src="item.img" />
-							<view>{{item.name}}</view>
+							<view class="name">{{item.name}}</view>
 						</view>			
 					</scroll-view>
 				</view>
@@ -130,7 +130,7 @@
 				})
 			},
 			goBack(){
-				uni.navigateTo()
+				uni.navigateBack()
 			}
 		},
 		onLoad(){
@@ -155,6 +155,7 @@
 			top: 0;
 			/*  #ifdef  APP-PLUS  */
 			top: var(--status-bar-height);
+			/*  #endif  */
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -180,18 +181,21 @@
 					z-index: 996;
 					top: 16upx;
 					/*  #ifdef  APP-PLUS  */
-					top: 4upx;
+					top: 20upx;
 					/*  #endif  */
-					left: 16upx;
+					left: 40upx;
 					/*  #ifdef  APP-PLUS  */
-					left: 10upx;
+					left: 40upx;
 					/*  #endif  */
 				}
 				.input-box{
 					width: 100%;
+					height: 80%;
+					line-height: 2;
 					background-color: #666;
-					border-radius: 2upx;
-					padding: 0 10upx 0 50upx;
+					border-radius: 4upx;
+					padding: 0 10upx 0 70upx;
+					box-sizing: border-box;
 				}
 			}
 		}
@@ -202,7 +206,7 @@
 			/* #endif */	
 			
 			/* #ifdef APP-PLUS */
-			// top: calc(var(--status-bar-height) + 88upx);
+			top: calc(var(--status-bar-height) + 88upx);
 			/* #endif */
 					
 			.nav {
@@ -228,6 +232,7 @@
 				width: 75%;
 				padding: 0 30upx;
 				box-sizing: border-box;
+				background-color: #fff;
 				.title{
 					padding-top: 20upx;
 				}
@@ -239,9 +244,11 @@
 				float: left;
 				text-align: center;
 				padding: 11px;
-				font-size: 28px;
 				box-sizing: border-box;
 				border: 1upx solid #f0f0f0;
+				.name{
+					font-size: 22upx;
+				}
 			}
 			.nav-right-item image{
 				width: 100%;
