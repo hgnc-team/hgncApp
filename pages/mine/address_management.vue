@@ -3,7 +3,7 @@
 		<view class="address-none" v-if="getAddressList.length == 0">
 			暂无收货地址
 		</view>
-		<view class="address-list" v-if="getAddressList.length > 0">
+		<view class="address-list">
 			<radio-group @change="radioChange">
 				<view class="address-item" v-for="(item, index) in getAddressList" :key="index">
 					<view class="info">
@@ -72,7 +72,7 @@
 		},
 		computed:{
 			// 注入vuex的计算方法
-			...mapGetters(["getAddressList"]),			
+			...mapGetters(["getAddressList"]),	
 		},
 		methods:{
 			// 注入vuex的方法
