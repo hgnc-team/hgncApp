@@ -102,7 +102,7 @@
 			init() {
 				//用户信息
 				this.userinfo = {
-					face: '../../static/HM-PersonalCenter/face_default.png',
+					face: '/static/HM-PersonalCenter/face_default.png',
 					username: "VIP会员23123",
 					telPhone: "1435*****2132"
 				}
@@ -111,38 +111,38 @@
 				// this.login()
 				// this.$store.commit('login');
 				uni.navigateTo({
-					url: "../../login/login",
+					url: "/pages/login/login",
 					animationType: "slide-in-bottom"
 				})
 			},
 			// 修改账户信息
 			toAccountInfo(){
 				uni.navigateTo({
-					url: `../../mine/account_info`
+					url: `/pages/mine/account_info`
 				})
 			},
 			//用户点击订单类型
 			toOrderType(index) {
 				uni.navigateTo({
-					url: `../../mine/order_list?index=${index}`
+					url: `/pages/mine/order_list?index=${index}`
 				})
 			},
 			// 换绑手机
 			changeTelphone(){
 				uni.navigateTo({
-					url: "../../mine/change_telphone"
+					url: "/pages/mine/change_telphone"
 				})
 			},
 			// 管理密码
 			setSecondaryPassword(){
 				uni.navigateTo({
-					url: "../../mine/gesture_lock?mode=set"
+					url: "/pages/mine/gesture_lock?mode=set"
 				})
 			},
 			// 收货地址
 			toAddress(){
 				uni.navigateTo({
-					url: "../../mine/address_management"
+					url: "/pages/mine/address_management"
 				})
 			}
 			
