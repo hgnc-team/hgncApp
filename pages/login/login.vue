@@ -93,7 +93,7 @@
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import _  from 'lodash';
-	import { mapState, mapMutations } from 'vuex';
+	import { mapMutations } from 'vuex';
 	import service from '../../common/service.js';
 	import util from '../../common/util.js';
 	

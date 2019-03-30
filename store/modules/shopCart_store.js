@@ -23,7 +23,7 @@ export default {
 			state.goodsList.push(data);
 		},
 		DELETE_GOODS(state, index) {
-			state.goodsList.splice(index,1);
+			state.goodsList.splice(index, 1);
 		},
 		UPDATA_GOODS(state, data) {
 			const {index,key,value}=data;
@@ -31,6 +31,10 @@ export default {
 		}
 	},
 	actions:{
-		
+		deleteGoods(ctx, arr){
+			_.forEach(arr, item => {
+				ctx.commit("DELETE_GOODS", item.index);
+			})
+		}
 	}
 }

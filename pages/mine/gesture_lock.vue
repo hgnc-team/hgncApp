@@ -36,8 +36,8 @@
 			// 注入vuex的方法
 			...mapMutations(['SET_PASSWORD_CHECKSTATUS']),
 			onEnd(data) {
-// 				console.log(data);
-// 				console.log(this.password);
+				console.log(data);
+				console.log(this.password);
 				// 设定模式，需要输入两次
 				if(this.mode === "set") {
 					if (this.password.length) {

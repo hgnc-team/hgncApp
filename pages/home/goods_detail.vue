@@ -10,46 +10,46 @@
 		
 		<view class="content">
 			<!-- 轮播图 -->
-			<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :height="520"></customSwiper>
+			<customSwiper :swiperList="good.flowImages" @toSwiper="toSwiper" :height="520"></customSwiper>
 			<view class="goods-info">
 				<!-- 商品文字描述 -->
 				<view class="info-item">
-					<view class="uni-h4 uni-ellipsis">
-						经典低帮帆布鞋
+					<view class="uni-h4">
+						{{good.title}}
 					</view>
 					<view class="uni-text-small text-color-gray">
-						<text>茅夫斯基欧塞附近熬时间发哦是激发你茅夫斯基欧塞附近熬时间发哦是激发你茅夫斯基欧塞附近熬时间发哦是激发你茅夫斯</text>
+						<text>日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g</text>
 					</view>
 				</view>
 				<!-- 商品价格积分 -->
 				<view class="price-info info-item uni-flex">
 					<view class="price uni-flex">
 						<view class="uni-inline-item text-price uni-h4" style="font-size: 36upx;">
-							￥17,935
+							￥{{good.price}}
 						</view>
 						<text class="uni-inline-item tag uni-text-small">
 							可获双倍积分
 						</text>
 					</view>
-					<view class="number uni-flex text-color-gray">
+					<!-- <view class="number uni-flex text-color-gray">
 						<view class="icon uni-inline-item">
 							<uni-icon type="plus"></uni-icon>
 						</view>
 						<view class="uni-inline-item">
 							123
 						</view>
-					</view>
+					</view> -->
 				</view>
 				
 				<!-- 优惠 -->
-				<view class="preferential uni-flex">
+				<!-- <view class="preferential uni-flex">
 					<view class="title uni-inline-item text-color-gray">
 						优惠
 					</view>
 					<view class="uni-inline-item">
 						可获得1,2324个积分
 					</view>
-				</view>
+				</view> -->
 			</view>
 			
 			<!-- 商品详情图 -->
@@ -58,7 +58,7 @@
 					商品详情
 				</view>
 				<view class="image">
-					<image src="../../static/img/common/goodDetail.png" mode="widthFix"></image>
+					<image src="/static/img/common/goodDetail.png" mode="widthFix"></image>
 				</view>
 			</view>
 			
@@ -100,11 +100,11 @@
 		uniBadge,
 		uniNavBar
 	} from '@dcloudio/uni-ui';
-	import { mapMutations, mapGetters } from 'vuex';
+	import { mapState, mapMutations, mapGetters} from 'vuex';
 	import service from '../../common/service.js';
 	import util from '../../common/util.js';
 	import customSwiper from "../../components/common/custom-swiper.vue";
-	
+	import _ from "lodash";
 	import share from "../../components/common/share.vue";
 	export default {
 		components: {
@@ -117,12 +117,14 @@
 		data() {
 			return {
 				// 商品内容
-				goods: {
-					goodsId:"",
+				good: {
+					id:"",
 					title: "",
 					price: 0,
 					detail: "",
 					pointRate: "",
+					imageUrl: "",
+					flowImages: [],
 				},
 				// 分享的内容
 				shareObj:{
@@ -190,17 +192,17 @@
 			}
 		},
 		onNavigationBarButtonTap(e) {
-			if(this.goods.goodsId) {
+			if(this.good.id) {
 				// 定义分享内容
 				this.shareObj = {
 					// 分享链接
 					strShareUrl: "https://uniapp.dcloud.io",
 					// 分享标题
-					strShareTitle: this.goods.title,
+					strShareTitle: this.good.title,
 					// 内容描述
-					strShareSummary: this.goods.detail,
+					strShareSummary: this.good.detail,
 					// 分享图标
-					strShareImageUrl: this.goods.imageUrl
+					strShareImageUrl: this.good.imageUrl
 				}
 				// 调用分享组件里面的分享方法
 				if(e.index === 0) {
@@ -209,11 +211,13 @@
 			}
 		},
 		computed:{
-			// 注入vuex的计算方法
-			...mapGetters(["total_num"])
+			...mapState(['userId', 'shopCart_store']),
+			...mapGetters(["total_num"]),
+			goodsList(){
+				return this.shopCart_store.goodsList;
+			}
 		},
 		methods: {
-			// 注入vuex的加入购物车方法
 			...mapMutations(['ADD_GOODS']),
 			init(id){
 				let ids = [];
@@ -223,14 +227,9 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					console.log(data);
-					this.goods = {
-						goodsId: data[0].id,
-						title: data[0].title,
-						price: data[0].price,
-						detail: data[0].detail,
-						pointRate: data[0].pointRate,
-					}
-					
+					if(data.length > 0) {
+						this.good = data[0];
+					}					
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
@@ -271,19 +270,37 @@
 			addToCart(){
 				// 判断是否登录
 				this.$guardToLogin().then(()=>{
-					let parms = {
-						userId: this.$store.state.userId,
-						goodsId: this.goods.goodsId
+					// 查询商品是否已经存在于购物车
+					let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.good.id) > -1;
+					console.log(isExist);
+					console.log(this.goodsList.length);
+					// 购物车增加长度限制 最多50个
+					if(!isExist && this.goodsList.length >= 2) {
+						uni.showToast({
+							icon:"none",
+							title: "亲，购物车商品数量超出了限制哦，请删除部分后在添加"
+						})
+						return
 					}
-					uni.showLoading()
+					let parms = {
+						userId: this.userId,
+						goodsId: this.good.id
+					}
+					uni.showLoading();
 					service.addToCart(parms).then(res=>{
 						uni.hideLoading();
 						uni.showToast({
 							title:"加入购物车成功"
 						});
 						let data = res.data.data;
-						// 同步vuex数据
-						this.ADD_GOODS({});
+						// 同一个商品加入购物城时，不增加数量
+						if(!isExist) {
+							// 同步vuex数据
+							this.ADD_GOODS({
+								goodsId: this.good.id
+							});
+						}
+						
 					}).catch(err=>{
 						uni.hideLoading();
 						uni.showToast({
