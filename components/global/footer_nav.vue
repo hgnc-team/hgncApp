@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="footerNav">
-			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(index)" v-for="(item,index) in footer_nav" :key="index">
+			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
 				<uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon>
 				<view style="margin-top: 4upx;">{{item.name}}</view>
 			</view>
@@ -22,41 +22,21 @@
 			};
 		},
 		methods:{
-			change_nav(index){
+			change_nav(item, index){
 				// 方便微信调试用
-// 				if(index === 0) {
-// 					uni.navigateTo({
-// 						url: "../../home/home_page"
-// 					})
-// 					return
-// 				}
-// 				if(index === 2) {
-// 					uni.navigateTo({
-// 						url: "../../vipCenter/vipCenter_page"
-// 					})
-// 					return
-// 				}
-// 				if(index === 3) {
-// 					uni.navigateTo({
-// 						url: "../../shopCart/shopCart_page"
-// 					})
-// 					return
-// 				}
-// 				if(index === 4) {
-// 					uni.navigateTo({
-// 						url: "../../mine/mine_page"
-// 					})
-// 					return
-// 				}
+// 				uni.navigateTo({
+// 					url: `../../${item.name_code}/${item.name_code}_page`
+// 				})
+				
 				// 点击附近，跳转到其对应的页面
-				if(index === 1) {
+				if(item.name_code === "nearby") {
 					uni.navigateTo({
 						url: "../../nearby/nearby_page"
 					})
 					return
 				}
-				// 切换底部导航做权限判定，登录后才可进入(会员中心页，购物车，我的)
-				if(index === 2 || index === 3 || index === 4) {
+				// 切换底部导航做权限判定，登录后才可进入(我的)
+				if(item.name_code === "mine") {
 					this.$guardToLogin(index).then(()=>{
 						this.$store.commit("change_page",index);
 					}).catch(()=>{});
