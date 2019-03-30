@@ -30,7 +30,7 @@ export default {
 // 		}
 	},
 	actions:{
-		reSetAddressList(ctx){
+		updataAddressList(ctx){
 			// console.log(ctx);
 			// console.log(ctx.rootState.userId);
 			// 重新获取地址列表数据

@@ -128,7 +128,7 @@
 		},
 		methods:{
 			// 注入vuex的两个方法
-			...mapMutations(['LOGIN', 'INIT_GOODS']), 
+			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS']), 
 			// 初始化第三方登录图标
 			initProvider() {
 			    // const filters = ['weixin', 'qq', 'sinaweibo'];
@@ -242,9 +242,11 @@
 					const data = res.data.data;
 					// 用户角色等级
 					const userLevel = data.role || 0;
-					console.log(data);
+					// console.log(data);
 					// 获取购物车数据
 					this.getGoodsData(data.id);
+					// 获取收货地址
+					this.getAddress(data.id);
 					// 设置底部导航栏
 					this.setfooterBar(userLevel);
 					// 缓存用户数据
@@ -455,22 +457,52 @@
 				if(!userId) {
 					return
 				}
+				uni.showLoading({
+					title: "加载中"
+				})
 				service.getCartList(userId).then(res => {
-					console.log(res);
+					uni.hideLoading();
 					const data = res.data.data;
-					console.log("data", data);
 					if(data.data.length > 0) {
+						console.log(123)
 						// 同步购物车数据;
 						this.INIT_GOODS(data.data);
 					}
 				}).catch((err)=>{
-// 					// 请求失败
-// 					uni.showToast({
-// 						icon: 'none',
-// 						title: err.errMsg || err.data.data,
-// 					});
-// 					return;
+					uni.hideLoading();
+					// 请求失败
+					uni.showToast({
+						icon: 'none',
+						title: err.errMsg || err.data.data,
+					});
 				});
+			},
+			// 获取收货地址数据
+			getAddress(userId){
+				if(!userId) {
+					return
+				}
+				let params = {
+					userId: userId,
+				}
+				uni.showLoading({
+					title: "加载中"
+				})
+				// 获取用户收获地址列表
+				service.getAddressList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					if(data.length > 0) {
+						this.INIT_ADDRESS(data);
+					} 
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg || err.data.data,
+					})
+				})
 			},
 			toForgetPassword(){
 				uni.navigateTo({

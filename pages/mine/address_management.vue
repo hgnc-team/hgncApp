@@ -77,7 +77,7 @@
 		methods:{
 			// 注入vuex的方法
 			...mapMutations(['INIT_ADDRESS']),
-			...mapActions(['reSetAddressList']),
+			...mapActions(['updataAddressList']),
 			init(){
 				let params = {
 					userId: this.$store.state.userId,
@@ -115,7 +115,7 @@
 						title: "已保存为默认"
 					})	
 					// 同步到vuex
-					this.reSetAddressList();
+					this.updataAddressList();
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
@@ -149,7 +149,7 @@
 									title: "地址已删除"
 								});
 								// 同步到vuex
-								that.reSetAddressList();
+								that.updataAddressList();
 							}).catch(err=>{
 								console.log(err)
 								uni.hideLoading();

@@ -13,8 +13,8 @@ const store = new Vuex.Store({
 		hasLogin: false,
 		// 用户名
 		userName: "",
-		// 用户等级，分为1,2,3,4,5五个等级
-		userLevel: 1,
+		// 用户等级，分为0,1,2,3,4五个等级
+		userLevel: 0,
 		// 用户id
 		userId: "",
 		// 是否校验用户密码
@@ -29,7 +29,7 @@ const store = new Vuex.Store({
 		// 登录动作
 		LOGIN(state, data) {
 		    state.userName = data.userName || '新用户';
-			state.userLevel = data.userLevel;
+			state.userLevel = data.role;
 			state.userId = data.id;
 		    state.hasLogin = true;
 		},
@@ -37,7 +37,7 @@ const store = new Vuex.Store({
 		LOGOUT(state) {  
             state.hasLogin = false;   
             state.userName = '';  
-			state.userLevel = 1;  
+			state.userLevel = 0;  
         },
 		// 设置密码校验状态
 		SET_PASSWORD_CHECKSTATUS(state, status) {

@@ -101,7 +101,7 @@
 		},
 		methods:{
 			// 注入vuex的方法
-			...mapActions(['reSetAddressList']),
+			...mapActions(['updataAddressList']),
 			init(){
 				// 
 				// this.getLocation();
@@ -251,7 +251,7 @@
 						}
 					}
 					// 同步vuex修改后的数据
-					this.reSetAddressList();
+					this.updataAddressList();
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();

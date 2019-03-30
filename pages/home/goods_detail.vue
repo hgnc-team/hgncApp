@@ -222,6 +222,7 @@
 				service.getGoodListById({ids: ids}).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
+					console.log(data);
 					this.goods = {
 						goodsId: data[0].id,
 						title: data[0].title,
@@ -229,7 +230,7 @@
 						detail: data[0].detail,
 						pointRate: data[0].pointRate,
 					}
-			
+					
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
@@ -272,7 +273,7 @@
 				this.$guardToLogin().then(()=>{
 					let parms = {
 						userId: this.$store.state.userId,
-						goodsId: this.goodsId
+						goodsId: this.goods.goodsId
 					}
 					uni.showLoading()
 					service.addToCart(parms).then(res=>{
@@ -282,7 +283,7 @@
 						});
 						let data = res.data.data;
 						// 同步vuex数据
-						// this.ADD_GOODS(data);
+						this.ADD_GOODS({});
 					}).catch(err=>{
 						uni.hideLoading();
 						uni.showToast({

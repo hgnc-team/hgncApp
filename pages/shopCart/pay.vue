@@ -7,14 +7,14 @@
 			</view>
 			<view class="default-address uni-inline-item">
 				<!-- 有地址 -->
-				<view class="info uni-h5 uni-bold" v-if="isHaveAddress">
+				<view class="info uni-h5 uni-bold" v-if="address">
 					{{address.receiver}}&nbsp;&nbsp;{{address.phone}}
 				</view>
-				<view class="address-detail uni-text-small text-color-gray" v-if="isHaveAddress">
+				<view class="address-detail uni-text-small text-color-gray" v-if="address">
 					{{address.province}} &nbsp;{{address.city}} &nbsp;{{address.region}} &nbsp;{{address.detail}}
 				</view>
 				<!-- 暂无地址 -->
-				<view class="text-color-gray uni-flex-item flex-center-center" v-if="!isHaveAddress">
+				<view class="text-color-gray uni-flex-item flex-center-center" v-if="!address">
 					暂无收货地址，请前往设置
 				</view>
 			</view>
@@ -171,6 +171,7 @@
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
+	import { mapMutations, mapGetters, mapActions } from 'vuex';
 	// import rainColor from "../../components/common/rain-color.vue"
 	export default {
 		components: {
@@ -179,19 +180,6 @@
 		},
 		data(){
 			return {
-				// 地址相关信息
-				address:{
-					id: "",
-					receiver: "",
-					phone: "",
-					province: "",
-					city: "",
-					region: "",
-					street: "",
-					detail: ""
-				},
-				// 是否有地址
-				isHaveAddress: true,
 				goodsList: [{
 					pro_id: 1,
 					pro_name: '老街口-红糖麻花500g/袋',
@@ -228,45 +216,25 @@
 			}
 		},
 		computed: {
+			// 注入vuex的计算方法
+			...mapGetters(["getAddressList"]),
+			// 积分是否可用
 			isJfPayAvailable() {
 				return this.jBalance >= this.total; 
 			},
+			// M币是否可用
 			isMbPayAvailable() {
 				return this.mBalance >= this.total; 
 			},
+			address(){
+				return this.getAddressList.length > 0 ? this.getAddressList[0] : null
+			}
 		},
 		methods: {
 			init(){
 				this.jBalance = 450;
 				this.mBalance = 650;
 				this.total = 505;
-				this.getAddress();
-			},
-			// 获取地址
-			getAddress(){
-				let params = {
-					userId: this.$store.state.usrId,
-				}
-				// 获取用户收获地址列表
-				uni.showLoading();
-				service.getAddressList(params).then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					if(data.length > 0) {
-						// 查找默认项
-						let defaultIndex = _.findIndex(data, item => item.default === 1);
-						this.address = defaultIndex > -1 ? data[defaultIndex] : data[0];
-					} else {
-						this.isHaveAddress = false;
-					}
-				}).catch(err=>{
-					console.log(err)
-					uni.hideLoading();
-					uni.showToast({
-						icon: "none",
-						title: err.errMsg || err.data.data,
-					})
-				})
 			},
 			// 去地址管理页面
 			toAddress(){
