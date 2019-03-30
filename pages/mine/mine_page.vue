@@ -102,7 +102,7 @@
 			init() {
 				//用户信息
 				this.userinfo = {
-					face: '../../static/HM-PersonalCenter/face.jpeg',
+					face: '../../static/HM-PersonalCenter/face_default.png',
 					username: "VIP会员23123",
 					telPhone: "1435*****2132"
 				}
