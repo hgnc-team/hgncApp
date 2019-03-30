@@ -462,7 +462,9 @@
 				})
 				service.getCartList(userId).then(res => {
 					uni.hideLoading();
+					const data = res.data.data;
 					if(data.data.length > 0) {
+						console.log(123)
 						// 同步购物车数据;
 						this.INIT_GOODS(data.data);
 					}
