@@ -51,17 +51,17 @@
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">		
+						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" @scroll="onPageScroll">		
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
 								<view class="title">好物热卖</view>
 								<!-- 商品列表 -->
 								<view class="product-list">
-									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)">		
+									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
 										<!-- <image mode="scaleToFill" lazy-load :src="item.img"></image> -->
 										<view class="uni-media-list-logo">
-											<image class="image" :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
+											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
 											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 										</view>
 										<view class="name">{{item.name}}</view>
@@ -91,6 +91,7 @@
 		uniIcon
 	} from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
+	import _ from "lodash";
 	import topTabMenu from "../../components/common/topTabMenu.vue";
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
@@ -297,15 +298,6 @@
 		computed: {
 
 		},
-		onPageScroll(e) {
-			//兼容iOS端下拉时顶部漂移
-			if (e.scrollTop >= 0) {
-				this.headerPosition = "fixed";
-			} else {
-				this.headerPosition = "absolute";
-			}
-			this.load();
-		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
 			setTimeout(function() {
@@ -314,7 +306,6 @@
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
-			this.load();
 			// uni.showToast({title: '触发上拉加载'});
 // 			let len = this.productList.length;
 // 			if (len >= 40) {
@@ -328,10 +319,13 @@
 		},
 		methods: {
 			init() {
+				// 获取设备高度
+				this.windowHeight = uni.getSystemInfoSync().windowHeight;
 				this.initBar();
+				
 			},
 			// 初始化navBar
-			initBar(){
+			async initBar(){
 				let parms = {
 					"classScheme": "cat1"
 				}
@@ -347,9 +341,10 @@
 						name:"分类"
 					})
 					this.dataList = this.randomfn();
-					setTimeout(() => {
+					let timer = setTimeout(()=>{
 						this.load();
-					}, 100)
+					})
+					this.load();
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -396,13 +391,6 @@
 					url: '/pages/home/search'
 				})
 			},
-			// 切换选项卡
-			changeTabs(index) {
-				if (this.tabs.current !== index) {
-					this.tabs.current = index;
-					this.load()
-				}
-			},
 			//轮播图跳转
 			toSwiper(e) {
 				this.initBar()
@@ -423,9 +411,14 @@
 				})
 			},
 			loadMore(e) {
-				setTimeout(() => {
+				// console.log(123123)
+				// setTimeout(() => {
 					this.addData(e);
-				}, 1000);
+				// }, 500);
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},30)	
 			},
 			addData(e) {
 				if (this.dataList[e].data.length > 30) {
@@ -465,6 +458,11 @@
 				}
 				this.isClickChange = false;
 				this.tabIndex = index; //一旦访问data就会出问题
+				
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
 			},
 			getElSize(id) { //得到元素的size
 				return new Promise((res, rej) => {
@@ -477,7 +475,6 @@
 				})
 			},
 			async tapTab(e) { //点击tab-bar
-				console.log(e)
 			
 				let tabIndex = e.target.dataset.current;
 				// 将分类放到此处，点击跳转分类页
@@ -487,7 +484,6 @@
 					})
 					return
 				}
-				
 				
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
@@ -501,6 +497,10 @@
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
 				}
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
 			},
 			randomfn() {
 				let ary = [];
@@ -524,7 +524,7 @@
 			},
 			// 图片懒加载
 			load() {
-				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
+				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
 					images.forEach((image, index) => {
 						if (image.top <= this.windowHeight) {
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
@@ -536,28 +536,20 @@
 				}).exec()
 			},
 			onLoad(e) {
-				// this.dataList[e.target.dataset.index].data.loaded = true;
 				// 图片url为空就不会执行这里
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
-		},
-		onShow() {
-// 			if (!this.show) {
-// 				this.show = true
-				setTimeout(() => {
-					this.load()
-				}, 1000)
-			// }
+			onPageScroll:_.throttle(function(){
+				this.load()
+			}, 50)
 		},
 		created() {
 			this.init();
-			// 获取设备高度
-			this.windowHeight = uni.getSystemInfoSync().windowHeight;
-			setTimeout(() => {
+			setTimeout(()=>{
 				this.load()
-			}, 1000)
+			},1000)
 		}
 	}
 </script>
@@ -749,8 +741,8 @@
 						background-color: #fff;
 						margin: 0 0 15upx 0;
 						.placeholder {
-							opacity: 0.3;
-							transition: opacity 0.4s linear;
+							opacity: 0.1;
+							transition: opacity 0.2s linear;
 						}
 						
 						.placeholder.loaded {
