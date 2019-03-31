@@ -2,7 +2,7 @@
     "name" : "MPlus",
     "appid" : "__UNI__70311E9",
     "description" : "",
-    "versionName" : "1.0.0",
+    "versionName" : "1.0.1",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
@@ -54,7 +54,7 @@
             },
             "icons" : {
                 "ios" : {
-                    "appstore" : "C:/Users/cs/Desktop/嬴鱼APP界面3.9/登录+注册+忘记密码/嬴魚logo/嬴魚logo.png",
+                    "appstore" : "D:/M+/设计图/嬴魚logo@2x.png",
                     "ipad" : {
                         "app" : "unpackage/res/icons/76x76.png",
                         "app@2x" : "unpackage/res/icons/152x152.png",
@@ -88,8 +88,8 @@
             }
         },
         "splashscreen" : {
-            "waiting" : false,
-            "alwaysShowBeforeRender" : false
+            "waiting" : true,
+            "alwaysShowBeforeRender" : true
         }
     },
     /* SDK配置 */
@@ -110,7 +110,7 @@
             "proxy" : {
                 "/api/*" : {
                     "target" : "http://server.maiyidesan.cn",
-					// "target" : "http://10.90.131.120:7002",
+                    // "target" : "http://10.90.131.120:7002",
                     "changeOrigin" : true,
                     "secure" : false
                 }

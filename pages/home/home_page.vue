@@ -48,6 +48,9 @@
 							<view class="bottom-line"></view>
 						 </view>
 					</scroll-view>
+					 <view class="subCategory" @tap="toSubCategoryNav" v-if="isShowSubCategoryNav">
+						分类
+					</view>
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
@@ -253,6 +256,7 @@
 			return {
 				scrollLeft: 0,
 				isClickChange: false,
+				isShowSubCategoryNav: false,
 				tabIndex: 0,
 				dataList: [],
 				tabBars: [],
@@ -336,15 +340,12 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					this.tabBars = data;
-					this.tabBars.unshift({
-						id: "ALL",
-						name:"分类"
-					})
+					this.isShowSubCategoryNav = true;
 					this.dataList = this.randomfn();
 					let timer = setTimeout(()=>{
 						this.load();
-					})
-					this.load();
+						timer = null;
+					},100)
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -429,6 +430,11 @@
 					this.dataList[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
 				}
 			},
+			toSubCategoryNav(){
+				uni.navigateTo({
+					url: "/pages/home/subCategory_nav"
+				})
+			},
 			async changeTab(e) {
 				let index = e.target.current;
 				if(this.dataList[index].data.length === 0){
@@ -477,14 +483,6 @@
 			async tapTab(e) { //点击tab-bar
 			
 				let tabIndex = e.target.dataset.current;
-				// 将分类放到此处，点击跳转分类页
-				if(tabIndex - 0 === 0) {
-					uni.navigateTo({
-						url: "/pages/home/subCategory_nav"
-					})
-					return
-				}
-				
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
@@ -547,9 +545,7 @@
 		},
 		created() {
 			this.init();
-			setTimeout(()=>{
-				this.load()
-			},1000)
+			
 		}
 	}
 </script>
@@ -671,19 +667,41 @@
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
 			.custom-tabs{	
-				.uni-swiper-tab{
+				.subCategory{
+					width: 100upx;
 					line-height: 88upx;
 					height: 88upx;
 					border:none;
 					background-color: #fff;
-					z-index: 100;
+					z-index: 1000;
 					position: fixed;
+					right: 0;
 					/* #ifdef H5 */
 					top: 88upx;
 					/* #endif */	
 					/*  #ifdef  APP-PLUS  */
 					top: calc(var(--status-bar-height) + 88upx);
 					/* #endif */
+					text-align: center;
+					box-shadow: -2upx 0upx 20upx -2upx #242424;
+				}
+				.uni-swiper-tab{
+					width: calc(100% - 100upx);
+					line-height: 88upx;
+					height: 88upx;
+					border:none;
+					background-color: #fff;
+					z-index: 100;
+					position: fixed;
+					left: 0;
+					/* #ifdef H5 */
+					top: 88upx;
+					/* #endif */	
+					/*  #ifdef  APP-PLUS  */
+					top: calc(var(--status-bar-height) + 88upx);
+					/* #endif */
+					padding-right: 20upx;
+					box-sizing: border-box;
 					.swiper-tab-list{
 						width:auto;
 						position: relative;
