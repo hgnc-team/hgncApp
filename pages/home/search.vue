@@ -129,11 +129,13 @@
 	import service from '../../common/service.js';
 	//引用mSearch组件，如不需要删除即可
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
+	// import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
 			//引用mSearch组件，如不需要删除即可
-			mSearch
+			mSearch,
+			// recommendGoods
 		},
 		data() {
 			return {
@@ -165,6 +167,7 @@
 		},
 		onPageScroll() {
 			this.load()
+			console.log("scroll")
 		},
 		computed:{
 // 			totalNum(){
@@ -339,23 +342,24 @@
 				})
 			},
 			// 获取推荐产品列表
-			getRecommendGoodsList(key){
-				const data = {
-					title: key,
-					page: this.page
+			getRecommendGoodsList(){
+				let params = {
+					userId : this.$store.state.userId,
+					areaId: "",
+					num: this.num
 				}
 				uni.showLoading();
-// 				service.getGoodListBySearch(data).then(res=>{
-// 					uni.hideLoading();
-// 					let data = res.data.data;
-// 					this.RecommendGoodsList = data.data;
-// 				}).catch(err=>{
-// 					uni.hideLoading();
-// 					uni.showToast({
-// 						icon: "none",
-// 						title:  err.errMsg || err.data.data,
-// 					})
-// 				})
+				service.getRecommendGoodList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					this.RecommendGoodsList = data;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg || err.data.data,
+					})
+				})
 				
 				setTimeout(()=>{
 					uni.hideLoading();
@@ -697,6 +701,10 @@
 							position: absolute;
 						}
 						
+// 						image{
+// 							width: 100%;
+// 							height: 246upx;
+// 						}
 							
 						.name {
 							width: 100%;
