@@ -235,7 +235,7 @@
 			        password: this.loginData.password
 			    };
 				// 登录
-				uni.showLoading({title: '登录中'});
+				uni.showLoading({title: '加载中...'});
 				service.login(parms).then(res => {
 					 // 请求成功
 					uni.hideLoading();
@@ -249,16 +249,17 @@
 					this.getAddress(data.id);
 					// 设置底部导航栏
 					this.setfooterBar(userLevel);
-					// 缓存用户数据
-					this.saveUserInfo(data);
+					// 同步store里面的用户名称，等级
+					this.LOGIN(data);
+					this.goBack();
 
 				}).catch((err)=>{
-					 // 请求失败
-					 console.log(err)
+					// 请求失败
+					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg || err.data.data,
+						title: (err.data && err.data.data) || err.errMsg,
 					});
 					return;
                 })
@@ -378,7 +379,7 @@
                     // 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg || err.data.data,
+						title: (err.data && err.data.data) || err.errMsg,
 					});
 					return;
                 })
@@ -446,7 +447,7 @@
 						// 请求失败
 						uni.showToast({
 							icon: 'none',
-							title: err.errMsg || err.data.data,
+							title: (err.data && err.data.data) || err.errMsg,
 						});
 						return;
 					});
@@ -464,7 +465,6 @@
 					uni.hideLoading();
 					const data = res.data.data;
 					if(data.data.length > 0) {
-						console.log(123)
 						// 同步购物车数据;
 						this.INIT_GOODS(data.data);
 					}
@@ -473,7 +473,7 @@
 					// 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg || err.data.data,
+						title: (err.data && err.data.data) || err.errMsg,
 					});
 				});
 			},
@@ -500,7 +500,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: err.errMsg || err.data.data,
+						title: (err.data && err.data.data) || err.errMsg,
 					})
 				})
 			},
@@ -524,12 +524,6 @@
 				this.$store.dispatch(barType);
 				// 切换导航下标
 				this.$store.commit("change_page",index);
-			},
-			// 缓存用户数据
-			saveUserInfo(data) {
-				// 同步store里面的用户名称，等级
-				this.LOGIN(data);
-				this.goBack();
 			},
 			// 返回登录前一页
 			goBack() {

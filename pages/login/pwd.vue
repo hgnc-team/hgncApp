@@ -20,7 +20,7 @@
 	    		</view>
 	    	</view>
 	    	<view class="btn-primary">
-	    		<button @tap="reSetPwd">完 成</button>
+	    		<button @tap="reSetPwd">重置密码</button>
 	    	</view>
 	    </view>
 	</view>
@@ -115,7 +115,7 @@
 						// 请求失败
 						uni.showToast({
 							icon: 'none',
-							title: err.errMsg,
+							title: (err.data && err.data.data) || err.errMsg,
 						});
 						return;
 					});
@@ -213,9 +213,7 @@
 // 								uni.redirectTo({
 // 									url: `./login?phone=${this.pwdData.phone}&password=${this.pwdData.password}`
 // 								})	
-								uni.navigateBack({
-									
-								})
+								uni.navigateBack()
 							} 
 						})
 					} else {
@@ -231,7 +229,7 @@
                     // 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg,
+						title: err.data.data || err.errMsg,
 					});
 					return;
                 })
