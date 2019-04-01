@@ -232,7 +232,7 @@
 			    	   
 			    const parms = {
 			        phone: this.loginData.phone,
-			        password: this.loginData.password
+			        password: _.trim(this.loginData.password)
 			    };
 				// 登录
 				uni.showLoading({title: '加载中...'});
@@ -349,7 +349,7 @@
 				
 				const parms = {
 					phone: this.registerData.phone,
-					password: this.registerData.password,
+					password: _.trim(this.registerData.password),
 					code: this.registerData.code,
 					inviteCode: this.registerData.inviteCode
 				}

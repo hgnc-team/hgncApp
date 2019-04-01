@@ -198,7 +198,7 @@
 				// 请求重置密码接口
 				const parms = {
 					phone: this.pwdData.phone,
-					password: this.pwdData.password,
+					password: _.trim(this.pwdData.password),
 					code: this.pwdData.code,
 				}
 				uni.showLoading({title: '重置中'});
