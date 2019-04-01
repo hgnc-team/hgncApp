@@ -52,7 +52,7 @@
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll">		
+						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll" @scrolltoupper="scrollTop" @touchstart="touchS" @touchend="touchE" >		
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
@@ -84,17 +84,15 @@
 	</view>
 </template>
 <script>
-	import {
-		uniBadge,
-		uniIcon
-	} from '@dcloudio/uni-ui';
+	import { uniBadge,uniIcon } from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
 	import _ from "lodash";
 	import topTabMenu from "../../components/common/topTabMenu.vue";
 	import customSwiper from "../../components/common/custom-swiper.vue";
-	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
 	import service from '../../common/service.js';
+	//高德SDK
+	import amap from '../../common/SDK/amap-wx.js';
 	const tpl = {
 		data0: {
 			goods_id: 0,
@@ -132,6 +130,7 @@
 			slogan: '52244人付款'	
 		}
 	};
+	
 	export default {
 		components: {
 			topTabMenu,
@@ -146,6 +145,7 @@
 				scrollLeft: 0,
 				isClickChange: false,
 				isShowSubCategoryNav: false,
+				isSupportRefresh: false,
 				tabIndex: 0,
 				dataList: [],
 				tabBars: [],
@@ -191,7 +191,21 @@
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
-			setTimeout(function() {
+			this.dataList[this.tabIndex].data =  [];
+			this.dataList[this.tabIndex].swiperList = [];
+			this.dataList[this.tabIndex].loadingText = '加载更多...',
+			setTimeout(() => {
+				if(this.dataList[this.tabIndex].swiperList.length === 0) {
+					this.dataList[this.tabIndex].swiperList = this.swiperList;
+				}
+				if(this.dataList[this.tabIndex].data.length === 0){
+					this.addData(this.tabIndex)
+				}
+
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
 				uni.stopPullDownRefresh();
 			}, 1000);
 		},
@@ -209,11 +223,82 @@
 // 			}
 		},
 		methods: {
+			scrollTop(e){
+				console.log(e)
+				// #ifdef APP-PLUS
+				const pages = getCurrentPages();  
+				const page = pages[pages.length - 1];  
+				var currentWebview = page.$getAppWebview();
+				
+				currentWebview.setStyle({  
+				  pullToRefresh: {  
+					support: true,  
+					style: plus.os.name === 'Android' ? 'circle' : 'default'  
+				  }  
+				});  
+				 // #endif
+				// uni.startPullDownRefresh();
+// 				this.dataList[this.tabIndex].data =  [];
+// 				this.dataList[this.tabIndex].swiperList = [];
+// 				this.dataList[this.tabIndex].loadingText = '加载更多...',
+// 				setTimeout(() => {
+// 					if(this.dataList[this.tabIndex].swiperList.length === 0) {
+// 						this.dataList[this.tabIndex].swiperList = this.swiperList;
+// 					}
+// 					if(this.dataList[this.tabIndex].data.length === 0){
+// 						this.addData(this.tabIndex)
+// 					}
+// 				
+// 					let timer = setTimeout(()=>{
+// 						this.load();
+// 						timer = null;
+// 					},100)	
+// 					currentWebview.setStyle({  
+// 					  pullToRefresh: {  
+// 						support: false,  
+// 						style: plus.os.name === 'Android' ? 'circle' : 'default'  
+// 					  }  
+// 					});   
+// 					uni.stopPullDownRefresh();
+// 				}, 1000);
+			},
+			touchS(e) {
+				console.log(e)
+				uni.startPullDownRefresh()
+				// startX = e.mp.changedTouches[0].clientX;
+			},
+			touchE(e) {
+				console.log(e)
+				// endX = e.mp.changedTouches[0].clientX;
+			},
 			init() {
 				// 获取设备高度
 				this.windowHeight = uni.getSystemInfoSync().windowHeight;
+				// 初始化navbar
 				this.initBar();
+// 				// 获取当前地图定位
+// 				this.amapPlugin = new amap.AMapWX({
+// 					//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
+// 					key: '7c235a9ac4e25e482614c6b8eac6fd8e'
+// 				});
+// 				//定位地址
+// 				this.amapPlugin.getRegeo({
+// 					success: data => {
+// 						this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
+// 					}
+// 				});
+				// #ifdef APP-PLUS
+				const pages = getCurrentPages();  
+				const page = pages[pages.length - 1];  
+				var currentWebview = page.$getAppWebview();
 				
+				currentWebview.setStyle({  
+				  pullToRefresh: {  
+					support: false,  
+					style: plus.os.name === 'Android' ? 'circle' : 'default'  
+				  }  
+				});  
+				 // #endif
 			},
 			// 初始化navBar
 			async initBar(){
@@ -340,7 +425,8 @@
 					timer = null;
 				},100)	
 			},
-			getElSize(id) { //得到元素的size
+			 //得到元素的size
+			getElSize(id) {
 				return new Promise((res, rej) => {
 					uni.createSelectorQuery().select("#" + id).fields({
 						size: true,
@@ -350,7 +436,8 @@
 					}).exec();
 				})
 			},
-			async tapTab(e) { //点击tab-bar
+			//点击tab-bar
+			async tapTab(e) {
 				let tabIndex = e.target.dataset.current;
 				if(this.dataList[tabIndex].swiperList.length === 0) {
 					this.dataList[tabIndex].swiperList = this.swiperList;
@@ -425,6 +512,7 @@
 					})
 				}).exec()
 			},
+			// 图片加载完毕的回调
 			onLoad(e) {
 				// 图片url为空就不会执行这里
 				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
@@ -432,14 +520,14 @@
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
-			// 内容滚动
-			onPageScroll: _.throttle(function(){
-				this.load()
+			// Scroll组件的滚动事件
+			onPageScroll: _.throttle(function(e){
+				// console.log(e)
+				this.load();
 			}, 100)
 		},
 		created() {
 			this.init();
-			
 		}
 	}
 </script>
