@@ -150,7 +150,7 @@
 				dataList: [],
 				tabBars: [],
 				// 图片默认路径
-				placeholderSrc: "/static/img/logo@2x.png",
+				placeholderSrc: "/static/img/logo@0.5x.png",
 				// 设备屏幕高度
 				windowHeight: 0,
 				picker: {
@@ -183,7 +183,6 @@
 						img: '/static/img/common/banner4.jpg'
 					}
 				],
-				loadingText: "正在加载..."
 
 			};
 		},

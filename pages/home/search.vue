@@ -155,7 +155,7 @@
 				// 图片懒加载
 				show: false,
 				// 图片默认路径
-				placeholderSrc: "/static/img/logo@2x.png",
+				placeholderSrc: "/static/img/logo@0.5x.png",
 				// 设备屏幕高度
 				windowHeight: 0,
 			}
@@ -685,8 +685,9 @@
 						background-color: #fff;
 						margin: 0 0 15upx 0;
 						.placeholder {
-							opacity: 0.3;
-							transition: opacity 0.4s linear;
+							opacity: 0.1;
+							transition: opacity 0.1s linear;
+							background-image: url()
 						}
 						
 						.placeholder.loaded {
@@ -695,7 +696,7 @@
 						
 						.uni-media-list-logo {
 							width: 100%;
-							height: 246upx;
+							height: 300upx;
 							position: relative;
 						}
 						
