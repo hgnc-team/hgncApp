@@ -132,7 +132,6 @@ const switchTab = function(type){
 		})
 	} else if(type === 'shopCart') {
 		// 跳转购物车
-		console.log(store.state.footer_store.footer_nav_len)
 		let cart_index = store.state.footer_store.footer_nav_len === MENU_LEN_4 ? 2 : 3;
 		store.commit("change_page", cart_index);
 		uni.navigateTo({

@@ -11,7 +11,6 @@ export default {
 	getters: {
 		// 购物车商品总数量
 		total_num(state){
-			console.log(state.goodsList);
 			return state.goodsList.length + "";
 		}
 	},

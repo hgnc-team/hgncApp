@@ -8,7 +8,7 @@
 		 title="购物车" :rightText="rightText" @click-right="onClickRight"></uni-nav-bar>
 		<!-- 内容 -->
 		<view class="content">
-			<view class="no-data" v-if="!hasLogin || goodsList.length == 0">
+			<view class="no-data" v-if="showNoData">
 				<view class="icon">
 					<uni-icon type="cart" size="50"></uni-icon>
 				</view>
@@ -16,8 +16,8 @@
 					您的购物车为空哦
 				</view>
 			</view>
-			<scroll-view scroll-x="true" class="scrollView" v-for="(item,index) in shopData" :key="index" :id="item.id"
-			 :scroll-left="item.scrollLeft" @touchstart="touchS" @touchend="touchE" v-if="hasLogin&&goodsList.length > 0">
+			<scroll-view scroll-x="true" class="scrollView" v-for="(item,index) in goodsList" :key="index" :id="item.id"
+			 :scroll-left="item.scrollLeft" @touchstart="touchS" @touchend="touchE" >
 				<view class="viewbox">
 					<view class="shangpin uni-flex">
 						<!-- #ifdef H5 -->
@@ -120,7 +120,6 @@
 				// 全选，返回
 				isCheckAll: false,
 				allPrice: 0, //所有价格
-				shopData: [],
 				//猜你喜欢列表
 				productList: [
 					{
@@ -160,6 +159,9 @@
 				let paddingBottom = this.hasLogin ? 98 : 0;
 				return `padding-bottom:${paddingBottom}upx`;
 			},
+			showNoData(){
+				return !this.hasLogin || this.goodsList.length == 0
+			},
 			goodsList(){
 				return this.shopCart_store.goodsList;
 			}
@@ -174,8 +176,8 @@
 			},
 			getCartList(){
 				uni.showLoading();
-				// let userId = this.userId;
-				let userId = "660efd50-4c6f-11e9-bc7c-95dfc83db603";
+				let userId = this.userId;
+				// let userId = "660efd50-4c6f-11e9-bc7c-95dfc83db603";
 				service.getCartList(userId).then(res=>{
 					uni.hideLoading();
 					const data = res.data.data.data;
@@ -183,10 +185,8 @@
 						item.scrollLeft = 0;
 						item.isChecked = false;
 					})
-					this.shopData = data;
 					// 同步购物车数据;
 					this.INIT_GOODS(data);
-					console.log(data)
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -316,7 +316,6 @@
 			deleteMultiple() {
 				let ids = [];
 				_.forEach(this.shopData, (item, index) => {
-					console.log(item.isChecked);
 					if(item.isChecked) {
 						ids.push({
 							id:item.goodsId, 
@@ -329,8 +328,10 @@
 			// 删除商品
 			deletePro(idsArr) {
 				let ids = [];
+				let indexs = [];
 				_.forEach(idsArr, item => {
-					ids.push(item.id)
+					ids.push(item.id);
+					indexs.push(item.index)
 				})
 				let params = {
 					userId: this.userId,
@@ -372,12 +373,11 @@
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${id}`
 				})
-			}
-			
+			},
 		},
-		onReachBottom() {
-			uni.showToast({title: '触发上拉加载'});
-		},
+// 		onReachBottom() {
+// 			uni.showToast({title: '触发上拉加载'});
+// 		},
 		// 单间商品的价格 x 数量
 		filters: {
 			totalprice(price, count) {
@@ -389,8 +389,11 @@
 			shopData: {
 				deep: true,
 				handler(val, oldval) {
-					this._totalPrice()
+					this._totalPrice();
 				}
+			},
+			showNoData(){
+				
 			}
 		},
 		created() {
