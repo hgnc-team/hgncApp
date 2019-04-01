@@ -59,7 +59,7 @@
 		}
 	}
 	// 全局多列选择的样式
-	.mpvue-picer{
+	.mpvue-picker-view{
 		color: #000;
 	}
 	// 全局swiper的样式

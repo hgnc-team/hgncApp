@@ -3,7 +3,7 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<!-- 漂浮头部 -->
-		<view class="header" :style="{position:headerPosition}">
+		<view class="header">
 			<!-- 切换地理位置 -->
 			<view class="location">
 				<view class="local" @tap="showPicker">
@@ -12,11 +12,9 @@
 						<uni-icon type="arrowdown" size="18"></uni-icon>
 					</view>
 				</view>
-				<view class="mpvue-picer">
-					<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
-					 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel"
-					 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
-				</view>
+				<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
+				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel"
+				 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
 			<!-- 搜索 -->
 			<view class="search">
@@ -54,15 +52,14 @@
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" @scroll="onPageScroll">		
+						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll">		
 							<!-- 轮播图 -->
-							<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
+							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
 								<view class="title">好物热卖</view>
 								<!-- 商品列表 -->
 								<view class="product-list">
 									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
-										<!-- <image mode="scaleToFill" lazy-load :src="item.img"></image> -->
 										<view class="uni-media-list-logo">
 											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
 											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
@@ -82,8 +79,6 @@
 						</scroll-view>
 					</swiper-item>
 				</swiper>
-				<bottomInfo></bottomInfo>
-				<view class="loading-text">{{loadingText}}</view>
 			</view>
 		</view>
 	</view>
@@ -106,141 +101,35 @@
 			img: '/static/img/common/good1.jpg',
 			name: '老街口-红糖麻花500g/袋',
 			price: '￥58',
-			slogan: '1096人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '1096人付款'
 		},
 		data1: {
 			goods_id: 1,
 			img: '/static/img/common/good2.jpg',
 			name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
 			price: '￥68',
-			slogan: '686人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '686人付款'
 		},
 		data2: {
 			goods_id: 2,
 			img: '/static/img/common/good3.jpg',
 			name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
 			price: '￥368',
-			slogan: '1234人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '1234人付款'
 		},
 		data3: {
 			goods_id: 3,
 			img: '/static/img/common/good4.jpg',
 			name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
 			price: '￥668',
-			slogan: '678人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '678人付款'
 		},
 		data4: {
 			goods_id: 4,
 			img: '/static/img/common/good5.jpg',
 			name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
 			price: '￥218',
-			slogan: '52244人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
-			
+			slogan: '52244人付款'	
 		}
 	};
 	export default {
@@ -265,10 +154,10 @@
 				// 设备屏幕高度
 				windowHeight: 0,
 				picker: {
-					mode: 'selector',
-					deepLength: 0, // 几级联动
+					mode: 'multiLinkageSelector',
+					deepLength: 2, // 几级联动
 					pickerValueDefault: [], // 初始化值
-					pickerValueArray: [], // picker 数组值
+					pickerValueArray: cityData, // picker 数组值
 					pickerText: '武汉',
 					themeColor: '#000', // 颜色主题
 				},
@@ -294,7 +183,6 @@
 						img: '/static/img/common/banner4.jpg'
 					}
 				],
-				headerPosition: "fixed",
 				loadingText: "正在加载..."
 
 			};
@@ -360,15 +248,10 @@
 			},
 			// 二级联动
 			showPicker() {
-				this.picker.pickerValueArray = cityData;
-				this.picker.mode = 'multiLinkageSelector';
-				this.picker.deepLength = 2;
-				// this.picker.pickerValueDefault = [1, 0];
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
 				console.log(e);
-				// this.pickerText = e.label;
 				if (e && e.label) {
 					this.picker.pickerText = e.label.split('-')[1];
 				}
@@ -430,6 +313,7 @@
 					this.dataList[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
 				}
 			},
+			//去二级分类页面
 			toSubCategoryNav(){
 				uni.navigateTo({
 					url: "/pages/home/subCategory_nav"
@@ -437,6 +321,9 @@
 			},
 			async changeTab(e) {
 				let index = e.target.current;
+				if(this.dataList[index].swiperList.length === 0) {
+					this.dataList[index].swiperList = this.swiperList;
+				}
 				if(this.dataList[index].data.length === 0){
 					this.addData(index)
 				}
@@ -481,8 +368,10 @@
 				})
 			},
 			async tapTab(e) { //点击tab-bar
-			
 				let tabIndex = e.target.dataset.current;
+				if(this.dataList[tabIndex].swiperList.length === 0) {
+					this.dataList[tabIndex].swiperList = this.swiperList;
+				}
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
@@ -491,6 +380,7 @@
 				} else {
 					let tabBar = await this.getElSize("tab-bar"),
 						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+						console.log(tabBar);
 					this.scrollLeft = tabBarScrollLeft;
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
@@ -505,7 +395,8 @@
 				for (let i = 0, length = this.tabBars.length; i < length; i++) {
 					let aryItem = {
 						loadingText: '加载更多...',
-						data: []
+						data: [],
+						swiperList: []
 					};
 					if(i < 1){
 						for (let j = 1; j <= 10; j++) {
@@ -513,7 +404,7 @@
 							item.show = false;
 							item.loaded = false;
 							aryItem.data.push(item);
-							
+							aryItem.swiperList = this.swiperList;
 						}
 					}
 					ary.push(aryItem);
@@ -525,6 +416,7 @@
 				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
 					images.forEach((image, index) => {
 						if (image.top <= this.windowHeight) {
+							// this.dataList[this.tabIndex].data[image.dataset.index].show = true;
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
 							item.show = true;
 							// 重新刷新数据
@@ -535,13 +427,15 @@
 			},
 			onLoad(e) {
 				// 图片url为空就不会执行这里
+				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
-			onPageScroll:_.throttle(function(){
+			// 内容滚动
+			onPageScroll: _.throttle(function(){
 				this.load()
-			}, 50)
+			}, 100)
 		},
 		created() {
 			this.init();
@@ -666,6 +560,8 @@
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
+			padding-bottom: 120upx;
+			box-sizing: border-box;
 			.custom-tabs{	
 				.subCategory{
 					width: 100upx;
@@ -760,7 +656,7 @@
 						margin: 0 0 15upx 0;
 						.placeholder {
 							opacity: 0.1;
-							transition: opacity 0.2s linear;
+							// transition: opacity 0.2s linear;
 						}
 						
 						.placeholder.loaded {

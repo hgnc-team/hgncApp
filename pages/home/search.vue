@@ -157,7 +157,7 @@
 				// 图片默认路径
 				placeholderSrc: "/static/img/logo@2x.png",
 				// 设备屏幕高度
-				windowHeight: 0
+				windowHeight: 0,
 			}
 		},
 		onLoad() {
@@ -166,8 +166,7 @@
 			this.windowHeight = uni.getSystemInfoSync().windowHeight;
 		},
 		onPageScroll() {
-			this.load()
-			console.log("scroll")
+			this.pageScroll();
 		},
 		computed:{
 // 			totalNum(){
@@ -446,6 +445,9 @@
 				item.loaded = true;
 				this.$set(this.goodsList, e.target.dataset.index, item);
 			},
+			pageScroll: _.throttle(function(){
+				this.load();
+			}, 100),
 			goBack(){
 				uni.navigateBack()
 			}
