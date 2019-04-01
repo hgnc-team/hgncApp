@@ -331,23 +331,7 @@
 					this.isClickChange = false;
 					return;
 				}
-				let tabBar = await this.getElSize("tab-bar"),
-					tabBarScrollLeft = tabBar.scrollLeft;
-				let width = 0;
-			
-				for (let i = 0; i < index; i++) {
-					let result = await this.getElSize('tar'+i);
-					width += result.width;
-				}
-				let winWidth = uni.getSystemInfoSync().windowWidth,
-					nowElement = await this.getElSize('tar'+index),
-					nowWidth = nowElement.width;
-				if (width + nowWidth - tabBarScrollLeft > winWidth) {
-					this.scrollLeft = width + nowWidth - winWidth;
-				}
-				if (width < tabBarScrollLeft) {
-					this.scrollLeft = width;
-				}
+				this.setScrollLeft(index);
 				this.isClickChange = false;
 				this.tabIndex = index; //一旦访问data就会出问题
 				
@@ -377,10 +361,7 @@
 				if (this.tabIndex === tabIndex) {
 					return false;
 				} else {
-					let tabBar = await this.getElSize("tab-bar"),
-						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-						console.log(tabBar);
-					this.scrollLeft = tabBarScrollLeft;
+					this.setScrollLeft(tabIndex);
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
 				}
@@ -388,6 +369,26 @@
 					this.load();
 					timer = null;
 				},100)	
+			},
+			// 设置顶部nav的滚动距离
+			async setScrollLeft(index){
+				let tabBar = await this.getElSize("tab-bar"),
+					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+				let subCategoryNavWidth = uni.upx2px(100);
+				let width = 0;
+				for (let i = 0; i < index; i++) {
+					let result = await this.getElSize('tar'+i);
+					width += result.width;
+				}
+				let winWidth = uni.getSystemInfoSync().windowWidth,
+					nowElement = await this.getElSize('tar'+index),
+					nowWidth = nowElement.width;
+				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
+					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
+				}
+				if (width < tabBarScrollLeft) {
+					this.scrollLeft = width;
+				}
 			},
 			randomfn() {
 				let ary = [];
