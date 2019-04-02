@@ -39,7 +39,7 @@
 		},
 		methods: {
 			
-		}
+		},
 		
 	}
 </script>
