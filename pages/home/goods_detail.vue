@@ -226,7 +226,6 @@
 				service.getGoodListById({ids: ids}).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					console.log(data);
 					if(data.length > 0) {
 						this.good = data[0];
 					}					
