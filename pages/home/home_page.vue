@@ -52,7 +52,7 @@
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll" @scrolltoupper="scrollTop" @touchstart="touchS" @touchend="touchE" >		
+						<scroll-view class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll">		
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
@@ -145,7 +145,6 @@
 				scrollLeft: 0,
 				isClickChange: false,
 				isShowSubCategoryNav: false,
-				isSupportRefresh: false,
 				tabIndex: 0,
 				dataList: [],
 				tabBars: [],
@@ -189,7 +188,7 @@
 		computed: {
 
 		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
+		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
 		onPullDownRefresh() {
 			this.dataList[this.tabIndex].data =  [];
 			this.dataList[this.tabIndex].swiperList = [];
@@ -201,7 +200,7 @@
 				if(this.dataList[this.tabIndex].data.length === 0){
 					this.addData(this.tabIndex)
 				}
-
+			
 				let timer = setTimeout(()=>{
 					this.load();
 					timer = null;
@@ -212,93 +211,56 @@
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
 			// uni.showToast({title: '触发上拉加载'});
-// 			let len = this.productList.length;
-// 			if (len >= 40) {
-// 				this.loadingText = "到底了";
-// 				return false;
-// 			}
-// 			let end_goods_id = this.productList[len - 1].goods_id;
-// 			for (let i = 1; i <= 10; i++) {
-// 				this.productList.push(this.productList[i]);
-// 			}
 		},
 		methods: {
-			scrollTop(e){
-				console.log(e)
-				// #ifdef APP-PLUS
-				const pages = getCurrentPages();  
-				const page = pages[pages.length - 1];  
-				var currentWebview = page.$getAppWebview();
-				
-				currentWebview.setStyle({  
-				  pullToRefresh: {  
-					support: true,  
-					style: plus.os.name === 'Android' ? 'circle' : 'default'  
-				  }  
-				});  
-				 // #endif
-				// uni.startPullDownRefresh();
-// 				this.dataList[this.tabIndex].data =  [];
-// 				this.dataList[this.tabIndex].swiperList = [];
-// 				this.dataList[this.tabIndex].loadingText = '加载更多...',
-// 				setTimeout(() => {
-// 					if(this.dataList[this.tabIndex].swiperList.length === 0) {
-// 						this.dataList[this.tabIndex].swiperList = this.swiperList;
-// 					}
-// 					if(this.dataList[this.tabIndex].data.length === 0){
-// 						this.addData(this.tabIndex)
-// 					}
-// 				
-// 					let timer = setTimeout(()=>{
-// 						this.load();
-// 						timer = null;
-// 					},100)	
-// 					currentWebview.setStyle({  
-// 					  pullToRefresh: {  
-// 						support: false,  
-// 						style: plus.os.name === 'Android' ? 'circle' : 'default'  
-// 					  }  
-// 					});   
-// 					uni.stopPullDownRefresh();
-// 				}, 1000);
-			},
-			touchS(e) {
-				console.log(e)
-				uni.startPullDownRefresh()
-				// startX = e.mp.changedTouches[0].clientX;
-			},
-			touchE(e) {
-				console.log(e)
-				// endX = e.mp.changedTouches[0].clientX;
-			},
 			init() {
 				// 获取设备高度
 				this.windowHeight = uni.getSystemInfoSync().windowHeight;
 				// 初始化navbar
 				this.initBar();
-// 				// 获取当前地图定位
-// 				this.amapPlugin = new amap.AMapWX({
-// 					//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
-// 					key: '7c235a9ac4e25e482614c6b8eac6fd8e'
-// 				});
-// 				//定位地址
-// 				this.amapPlugin.getRegeo({
-// 					success: data => {
-// 						this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
-// 					}
-// 				});
+				// 获取当前地图定位
+				this.getPosition();
+			},
+			// 获取当前地图定位
+			getPosition(){
+				// #ifdef APP-PLUS
+				this.amapPlugin = new amap.AMapWX({
+					//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
+					key: '7c235a9ac4e25e482614c6b8eac6fd8e'
+				});
+				//定位地址
+				this.amapPlugin.getRegeo({
+					success: data => {
+						this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
+					}
+				});
+				// #endif
+			},
+			// 是否开启刷新
+			isSupportRefresh(){
+				// 获取内容主体的高度
+				uni.createSelectorQuery().in(this).select(`.list${this.tabIndex}`).scrollOffset((res) => {
+					// console.log("竖直滚动位置" + res.scrollTop);
+					// 滚动到顶部才开启
+					let isSupport = res.scrollTop === 0 ? true : false;
+					this.setRefresh(isSupport);
+				}).exec()
+			},
+			// 设置开启关闭刷新
+			setRefresh(isSupport){
 				// #ifdef APP-PLUS
 				const pages = getCurrentPages();  
 				const page = pages[pages.length - 1];  
-				var currentWebview = page.$getAppWebview();
-				
+				var currentWebview = page.$getAppWebview();		
 				currentWebview.setStyle({  
 				  pullToRefresh: {  
-					support: false,  
-					style: plus.os.name === 'Android' ? 'circle' : 'default'  
+					support: isSupport,  
+					// style: plus.os.name === 'Android' ? 'circle' : 'default'  
+					"style": "circle",
+					"color": "#4c9bfa"
 				  }  
 				});  
-				 // #endif
+				// #endif
 			},
 			// 初始化navBar
 			async initBar(){
@@ -424,6 +386,8 @@
 					this.load();
 					timer = null;
 				},100)	
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
 			},
 			 //得到元素的size
 			getElSize(id) {
@@ -456,6 +420,9 @@
 					this.load();
 					timer = null;
 				},100)	
+				
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
 			},
 			// 设置顶部nav的滚动距离
 			async setScrollLeft(index){
@@ -520,10 +487,12 @@
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
-			// Scroll组件的滚动事件
-			onPageScroll: _.throttle(function(e){
-				// console.log(e)
+			// Scroll-view组件的滚动监听
+			onPageScroll: _.throttle(function(){
+				// 控制图片懒加载
 				this.load();
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
 			}, 100)
 		},
 		created() {

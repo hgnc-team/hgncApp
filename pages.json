@@ -19,17 +19,26 @@
 				"app-plus": {
 					"titleNView": false,
 					"pullToRefresh": {
+						"support": true,
 						"style": "circle",
 						"color": "#4c9bfa",
-						"height": "88px",
-						"offset": "10%"
+						"range": "10%"
+// 						"height": "88px",
+// 						"offset": "10%",
+// 						"contentdown": {
+//                             "caption": "下拉可刷新自定义文本"
+//                         },
+//                         "contentover": {
+//                             "caption": "释放可刷新自定义文本"
+//                         },
+//                         "contentrefresh": {
+//                             "caption": "正在刷新自定义文本"
+//                         }
 					}
 				},
 				// "enablePullDownRefresh": true,
 				"usingComponents": {
-					"van-checkbox": "/wxcomponents/vant/checkbox/index",
-					"van-tab": "/wxcomponents/vant/tab/index",
-					"van-tabs": "/wxcomponents/vant/tabs/index"
+					"van-checkbox": "/wxcomponents/vant/checkbox/index"
 				}
 			}
 		},
