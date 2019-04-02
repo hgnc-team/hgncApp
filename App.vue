@@ -32,11 +32,15 @@
 			})
 			// #endif
 		},
-		onShow: function () {
+		onShow: function() {
 			console.log('App Show')
 		},
-		onHide: function () {
+		onHide: function() {
 			console.log('App Hide')
+		},
+		// 捕获 app error
+		onError(err) {
+			console.log(err)
 		}
 	}
 </script>
@@ -44,12 +48,14 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import "./static/css/uni.css";
+
 	// 顶部导航栏全局配置
-	.uni-navbar{
+	.uni-navbar {
 		color: $uni-text-color-status !important;
 		margin-top: 0;
 		/*  #ifdef  APP-PLUS  */
 		margin-top: var(--status-bar-height); //表示状态栏的高度。
+
 		/*  #endif  */
 		.uni-navbar__content {
 			padding: 0 30upx;
@@ -58,30 +64,36 @@
 			border: none;
 		}
 	}
+
 	// 全局多列选择的样式
-	.mpvue-picker-view{
+	.mpvue-picker-view {
 		color: #000;
 	}
+
 	// 全局swiper的样式
-	.swiper{
-		.uni-swiper-wrapper{
+	.swiper {
+		.uni-swiper-wrapper {
 			overflow: visible !important;
-			.uni-swiper-dots{
+
+			.uni-swiper-dots {
 				bottom: -40upx !important;
-				.uni-swiper-dot{
+
+				.uni-swiper-dot {
 					border-radius: 0 !important;
 				}
-				.uni-swiper-dot-active{
+
+				.uni-swiper-dot-active {
 					width: 30upx !important;
 				}
 			}
 		}
 	}
-	
+
 	// 全局的button样式
 	.btn-primary {
 		margin-top: 96upx;
-		button{
+
+		button {
 			height: 100upx;
 			width: 100%;
 			line-height: 100upx;
@@ -96,65 +108,79 @@
 			border-radius: 2upx;
 		}
 	}
-	.text-price{
+
+	.text-price {
 		color: #59a0fa !important;
 		font-size: 28upx;
 	}
-	.flex-center-center{
+
+	.flex-center-center {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		
+
 	}
-	.flex-right{
+
+	.flex-right {
 		justify-content: flex-end;
 	}
+
 	// 占位条
-	.place-bar{
+	.place-bar {
 		width: 100%;
 		height: 30upx;
 		background-color: #f0f0f0;
 	}
-	.text-color-gray{
+
+	.text-color-gray {
 		color: #666 !important;
 	}
-	.text-color-white{
+
+	.text-color-white {
 		color: #fff !important;
 	}
-	.common-pa-30{
+
+	.common-pa-30 {
 		padding: 30upx;
 		box-sizing: border-box;
 	}
-	.common-pl-20{
+
+	.common-pl-20 {
 		padding-left: 20upx;
 		box-sizing: border-box;
 	}
-	.common-pr-20{
+
+	.common-pr-20 {
 		padding-right: 20upx;
 		box-sizing: border-box;
 	}
-	.common-ma-30{
+
+	.common-ma-30 {
 		margin: 30upx;
 	}
-	.common-ml-20{
+
+	.common-ml-20 {
 		margin-left: 20upx;
 	}
-	.common-mr-20{
+
+	.common-mr-20 {
 		margin-right: 20upx;
 	}
+
 	// 字体颜色和大小
-	.big-title{
+	.big-title {
 		font-size: $uni-font-size-title;
 		color: $uni-color-title;
 	}
-	.sub-title{
+
+	.sub-title {
 		font-size: $uni-font-size-lg;
 		color: $uni-color-title;
 	}
-	.tab-sub-title{
+
+	.tab-sub-title {
 		font-size: $uni-font-size-lg;
 		color: $uni-color-title;
 		font-weight: 600;
 	}
-	
 </style>
