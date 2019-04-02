@@ -2,7 +2,8 @@
 	<view>
 		<view class="footerNav">
 			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
-				<uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon>
+				<!-- <uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon> -->
+				<image :src="index==now_index?item.select_icon:item.icon" mode=""></image>
 				<view style="margin-top: 4upx;">{{item.name}}</view>
 			</view>
 		</view>
