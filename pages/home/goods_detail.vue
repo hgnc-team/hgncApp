@@ -80,17 +80,61 @@
 		</view>
 		<view class="goods-footer uni-flex">
 			<view class="cart uni-flex-item">
-				<uni-icon type="star" @click="toCart"></uni-icon>
+				<uni-icon type="star" @tap="toCart"></uni-icon>
 				<uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge>
 			</view>
-			<view class="btn add-to-cart uni-flex-item uni-center" @click="addToCart">
+			<view class="btn add-to-cart uni-flex-item uni-center" @tap="selectSpecAction('toCart')">
 				加入购物车
 			</view>
-			<view class="btn to-buy uni-flex-item uni-center" @click="toBuy">
+			<view class="btn to-buy uni-flex-item uni-center" @tap="selectSpecAction('toBuy')">
 				立即购买
 			</view>
 		</view>
-		
+		<!-- 规格-模态层弹窗 -->
+		<view 
+			class="popup spec" 
+			:class="specClass"
+			@touchmove.stop.prevent="stopPrevent"
+			@click="toggleSpec"
+		>
+			<!-- 遮罩层 -->
+			<view class="mask"></view>
+			<view class="layer attr-content" @click.stop="stopPrevent">
+				<view class="a-t uni-flex">
+					<image class="uni-inline-item" src="https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg"></image>
+					<view class="right uni-flex-item uni-column">
+						<text class="price text-price">¥328.00</text>
+						<view class="selected uni-text-small">
+							请选择
+							<text class="selected-text" v-for="(sItem, sIndex) in specList" :key="sIndex">
+								{{sItem.name}}
+							</text>
+						</view>
+					</view>
+				</view>
+				<view v-for="(item,index) in specList" :key="index" class="attr-list">
+					<text class="uni-bold">{{item.name}}</text>
+					<view class="item-list">
+						<text 
+							v-for="(childItem, childIndex) in specChildList" 
+							v-if="childItem.pid === item.id"
+							:key="childIndex" class="tit"
+							:class="{selected: childItem.selected, disabled:childItem.disabled}"
+							@click="selectSpec(childIndex, childItem.pid,childItem.disabled)"
+						>
+							{{childItem.name}}
+						</text>
+					</view>
+				</view>
+				<view  class="attr-list uni-flex uni-row flex-right" style="padding-bottom: 150upx">
+					<text class="uni-bold" style="padding-bottom: 20upx;">商品数量</text>
+					<view class="number-box">
+						<uni-number-box :min="1" @change="changeNum" :value="numberValue"></uni-number-box>
+					</view>
+				</view>
+				<button class="btn" @click="specSeleted">确 定</button>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -98,7 +142,8 @@
 	import {
 		uniIcon,
 		uniBadge,
-		uniNavBar
+		uniNavBar,
+		uniNumberBox
 	} from '@dcloudio/uni-ui';
 	import { mapState, mapMutations, mapGetters} from 'vuex';
 	import service from '../../common/service.js';
@@ -112,10 +157,17 @@
 			uniBadge,
 			uniNavBar,
 			customSwiper,
+			uniNumberBox,
 			share
 		},
 		data() {
 			return {
+				specClass: 'none',
+				specSelected:[],
+				// 加入购物车数量
+				numberValue: 1,
+				// 加入购物车|直接购买
+				type: "",
 				// 商品内容
 				good: {
 					id:"",
@@ -141,54 +193,120 @@
 				swiperList: [{
 						sid: 0,
 						src: '自定义src0',
-						img: '../../static/img/common/banner1.jpg',
+						img: '/static/img/common/banner1.jpg',
 					},
 					{
 						sid: 1,
 						src: '自定义src1',
-						img: '../../static/img/common/banner2.jpg'
+						img: '/static/img/common/banner2.jpg'
 					},
 					{
 						sid: 2,
 						src: '自定义src2',
-						img: '../../static/img/common/banner3.jpg'
+						img: '/static/img/common/banner3.jpg'
 					},
 					{
 						sid: 3,
 						src: '自定义src3',
-						img: '../../static/img/common/banner4.jpg'
+						img: '/static/img/common/banner4.jpg'
 					}
 				],
 				//猜你喜欢列表
 				productList: [{
 						goods_id: 0,
-						img: '../../static/img/common/good1.jpg',
+						img: '/static/img/common/good1.jpg',
 						name: '老街口-红糖麻花500g/袋',
 						price: '￥58',
 						slogan: '1096人付款'
 					},
 					{
 						goods_id: 1,
-						img: '../../static/img/common/good2.jpg',
+						img: '/static/img/common/good2.jpg',
 						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
 						price: '￥68',
 						slogan: '686人付款'
 					},
 					{
 						goods_id: 2,
-						img: '../../static/img/common/good3.jpg',
+						img: '/static/img/common/good3.jpg',
 						name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
 						price: '￥368',
 						slogan: '1234人付款'
 					},
 					{
 						goods_id: 3,
-						img: '../../static/img/common/good4.jpg',
+						img: '/static/img/common/good4.jpg',
 						name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
 						price: '￥668',
 						slogan: '678人付款'
 					}
 				],
+				specList: [
+					{
+						id: 1,
+						name: '尺码',
+					},
+					{	
+						id: 2,
+						name: '颜色',
+					},
+				],
+				specChildList: [
+					{
+						id: 1,
+						pid: 1,
+						name: '46',
+						disabled: false
+					},
+					{
+						id: 2,
+						pid: 1,
+						name: '45',
+						disabled: true
+					},
+					{
+						id: 3,
+						pid: 1,
+						name: '44',
+						disabled: false
+					},
+					{
+						id: 4,
+						pid: 1,
+						name: '43',
+						disabled: true
+					},
+					{
+						id: 5,
+						pid: 1,
+						name: '42',
+						disabled: false
+					},
+					{
+						id: 6,
+						pid: 1,
+						name: '41.5',
+						disabled: true
+					},
+					{
+						id: 7,
+						pid: 2,
+						name: '白色',
+						disabled: false
+					},
+					{
+						id: 8,
+						pid: 2,
+						name: '珊瑚粉',
+						disabled: true
+					},
+					{
+						id: 9,
+						pid: 2,
+						name: '草木绿',
+						disabled: false
+					},
+				]
 			}
 		},
 		onNavigationBarButtonTap(e) {
@@ -262,65 +380,131 @@
 			toCart(){
 				// 判断是否登录
 				this.$guardToLogin().then(()=>{
+					// 模拟底部跳转
 					util.switchTab("shopCart");
 				}).catch(()=>{});
 			},
-			// 加入购物车
-			addToCart(){
+			// 打开规格选择弹框
+			selectSpecAction(type){
 				// 判断是否登录
 				this.$guardToLogin().then(()=>{
-					// 查询商品是否已经存在于购物车
-					let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.good.id) > -1;
-					console.log(isExist);
-					console.log(this.goodsList.length);
-					// 购物车增加长度限制 最多50个
-					if(!isExist && this.goodsList.length >= 2) {
-						uni.showToast({
-							icon:"none",
-							title: "亲，购物车商品数量超出了限制哦，请删除部分后在添加"
-						})
-						return
-					}
-					let parms = {
-						userId: this.userId,
-						goodsId: this.good.id
-					}
-					uni.showLoading();
-					service.addToCart(parms).then(res=>{
-						uni.hideLoading();
-						uni.showToast({
-							title:"加入购物车成功"
-						});
-						let data = res.data.data;
-						// 同一个商品加入购物城时，不增加数量
-						if(!isExist) {
-							// 同步vuex数据
-							this.ADD_GOODS({
-								goodsId: this.good.id
-							});
-						}
-						
-					}).catch(err=>{
-						uni.hideLoading();
-						uni.showToast({
-							icon:"none",
-							title: err.errMsg || err.data.data
-						})
-					})
+					// 选择规格
+					this.specClass = 'show';
+					this.type = type;
 				}).catch(()=>{});
 			},
-			toBuy(){
-				// 判断是否登录
-				this.$guardToLogin().then(()=>{
-					// 创建订单；
-					uni.navigateTo({
-						url: '/pages/shopCart/pay'
+			//规格弹窗开关
+			toggleSpec() {
+				if(this.specClass === 'show'){
+					this.specClass = 'hide';
+					setTimeout(() => {
+						this.specClass = 'none';
+					}, 250);
+				}else if(this.specClass === 'none'){
+					this.specClass = 'show';
+				}
+			},
+			//选择规格
+			selectSpec(index, pid, disabled){
+				if(disabled) {
+					return
+				}
+				let list = this.specChildList;
+				list.forEach(item=>{
+					if(item.pid === pid){
+						this.$set(item, 'selected', false);
+					}
+				})
+			
+				this.$set(list[index], 'selected', true);
+				//存储已选择
+				this.specSelected.forEach(item=>{
+					if(item.pid === pid){
+						item = list[index];
+					}
+				})
+			},
+			// 修改加入购物车产品数量
+			changeNum(value){
+				this.numberValue = value;
+			},
+			stopPrevent(){},
+			// 加入购物车
+			addToCart(){
+				// 查询商品是否已经存在于购物车
+				let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.good.id) > -1;
+				console.log(isExist);
+				console.log(this.goodsList.length);
+				// 购物车增加长度限制 最多50个
+				if(!isExist && this.goodsList.length >= 2) {
+					uni.showToast({
+						icon:"none",
+						title: "亲，购物车商品数量超出了限制哦，请删除部分后在添加"
+					})
+					return
+				}
+				let parms = {
+					userId: this.userId,
+					goodsId: this.good.id
+				}
+				uni.showLoading();
+				service.addToCart(parms).then(res=>{
+					uni.hideLoading();
+					uni.showToast({
+						title:"加入购物车成功"
 					});
-				}).catch(()=>{});
+					let data = res.data.data;
+					// 同一个商品加入购物城时，不增加数量
+					if(!isExist) {
+						// 同步vuex数据
+						this.ADD_GOODS({
+							goodsId: this.good.id
+						});
+					}
+					
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg || err.data.data
+					})
+				})
+			},
+			// 创建订单；
+			creatOrder(){
+				// 创建订单；
+				
+				uni.navigateTo({
+					url: '/pages/shopCart/pay'
+				});
+			},
+			// 规格选定后
+			specSeleted(){
+				
+				if(this.type === "toCart") {
+					// 加入购物车
+					this.addToCart();
+				} else {
+					// 直接购买
+					this.creatOrder();
+				}
+				// 关闭弹框
+				this.specClass = 'none';
 			}
+			
 		},
 		onLoad(e) {
 			this.init(e.id);
+			//规格 默认选中第一条
+			this.specList.forEach(item=>{
+				for(let cItem of this.specChildList){
+					if(cItem.pid === item.id){
+						this.$set(cItem, 'selected', true);
+						this.specSelected.push(cItem);
+						break; //forEach不能使用break
+					}
+				}
+			})
 		},
 		
 	}
@@ -478,6 +662,158 @@
 				background-color: #242424;;
 				color: #fff;
 				
+			}
+		}
+		/*  弹出层 */
+		.popup {
+			position: fixed;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 99;
+			&.show {
+				display: block;
+				.mask{
+					animation: showPopup 0.2s linear both;
+				}
+				.layer {
+					animation: showLayer 0.2s linear both;
+				}
+			}
+			&.hide {
+				.mask{
+					animation: hidePopup 0.2s linear both;
+				}
+				.layer {
+					animation: hideLayer 0.2s linear both;
+				}
+			}
+			&.none {
+				display: none;
+			}
+			.mask{
+				position: fixed;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 1;
+				background-color: rgba(0, 0, 0, 0.4);
+			}
+			.layer {
+				position: fixed;
+				z-index: 99;
+				bottom: 0;
+				width: 100%;
+				min-height: 40vh;
+				background-color: #fff;
+				padding: 30upx;
+				box-sizing: border-box;
+				.a-t{
+					position: relative;
+					top: -80upx;
+					left: 0;
+					image{
+						width:240upx;
+						height: 240upx;
+						margin-right: 50upx;
+					}
+					.right{
+						display: flex;
+						justify-content: flex-end;
+						.price{
+							font-size: 36upx;
+							font-weight: 600;
+						}
+						.selected{
+							.selected-text{
+								margin-left: 20upx;
+							}
+						}
+					}
+				}
+				.attr-list{
+					display: flex;
+					flex-direction: column;
+					font-size: 30upx;
+					color: #666;
+					padding-bottom: 20upx;
+					.number-box{
+						.uni-numbox{
+							transform: scale(0.85);
+							transform-origin: left;
+						}
+					}
+				}
+				.item-list{
+					padding: 20upx 0 0;
+					display: flex;
+					flex-wrap: wrap;
+					text{
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						background: #eee;
+						margin-right: 20upx;
+						margin-bottom: 20upx;
+						min-width: 60upx;
+						height: 60upx;
+						padding: 0 20upx;
+						font-size: 28upx;
+						color: #242424;
+					}
+					.selected{
+						background: #242424;
+						color: #fff;
+					}
+					.disabled{
+						color: #ccc;
+					}
+				}
+				.btn{
+					position: absolute;
+					width: 100%;
+					bottom: 0;
+					height: 100upx;
+					line-height: 100upx;
+					background: #242424;
+					font-size: 30upx;
+					color: #fff;
+					border-radius: 0;
+					margin:0 -30upx;
+				}
+			}
+			@keyframes showPopup {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@keyframes hidePopup {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes showLayer {
+				0% {
+					transform: translateY(120%);
+				}
+				100% {
+					transform: translateY(0%);
+				}
+			}
+			@keyframes hideLayer {
+				0% {
+					transform: translateY(0);
+				}
+				100% {
+					transform: translateY(120%);
+				}
 			}
 		}
 	}
