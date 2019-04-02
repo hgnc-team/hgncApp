@@ -1,18 +1,17 @@
 <template>
 	<view class="indexPage">
 		<homePage v-if="page_code=='home'"></homePage>
-		<!-- <nearbyPage v-if="page_code=='nearby'"></nearbyPage> -->
+		<nearbyPage v-if="page_code=='nearby'"></nearbyPage>
 		<vipCenterPage v-if="page_code=='vipCenter'"></vipCenterPage>
 		<shopCartPage v-if="page_code=='shopCart'"></shopCartPage>
 		<minePage v-if="page_code=='mine'"></minePage>
-		<!-- <myloading></myloading> -->
 		<footerNav></footerNav>
 	</view>
 </template>
 
 <script>
 	import homePage from "./home/home_page.vue";
-	// import nearbyPage from "./nearby/nearby_page.vue";
+	import nearbyPage from "./nearby/nearby_page.vue";
 	import vipCenterPage from "./vipCenter/vipCenter_page.vue";
 	import shopCartPage from "./shopCart/shopCart_page.vue";
 	import minePage from "./mine/mine_page.vue";
@@ -23,7 +22,7 @@
 		},
 		components: {
 			homePage,
-			// nearbyPage,
+			nearbyPage,
 			vipCenterPage,
 			shopCartPage,
 			minePage,

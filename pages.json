@@ -21,8 +21,8 @@
 					"pullToRefresh": {
 						"support": true,
 						"style": "circle",
-						"color": "#4c9bfa",
-						"range": "10%"
+						"color": "#4c9bfa"
+						// "range": "10%"
 // 						"height": "88px",
 // 						"offset": "10%",
 // 						"contentdown": {
@@ -36,7 +36,6 @@
 //                         }
 					}
 				},
-				// "enablePullDownRefresh": true,
 				"usingComponents": {
 					"van-checkbox": "/wxcomponents/vant/checkbox/index"
 				}

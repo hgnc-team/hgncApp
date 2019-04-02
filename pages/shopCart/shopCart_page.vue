@@ -95,7 +95,7 @@
 			</view>
 			<view class="btn uni-flex-item" @tap="done(rightText=='完成')" :class="rightText=='完成'?'delete':''">{{rightText=='完成'?'删除':'结算'}}</view>
 		</view>
-
+		
 	</view>
 </template>
 

@@ -17,20 +17,22 @@
 				 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
 			<!-- 搜索 -->
-			<view class="search">
-				<view class="icon">
-					<uni-icon type="search" size="20"></uni-icon>
-				</view>
-				<view class="input" @tap="toSearch()">
-					名称,类型
+			<view class="search-wrap">
+				<view class="search uni-flex">
+					<view class="icon uni-inline-item flex-center-center">
+						<uni-icon type="search" size="20"></uni-icon>
+					</view>
+					<view class="input uni-flex-item" @tap="toSearch()">
+						名称,类型
+					</view>
 				</view>
 			</view>
 			<!-- 消息 -->
 			<view class="messages" @tap="goMessagesPage">
 				<view class="icon">
-					<uni-icon type="email" size="30"></uni-icon>
+					<uni-icon type="bars" size="24"></uni-icon>
 				</view>
-				<uni-badge text="2" type="error" size="small"></uni-badge>
+				<!-- <uni-badge text="2" type="error" size="small"></uni-badge> -->
 			</view>
 		</view>
 		<!-- 占位 -->
@@ -530,7 +532,7 @@
 
 			.messages {
 				width: 100upx;
-				height: 100upx;
+				height: 88upx;
 				flex-shrink: 1;
 				display: flex;
 				justify-content: center;
@@ -544,38 +546,30 @@
 				}
 			}
 
-			.search {
+			.search-wrap {
 				width: calc(100% - 246upx);
+				height: 88upx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				position: relative;
-
-				.input {
-					width: calc(100% - 60upx);
+				.search{
+					width: 100%;
 					height: 56upx;
 					background-color: #ffffff;
-					color: #666;
-					padding-left: 50upx;
-					font-size: 30upx;
+					font-size: 28upx;
 					border-radius: 4upx;
+					.icon {
+						width: 56upx;
+						height: 56upx;
+						color: #666;
+					}
+					.input {
+						line-height: 56upx;
+						color: #999;
+					}
 				}
 
-				.icon {
-					width: 50upx;
-					height: 50upx;
-					position: absolute;
-					color: #a18090;
-					z-index: 996;
-					top: 16upx;
-					/*  #ifdef  APP-PLUS  */
-					top: 4upx;
-					/*  #endif  */
-					left: 16upx;
-					/*  #ifdef  APP-PLUS  */
-					left: 10upx;
-					/*  #endif  */
-				}
+				
 			}
 
 			.location {

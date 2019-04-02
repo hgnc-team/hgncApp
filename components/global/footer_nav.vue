@@ -29,13 +29,6 @@
 // 					url: `../../${item.name_code}/${item.name_code}_page`
 // 				})
 				
-				// 点击附近，跳转到其对应的页面
-				if(item.name_code === "nearby") {
-					uni.navigateTo({
-						url: "../../nearby/nearby_page"
-					})
-					return
-				}
 				// 切换底部导航做权限判定，登录后才可进入(我的)
 				if(item.name_code === "mine") {
 					this.$guardToLogin(index).then(()=>{
