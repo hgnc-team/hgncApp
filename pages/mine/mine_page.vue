@@ -1,7 +1,7 @@
 <template>
 	<view class="minePage">
 		<!-- 状态栏 -->
-		<statusBar></statusBar>
+		<!-- <statusBar></statusBar> -->
 		<view class="header">
 			<view class="userinfo">
 				<view class="face">
@@ -9,10 +9,10 @@
 				</view>
 				<view class="info" v-if="$store.state.hasLogin">
 					<view class="username">{{userinfo.userName}}</view>
-					<view class="integral">ID: {{userinfo.userId}}</view>
+					<view class="integral">ID: {{userinfo.inviteCode}}</view>
 				</view>
 				<view class="info" v-if="!$store.state.hasLogin" @tap="login">
-					<view class="username">登录/注册 ></view>
+					<view class="username">登录/注册</view>
 				</view>
 			</view>
 			<!-- <view class="setting" @tap="toAccountInfo">
@@ -32,7 +32,7 @@
 				<view class="label" v-for="(row,index) in orderTypeLise" :key="row.name" hover-class="hover" @tap="toOrderType(index+1)">
 					<view class="icon">
 						<view class="badge" v-if="row.badge>0">{{row.badge}}</view>
-						<image :src="'../../static/HM-PersonalCenter/'+row.icon"></image>
+						<image :src="'/static/HM-PersonalCenter/'+row.icon"></image>
 					</view>
 					<view class="text">
 						{{row.name}}
@@ -105,47 +105,47 @@
 		methods: {
 			refreshMemberInfo() {
 				this.userinfo = {
-					face: '../../static/HM-PersonalCenter/face_default.png',
-					userName: this.$store.state.userName,
-					userId: this.$store.state.userId
+					face: '/static/HM-PersonalCenter/face_default.png',
+					userName: this.$store.state.userName ? this.$store.state.userName: 'PY' + this.$store.state.phone,
+					inviteCode: this.$store.state.inviteCode
 				}
 			},
 			login(){
 				// this.login()
 				// this.$store.commit('login');
 				uni.navigateTo({
-					url: "../../login/login",
+					url: "/pages/login/login",
 					animationType: "slide-in-bottom"
 				})
 			},
 			// 修改账户信息
 			toAccountInfo(){
 				uni.navigateTo({
-					url: `../../mine/account_info`
+					url: `/pages/mine/account_info`
 				})
 			},
 			//用户点击订单类型
 			toOrderType(index) {
 				uni.navigateTo({
-					url: `../../mine/order_list?index=${index}`
+					url: `/pages/mine/order_list?index=${index}`
 				})
 			},
 			// 换绑手机
 			changeTelphone(){
 				uni.navigateTo({
-					url: "../../mine/change_telphone"
+					url: "/pages/mine/change_telphone"
 				})
 			},
 			// 管理密码
 			setSecondaryPassword(){
 				uni.navigateTo({
-					url: "../../mine/gesture_lock?mode=set"
+					url: "/pages/mine/gesture_lock?mode=set"
 				})
 			},
 			// 收货地址
 			toAddress(){
 				uni.navigateTo({
-					url: "../../mine/address_management"
+					url: "/pages/mine/address_management"
 				})
 			}
 			
