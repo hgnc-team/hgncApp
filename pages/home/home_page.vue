@@ -28,7 +28,7 @@
 				</view>
 			</view>
 			<!-- 消息 -->
-			<view class="messages" @tap="goMessagesPage">
+			<view class="messages" @tap="toSubCategoryNav">
 				<view class="icon">
 					<uni-icon type="bars" size="24"></uni-icon>
 				</view>
@@ -48,9 +48,9 @@
 							<view class="bottom-line"></view>
 						 </view>
 					</scroll-view>
-					 <view class="subCategory" @tap="toSubCategoryNav" v-if="isShowSubCategoryNav">
+					<!-- <view class="subCategory" @tap="toSubCategoryNav" v-if="isShowSubCategoryNav">
 						分类
-					</view>
+					</view> -->
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
@@ -430,7 +430,7 @@
 			async setScrollLeft(index){
 				let tabBar = await this.getElSize("tab-bar"),
 					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-				let subCategoryNavWidth = uni.upx2px(100);
+				// let subCategoryNavWidth = uni.upx2px(100);
 				let width = 0;
 				for (let i = 0; i < index; i++) {
 					let result = await this.getElSize('tar'+i);
@@ -439,8 +439,11 @@
 				let winWidth = uni.getSystemInfoSync().windowWidth,
 					nowElement = await this.getElSize('tar'+index),
 					nowWidth = nowElement.width;
-				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
-					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
+// 				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
+// 					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
+// 				}
+				if (width + nowWidth - tabBarScrollLeft > winWidth) {
+					this.scrollLeft = width + nowWidth - winWidth;
 				}
 				if (width < tabBarScrollLeft) {
 					this.scrollLeft = width;
@@ -614,28 +617,29 @@
 			padding-bottom: 120upx;
 			box-sizing: border-box;
 			.custom-tabs{	
-				.subCategory{
-					width: 100upx;
-					line-height: 88upx;
-					height: 88upx;
-					border:none;
-					background-color: #fff;
-					z-index: 1000;
-					position: fixed;
-					right: 0;
-					/* #ifdef H5 */
-					top: 88upx;
-					/* #endif */	
-					/*  #ifdef  APP-PLUS  */
-					top: calc(var(--status-bar-height) + 88upx);
-					/* #endif */
-					text-align: center;
-					box-shadow: -2upx 0upx 20upx -2upx #242424;
-				}
+// 				.subCategory{
+// 					width: 100upx;
+// 					line-height: 88upx;
+// 					height: 88upx;
+// 					border:none;
+// 					background-color: #fff;
+// 					z-index: 1000;
+// 					position: fixed;
+// 					right: 0;
+// 					/* #ifdef H5 */
+// 					top: 88upx;
+// 					/* #endif */	
+// 					/*  #ifdef  APP-PLUS  */
+// 					top: calc(var(--status-bar-height) + 88upx);
+// 					/* #endif */
+// 					text-align: center;
+// 					box-shadow: -2upx 0upx 20upx -2upx #242424;
+// 				}
 				.uni-swiper-tab{
-					width: calc(100% - 100upx);
-					line-height: 88upx;
+					// width: calc(100% - 100upx);
+					width: 100%;
 					height: 88upx;
+					line-height: 88upx;
 					border:none;
 					background-color: #fff;
 					z-index: 100;
@@ -647,8 +651,8 @@
 					/*  #ifdef  APP-PLUS  */
 					top: calc(var(--status-bar-height) + 88upx);
 					/* #endif */
-					padding-right: 20upx;
-					box-sizing: border-box;
+// 					padding-right: 20upx;
+// 					box-sizing: border-box;
 					.swiper-tab-list{
 						width:auto;
 						position: relative;
