@@ -227,8 +227,8 @@
 			getPosition(){
 				// #ifdef APP-PLUS
 				this.amapPlugin = new amap.AMapWX({
-					//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
-					key: '7c235a9ac4e25e482614c6b8eac6fd8e'
+					//高德地图KEY，参考：http://ask.dcloud.net.cn/article/35070
+					key: '7da2bb476a91a511d0c3b6626f7be558'
 				});
 				//定位地址
 				this.amapPlugin.getRegeo({

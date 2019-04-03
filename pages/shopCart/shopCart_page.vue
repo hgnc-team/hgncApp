@@ -153,6 +153,12 @@
 				]
 			};
 		},
+		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
+		onPullDownRefresh() {
+			setTimeout(() => {
+				uni.stopPullDownRefresh();
+			}, 1000);
+		},
 		computed: {
 			...mapState(['hasLogin', 'userId', 'shopCart_store']),
 			setStyle() {

@@ -135,6 +135,17 @@
 			"path": "shop_index",
 			"style": {
 				"navigationBarTitleText": "店铺首页"
+				
+			}
+		},{
+			"path": "map",
+			"style": {
+				"navigationBarTitleText": "地图",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
 			}
 		},{
 			"path": "goods_detail",
