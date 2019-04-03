@@ -142,7 +142,6 @@
 				uni.showLoading({
 					title: "加载中..."
 				})
-				// #ifdef APP-PLUS
 				this.amapPlugin = new amap.AMapWX({
 					//高德地图KEY，参考：http://ask.dcloud.net.cn/article/35070
 					key: '7da2bb476a91a511d0c3b6626f7be558'
@@ -171,13 +170,15 @@
 						console.log("info", info)
 					}
 				})
-				// #endif
 			},
 			//轮播图预览
 			toSwiper(e) {
-				uni.previewImage({
-					urls: [e.img]
-				});
+// 				uni.previewImage({
+// 					urls: [e.img]
+// 				});
+				uni.showToast({
+					title: "跳转店铺详情"
+				})
 			},
 			// 二级联动
 			showPicker() {

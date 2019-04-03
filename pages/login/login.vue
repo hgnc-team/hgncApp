@@ -137,16 +137,18 @@
 			        service: 'oauth',
 			        success: (res) => {
 			            if (res.provider && res.provider.length) {
-			                for (let i = 0; i < res.provider.length; i++) {
-			                    if (~filters.indexOf(res.provider[i])) {
-			                        this.providerList.push({
-			                            value: res.provider[i],
-			                            image: '/static/img/login/' + `icon_login_${res.provider[i]}@2x` + '.png'
-			                        });
-			                    }
-			                }
+							_.forEach(res.provider, item => {
+								if (~filters.indexOf(item)) {
+								    this.providerList.push({
+								        value: item,
+								        image: `/static/img/login/icon_login_${item}@2x.png`
+								    });
+								}
+							})
 			                this.hasProvider = true;
 			            }
+						console.log(JSON.stringify(res));
+						console.log(JSON.stringify(this.providerList))
 			        },
 			        fail: (err) => {
 			            console.error('获取服务供应商失败：' + JSON.stringify(err));
@@ -172,7 +174,7 @@
 			                     * 实际开发中，获取用户信息后，需要将信息上报至服务端。
 			                     * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
 			                     */
-			                    this.toIndex(infoRes.userInfo.nickName);
+			                    this.goBack();
 			                }
 			            });
 			        },
