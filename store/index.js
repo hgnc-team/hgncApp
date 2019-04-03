@@ -28,7 +28,7 @@ const store = new Vuex.Store({
 	mutations: {
 		// 登录动作
 		LOGIN(state, data) {
-		    state.userName = data.userName || '新用户';
+		    state.userName = data.userName || 'PY_'+data.inviteCode;
 			state.userLevel = data.role;
 			state.userId = data.id;
 		    state.hasLogin = true;

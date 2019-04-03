@@ -8,16 +8,16 @@
 					<image :src="userinfo.face"></image>
 				</view>
 				<view class="info" v-if="$store.state.hasLogin">
-					<view class="username">{{userinfo.username}}</view>
-					<view class="integral">手机号:{{userinfo.telPhone}}</view>
+					<view class="username">{{userinfo.userName}}</view>
+					<view class="integral">ID: {{userinfo.userId}}</view>
 				</view>
 				<view class="info" v-if="!$store.state.hasLogin" @tap="login">
 					<view class="username">登录/注册 ></view>
 				</view>
 			</view>
-			<view class="setting" @tap="toAccountInfo">
+			<!-- <view class="setting" @tap="toAccountInfo">
 				<image src="../../static/HM-PersonalCenter/setting.png"></image>
-			</view>
+			</view> -->
 		</view>
 		<view class="orders">
 			<view class="title uni-flex">
@@ -93,18 +93,21 @@
 				]
 			};
 		},
+		mounted() {
+			// 刷新用户信息
+			this.refreshMemberInfo();
+		},
 		onLoad() {
 			//加载
-			this.init();
-			this.version = plus.runtime.version;
+			this.refreshMemberInfo();
+			// this.version = plus.runtime.version;
 		},
 		methods: {
-			init() {
-				//用户信息
+			refreshMemberInfo() {
 				this.userinfo = {
 					face: '../../static/HM-PersonalCenter/face_default.png',
-					username: "VIP会员23123",
-					telPhone: "1435*****2132"
+					userName: this.$store.state.userName,
+					userId: this.$store.state.userId
 				}
 			},
 			login(){
@@ -156,48 +159,46 @@
 	}
 
 	.header {
-		background-color:#eee;
-		width:92%;
-		height:260upx;
-		padding:0 4%;
+		background-color:#000;
+		// 线性渐变
+		background: linear-gradient(135deg, #242424, #343434);
+		width:100%;
+		height:320upx;
+		// padding:0 4%;
+		padding:0;
 		display:flex;
-		align-items:center;
+		// align-items:center;
 
 		.userinfo {
-			width: 90%;
 			display: flex;
-
 			.face {
-				flex-shrink: 0;
-				width: 120upx;
-				height:120upx;
-
+				width: 200upx;
+				text-align:center;
 				image {
-					width: 100%;
-					height: 100%;
+					display:inline-block;
+					border:4px solid #fff;
+					box-sizing: border-box;
+					margin-top:136upx;
+					width: 130upx;
+					height: 130upx;
 					border-radius: 100%
 				}
 			}
 
 			.info {
-				display: flex;
-				flex-flow: wrap;
-				padding-left: 30upx;
-
+				color: #fff;
 				.username {
-					width: 100%;
-					color: #fff;
-					font-size: 40upx
+					margin-top:162upx;
+					width:100%;
+					height:40upx;
+					line-height:40upx;
+					font-size: 32upx
 				}
 
 				.integral {
-					display: flex;
-					align-items: center;
-					padding: 0 20upx;
+					width:100%;
+					padding:0;
 					height: 40upx;
-					color: #fff;
-					background-color: rgba(0, 0, 0, 0.1);
-					border-radius: 20upx;
 					font-size: 24upx
 				}
 			}
