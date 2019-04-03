@@ -1,50 +1,59 @@
 <template>
-	<view class="shopCartPage" :style="minHeight">
+	<view class="shopCartPage" :style="setStyle">
+	<!-- <view class="shopCartPage"> -->
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<!-- 导航栏 -->
 		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor"
-		 title="订单列表" :rightText="rightText" @click-right="onClickRight"></uni-nav-bar>
+		 title="购物车" :rightText="rightText" @click-right="onClickRight"></uni-nav-bar>
 		<!-- 内容 -->
 		<view class="content">
-			<scroll-view scroll-x="true" class="scrollView" v-for="(ite,ind) in shopData" :key="ind" :id="ite.pro_id"
-			 :scroll-left="ite.scrollLeft" @touchstart="touchS" @touchend="touchE">
+			<view class="no-data" v-if="showNoData">
+				<view class="icon">
+					<uni-icon type="cart" size="50"></uni-icon>
+				</view>
+				<view class="">
+					您的购物车为空哦
+				</view>
+			</view>
+			<scroll-view scroll-x="true" class="scrollView" v-for="(item,index) in goodsList" :key="index" :id="item.id"
+			 :scroll-left="item.scrollLeft" @touchstart="touchS" @touchend="touchE" >
 				<view class="viewbox">
 					<view class="shangpin uni-flex">
 						<!-- #ifdef H5 -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<checkbox  :value="ite.isChecked+ ''" @change="proActive(ite)"></checkbox >
+							<checkbox  :value="item.isChecked+ ''" @change="proActive(item)"></checkbox >
 						</view>
 						<!-- #endif -->
 						<!-- #ifdef APP-PLUS -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<van-checkbox :value="ite.isChecked" @change="proActive(ite)"></van-checkbox>
+							<van-checkbox :value="item.isChecked" @change="proActive(item)"></van-checkbox>
 						</view>
 						<!-- #endif -->	
 						<view class="shangpin-info uni-flex-item">
-							<view class="img uni-inline-item" @tap="toDetail(ite.pro_id)">
-								<image :src="ite.pro_img" mode="aspectFit"></image>
+							<view class="img uni-inline-item" @tap="toDetail(item.id)">
+								<image :src="item.imgUrl" mode="aspectFit"></image>
 							</view>
 							<view class="text-info uni-flex-item">
 								<view class="title-text uni-ellipsis">
-									<text class="name uni-h5">{{ ite.pro_name }}</text>
-									<text class="tags uni-flex uni-text-small uni-text-gray">{{ ite.tags }} </text>
+									<text class="name uni-h5">{{ item.name }}</text>
+									<text class="tags uni-flex uni-text-small uni-text-gray">{{ item.tags }} </text>
 								</view>
 								<view class="bottom-price">
 									<view class="jiage uni-flex">
-										<text class="danjia uni-inline-item">￥{{ ite.now_price }}</text>
-										<text class="shuliang uni-inline-item uni-text-small">x {{ ite.pro_count }}</text>
+										<text class="danjia uni-inline-item">￥{{ item.price }}</text>
+										<text class="shuliang uni-inline-item uni-text-small">x {{ item.num }}</text>
 									</view>
 									<view class="numInput">
-										<text class="reduce iconfont" @tap="changeCount(ite,-1)" :class="ite.pro_count == 0 ? 'numbox-disabled' : ''">-</text>
-										<input class="input" type="number" v-model="ite.pro_count" />
-										<text class="plus iconfont" @tap="changeCount(ite,1)">+</text>
+										<text class="reduce iconfont" @tap="changeCount(item,-1)" :class="item.num == 0 ? 'numbox-disabled' : ''">-</text>
+										<input class="input" type="number" v-model="item.num" />
+										<text class="plus iconfont" @tap="changeCount(item,1)">+</text>
 									</view>
 								</view>
 							</view>
 						</view>
 					</view>
-					<view class="delete-view" @tap="deletePro(ite.pro_id)">删除</view>
+					<view class="delete-view" @tap="deleteSingle(index, item.goodsId)">删除</view>
 				</view>
 			</scroll-view>
 			<view class="place"></view>
@@ -65,7 +74,7 @@
 		</view>
 	
 		<!-- 底部结算 -->
-		<view class="bottom-jiesuan uni-flex">
+		<view class="bottom-jiesuan uni-flex" v-if="hasLogin">
 			<view class="info uni-flex">
 				<view class="allSelectText uni-flex">
 					<!-- #ifdef H5 -->
@@ -84,9 +93,9 @@
 					总计：<text class="text-price uni-bold">￥{{ allPrice }}</text>
 				</view>
 			</view>
-			<view class="btn uni-flex-item" @tap="jiesuan" :class="rightText=='完成'?'delete':''">{{rightText=='完成'?'删除':'结算'}}</view>
+			<view class="btn uni-flex-item" @tap="done(rightText=='完成')" :class="rightText=='完成'?'delete':''">{{rightText=='完成'?'删除':'结算'}}</view>
 		</view>
-
+		
 	</view>
 </template>
 
@@ -99,6 +108,7 @@
 		uniNavBar
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
+	import { mapState, mapMutations, mapActions } from 'vuex';
 	export default {
 		components: {
 			uniIcon,
@@ -110,106 +120,32 @@
 				// 全选，返回
 				isCheckAll: false,
 				allPrice: 0, //所有价格
-				shopData: [{
-						pro_id: 1,
-						pro_name: '老街口-红糖麻花500g/袋',
-						pro_name2: '(又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good1.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					},{
-						pro_id: 2,
-						pro_name: '第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-						pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good2.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					},{
-						pro_id: 3,
-						pro_name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-						pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good3.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					},{
-						pro_id: 4,
-						pro_name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋 ',
-						pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good4.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					},{
-						pro_id: 3,
-						pro_name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-						pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good3.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					},{
-						pro_id: 4,
-						pro_name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋 ',
-						pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-						tags: '50mi,淡香',
-						reduce_price: 16,
-						now_price: 100,
-						pro_count: 1,
-						pro_img: '../../static/img/common/good4.jpg',
-						isChecked: false,
-						// 滚动条
-						scrollLeft: 0,
-					}
-				],
 				//猜你喜欢列表
 				productList: [
 					{
 						goods_id: 1,
-						img: '../../static/img/common/good2.jpg',
+						img: '/static/img/common/good2.jpg',
 						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
 						price: '￥68',
 						slogan: '686人付款'
 					},
 					{
 						goods_id: 2,
-						img: '../../static/img/common/good6.jpg',
+						img: '/static/img/common/good6.jpg',
 						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
 						price: '￥288',
 						slogan: '232人付款'
 					},
 					{
 						goods_id: 3,
-						img: '../../static/img/common/good7.jpg',
+						img: '/static/img/common/good7.jpg',
 						name: '进口智利三文鱼400g',
 						price: '￥216',
 						slogan: '3235人付款'
 					},
 					{
 						goods_id: 4,
-						img: '../../static/img/common/good8.jpg',
+						img: '/static/img/common/good8.jpg',
 						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
 						price: '￥58',
 						slogan: '35人付款'
@@ -217,19 +153,40 @@
 				]
 			};
 		},
+		computed: {
+			...mapState(['hasLogin', 'userId', 'shopCart_store']),
+			setStyle() {
+				let paddingBottom = this.hasLogin ? 98 : 0;
+				return `padding-bottom:${paddingBottom}upx`;
+			},
+			showNoData(){
+				return !this.hasLogin || this.goodsList.length == 0
+			},
+			goodsList(){
+				return this.shopCart_store.goodsList;
+			}
+		},
 		methods: {
+			// 注入vuex的两个方法
+			...mapMutations(['INIT_GOODS']), 
+			...mapActions(['deleteGoods']),
 			init(){
 				// 获取购物车商品列表
 				this.getCartList();
 			},
 			getCartList(){
 				uni.showLoading();
-				// let userId = this.$store.state.userId;
-				let userId = "e8b46f10-43c8-11e9-9de7-55194d563065";
+				let userId = this.userId;
+				// let userId = "660efd50-4c6f-11e9-bc7c-95dfc83db603";
 				service.getCartList(userId).then(res=>{
 					uni.hideLoading();
-					const data = res.data.data;
-					console.log(res)
+					const data = res.data.data.data;
+					_.forEach(data, item => {
+						item.scrollLeft = 0;
+						item.isChecked = false;
+					})
+					// 同步购物车数据;
+					this.INIT_GOODS(data);
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -241,7 +198,7 @@
 			// 获取商品推荐列表
 			getRecommendList(){
 				uni.showLoading();
-				let userId = this.$store.state.userId;
+				let userId = this.userId;
 				service.getCartList(userId).then(res=>{
 					uni.hideLoading();
 					const data = res.data.data;
@@ -288,13 +245,6 @@
 					this.rightText = "编辑";
 					// 执行删除逻辑
 				}
-			},
-			// 单击结算
-			jiesuan() {
-				console.log('跳转到支付详情页面');
-				uni.navigateTo({
-					url: '/pages/shopCart/pay'
-				});
 			},
 			// 点击取消选中商品
 			proActive(pro) {
@@ -354,18 +304,80 @@
 					this.isCheckAll = false;
 				}
 			},
+			// 单个删除
+			deleteSingle(index, id) {
+				let ids = [{
+					id: id, 
+					index: index
+				}]
+				this.deletePro(ids);
+			},
+			// 多个删除
+			deleteMultiple() {
+				let ids = [];
+				_.forEach(this.shopData, (item, index) => {
+					if(item.isChecked) {
+						ids.push({
+							id:item.goodsId, 
+							index: index
+						})
+					}
+				})
+				this.deletePro(ids);
+			},
 			// 删除商品
-			deletePro(id) {
-
+			deletePro(idsArr) {
+				let ids = [];
+				let indexs = [];
+				_.forEach(idsArr, item => {
+					ids.push(item.id);
+					indexs.push(item.index)
+				})
+				let params = {
+					userId: this.userId,
+					ids: ids
+				}
+				uni.showLoading({
+					title: "删除中..."
+				})
+				service.deleteFromCart(params).then(res=>{
+					uni.hideLoading();
+					uni.showToast({
+						title: "删除成功"
+					})
+					// 分发删除动作
+					this.deleteGoods(idsArr);
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: 'none',
+						title: err.errMsg || err.data.data,
+					});
+				})
+			},
+			// 底部按钮（结算 | 删除）
+			done(isDelete) {
+				// 删除
+				if(isDelete) {
+					this.deleteMultiple();
+				} else {
+					// 结算
+					console.log('跳转到支付详情页面');
+					uni.navigateTo({
+						url: '/pages/shopCart/pay'
+					});
+				}
 			},
 			// 去商品详情页
 			toDetail(id){
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${id}`
 				})
-			}
-			
+			},
 		},
+// 		onReachBottom() {
+// 			uni.showToast({title: '触发上拉加载'});
+// 		},
 		// 单间商品的价格 x 数量
 		filters: {
 			totalprice(price, count) {
@@ -373,21 +385,15 @@
 				return price * count;
 			}
 		},
-		computed: {
-			minHeight() {
-				var systemInfo = uni.getSystemInfoSync();
-				return `min-height:${systemInfo.windowHeight}px`;
-			},
-			goodsList(){
-				return this.$store.state.shopCart_store.goodsList;
-			}
-		},
 		watch: { //深度监听所有数据，每次改变重新计算总价和总数
 			shopData: {
 				deep: true,
 				handler(val, oldval) {
-					this._totalPrice()
+					this._totalPrice();
 				}
+			},
+			showNoData(){
+				
 			}
 		},
 		created() {
@@ -403,6 +409,17 @@
 		.content{
 			margin-bottom: 150upx;
 			background-color: #fff;
+			.no-data{
+				width: 100%;
+				height: 300upx;
+				text-align: center;
+				color: #666;
+				.icon{
+					width: 100%;
+					height: 200upx;
+					border: 1upx;
+				}
+			}
 			.scrollView{
 				width: 100%;
 				height: 200upx;

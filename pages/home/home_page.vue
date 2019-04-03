@@ -3,7 +3,7 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<!-- 漂浮头部 -->
-		<view class="header" :style="{position:headerPosition}">
+		<view class="header">
 			<!-- 切换地理位置 -->
 			<view class="location">
 				<view class="local" @tap="showPicker">
@@ -12,27 +12,27 @@
 						<uni-icon type="arrowdown" size="18"></uni-icon>
 					</view>
 				</view>
-				<view class="mpvue-picer">
-					<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
-					 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel"
-					 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
-				</view>
+				<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
+				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel"
+				 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
 			<!-- 搜索 -->
-			<view class="search">
-				<view class="icon">
-					<uni-icon type="search" size="20"></uni-icon>
-				</view>
-				<view class="input" @tap="toSearch()">
-					名称,类型
+			<view class="search-wrap">
+				<view class="search uni-flex">
+					<view class="icon uni-inline-item flex-center-center">
+						<uni-icon type="search" size="20"></uni-icon>
+					</view>
+					<view class="input uni-flex-item" @tap="toSearch()">
+						名称,类型
+					</view>
 				</view>
 			</view>
 			<!-- 消息 -->
-			<view class="messages" @tap="goMessagesPage">
+			<view class="messages" @tap="toSubCategoryNav">
 				<view class="icon">
-					<uni-icon type="email" size="30"></uni-icon>
+					<uni-icon type="bars" size="24"></uni-icon>
 				</view>
-				<uni-badge text="2" type="error" size="small"></uni-badge>
+				<!-- <uni-badge text="2" type="error" size="small"></uni-badge> -->
 			</view>
 		</view>
 		<!-- 占位 -->
@@ -48,20 +48,22 @@
 							<view class="bottom-line"></view>
 						 </view>
 					</scroll-view>
+					<!-- <view class="subCategory" @tap="toSubCategoryNav" v-if="isShowSubCategoryNav">
+						分类
+					</view> -->
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">		
+						<scroll-view class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll">		
 							<!-- 轮播图 -->
-							<customSwiper :swiperList="swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
+							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
 								<view class="title">好物热卖</view>
 								<!-- 商品列表 -->
 								<view class="product-list">
-									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)">		
-										<!-- <image mode="scaleToFill" lazy-load :src="item.img"></image> -->
+									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
 										<view class="uni-media-list-logo">
-											<image class="image" :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
+											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
 											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 										</view>
 										<view class="name">{{item.name}}</view>
@@ -79,166 +81,58 @@
 						</scroll-view>
 					</swiper-item>
 				</swiper>
-				<bottomInfo></bottomInfo>
-				<view class="loading-text">{{loadingText}}</view>
 			</view>
 		</view>
 	</view>
 </template>
 <script>
-	import {
-		uniBadge,
-		uniIcon
-	} from '@dcloudio/uni-ui';
+	import { uniBadge,uniIcon } from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
+	import _ from "lodash";
 	import topTabMenu from "../../components/common/topTabMenu.vue";
 	import customSwiper from "../../components/common/custom-swiper.vue";
-	// import dropDownRefresh from "../../components/common/dropDownRefresh.vue";
 	import cityData from "../../common/city.data.js";
 	import service from '../../common/service.js';
+	//高德SDK
+	import amap from '../../common/SDK/amap-wx.js';
 	const tpl = {
 		data0: {
 			goods_id: 0,
 			img: '/static/img/common/good1.jpg',
 			name: '老街口-红糖麻花500g/袋',
 			price: '￥58',
-			slogan: '1096人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '1096人付款'
 		},
 		data1: {
 			goods_id: 1,
 			img: '/static/img/common/good2.jpg',
 			name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
 			price: '￥68',
-			slogan: '686人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '686人付款'
 		},
 		data2: {
 			goods_id: 2,
 			img: '/static/img/common/good3.jpg',
 			name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
 			price: '￥368',
-			slogan: '1234人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '1234人付款'
 		},
 		data3: {
 			goods_id: 3,
 			img: '/static/img/common/good4.jpg',
 			name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
 			price: '￥668',
-			slogan: '678人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
+			slogan: '678人付款'
 		},
 		data4: {
 			goods_id: 4,
 			img: '/static/img/common/good5.jpg',
 			name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
 			price: '￥218',
-			slogan: '52244人付款',
-			swiperList: [{
-					sid: 0,
-					src: '自定义src0',
-					img: '/static/img/common/banner1.jpg',
-				},
-				{
-					sid: 1,
-					src: '自定义src1',
-					img: '/static/img/common/banner2.jpg'
-				},
-				{
-					sid: 2,
-					src: '自定义src2',
-					img: '/static/img/common/banner3.jpg'
-				},
-				{
-					sid: 3,
-					src: '自定义src3',
-					img: '/static/img/common/banner4.jpg'
-				}
-			]
-			
+			slogan: '52244人付款'	
 		}
 	};
+	
 	export default {
 		components: {
 			topTabMenu,
@@ -252,18 +146,19 @@
 			return {
 				scrollLeft: 0,
 				isClickChange: false,
+				isShowSubCategoryNav: false,
 				tabIndex: 0,
 				dataList: [],
 				tabBars: [],
 				// 图片默认路径
-				placeholderSrc: "/static/img/logo@2x.png",
+				placeholderSrc: "/static/img/logo@0.5x.png",
 				// 设备屏幕高度
 				windowHeight: 0,
 				picker: {
-					mode: 'selector',
-					deepLength: 0, // 几级联动
+					mode: 'multiLinkageSelector',
+					deepLength: 2, // 几级联动
 					pickerValueDefault: [], // 初始化值
-					pickerValueArray: [], // picker 数组值
+					pickerValueArray: cityData, // picker 数组值
 					pickerText: '武汉',
 					themeColor: '#000', // 颜色主题
 				},
@@ -289,49 +184,88 @@
 						img: '/static/img/common/banner4.jpg'
 					}
 				],
-				headerPosition: "fixed",
-				loadingText: "正在加载..."
 
 			};
 		},
 		computed: {
 
 		},
-		onPageScroll(e) {
-			//兼容iOS端下拉时顶部漂移
-			if (e.scrollTop >= 0) {
-				this.headerPosition = "fixed";
-			} else {
-				this.headerPosition = "absolute";
-			}
-			this.load();
-		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
+		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
 		onPullDownRefresh() {
-			setTimeout(function() {
+			this.dataList[this.tabIndex].data =  [];
+			this.dataList[this.tabIndex].swiperList = [];
+			this.dataList[this.tabIndex].loadingText = '加载更多...',
+			setTimeout(() => {
+				if(this.dataList[this.tabIndex].swiperList.length === 0) {
+					this.dataList[this.tabIndex].swiperList = this.swiperList;
+				}
+				if(this.dataList[this.tabIndex].data.length === 0){
+					this.addData(this.tabIndex)
+				}
+			
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
 				uni.stopPullDownRefresh();
 			}, 1000);
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
-			this.load();
 			// uni.showToast({title: '触发上拉加载'});
-// 			let len = this.productList.length;
-// 			if (len >= 40) {
-// 				this.loadingText = "到底了";
-// 				return false;
-// 			}
-// 			let end_goods_id = this.productList[len - 1].goods_id;
-// 			for (let i = 1; i <= 10; i++) {
-// 				this.productList.push(this.productList[i]);
-// 			}
 		},
 		methods: {
 			init() {
+				// 获取设备高度
+				this.windowHeight = uni.getSystemInfoSync().windowHeight;
+				// 初始化navbar
 				this.initBar();
+				// 获取当前地图定位
+				this.getPosition();
+			},
+			// 获取当前地图定位
+			getPosition(){
+				// #ifdef APP-PLUS
+				this.amapPlugin = new amap.AMapWX({
+					//高德地图KEY，随时失效，请务必替换为自己的KEY，参考：http://ask.dcloud.net.cn/article/35070
+					key: '7c235a9ac4e25e482614c6b8eac6fd8e'
+				});
+				//定位地址
+				this.amapPlugin.getRegeo({
+					success: data => {
+						this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
+					}
+				});
+				// #endif
+			},
+			// 是否开启刷新
+			isSupportRefresh(){
+				// 获取内容主体的高度
+				uni.createSelectorQuery().in(this).select(`.list${this.tabIndex}`).scrollOffset((res) => {
+					// console.log("竖直滚动位置" + res.scrollTop);
+					// 滚动到顶部才开启
+					let isSupport = res.scrollTop === 0 ? true : false;
+					this.setRefresh(isSupport);
+				}).exec()
+			},
+			// 设置开启关闭刷新
+			setRefresh(isSupport){
+				// #ifdef APP-PLUS
+				const pages = getCurrentPages();  
+				const page = pages[pages.length - 1];  
+				var currentWebview = page.$getAppWebview();		
+				currentWebview.setStyle({  
+				  pullToRefresh: {  
+					support: isSupport,  
+					// style: plus.os.name === 'Android' ? 'circle' : 'default'  
+					"style": "circle",
+					"color": "#4c9bfa"
+				  }  
+				});  
+				// #endif
 			},
 			// 初始化navBar
-			initBar(){
+			async initBar(){
 				let parms = {
 					"classScheme": "cat1"
 				}
@@ -342,14 +276,12 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					this.tabBars = data;
-					this.tabBars.unshift({
-						id: "ALL",
-						name:"分类"
-					})
+					this.isShowSubCategoryNav = true;
 					this.dataList = this.randomfn();
-					setTimeout(() => {
+					let timer = setTimeout(()=>{
 						this.load();
-					}, 100)
+						timer = null;
+					},100)
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -364,15 +296,10 @@
 			},
 			// 二级联动
 			showPicker() {
-				this.picker.pickerValueArray = cityData;
-				this.picker.mode = 'multiLinkageSelector';
-				this.picker.deepLength = 2;
-				// this.picker.pickerValueDefault = [1, 0];
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
 				console.log(e);
-				// this.pickerText = e.label;
 				if (e && e.label) {
 					this.picker.pickerText = e.label.split('-')[1];
 				}
@@ -396,13 +323,6 @@
 					url: '/pages/home/search'
 				})
 			},
-			// 切换选项卡
-			changeTabs(index) {
-				if (this.tabs.current !== index) {
-					this.tabs.current = index;
-					this.load()
-				}
-			},
 			//轮播图跳转
 			toSwiper(e) {
 				this.initBar()
@@ -423,9 +343,14 @@
 				})
 			},
 			loadMore(e) {
-				setTimeout(() => {
+				// console.log(123123)
+				// setTimeout(() => {
 					this.addData(e);
-				}, 1000);
+				// }, 500);
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},30)	
 			},
 			addData(e) {
 				if (this.dataList[e].data.length > 30) {
@@ -436,8 +361,17 @@
 					this.dataList[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
 				}
 			},
+			//去二级分类页面
+			toSubCategoryNav(){
+				uni.navigateTo({
+					url: "/pages/home/subCategory_nav"
+				})
+			},
 			async changeTab(e) {
 				let index = e.target.current;
+				if(this.dataList[index].swiperList.length === 0) {
+					this.dataList[index].swiperList = this.swiperList;
+				}
 				if(this.dataList[index].data.length === 0){
 					this.addData(index)
 				}
@@ -446,27 +380,19 @@
 					this.isClickChange = false;
 					return;
 				}
-				let tabBar = await this.getElSize("tab-bar"),
-					tabBarScrollLeft = tabBar.scrollLeft;
-				let width = 0;
-			
-				for (let i = 0; i < index; i++) {
-					let result = await this.getElSize('tar'+i);
-					width += result.width;
-				}
-				let winWidth = uni.getSystemInfoSync().windowWidth,
-					nowElement = await this.getElSize('tar'+index),
-					nowWidth = nowElement.width;
-				if (width + nowWidth - tabBarScrollLeft > winWidth) {
-					this.scrollLeft = width + nowWidth - winWidth;
-				}
-				if (width < tabBarScrollLeft) {
-					this.scrollLeft = width;
-				}
+				this.setScrollLeft(index);
 				this.isClickChange = false;
 				this.tabIndex = index; //一旦访问data就会出问题
+				
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
 			},
-			getElSize(id) { //得到元素的size
+			 //得到元素的size
+			getElSize(id) {
 				return new Promise((res, rej) => {
 					uni.createSelectorQuery().select("#" + id).fields({
 						size: true,
@@ -476,30 +402,51 @@
 					}).exec();
 				})
 			},
-			async tapTab(e) { //点击tab-bar
-				console.log(e)
-			
+			//点击tab-bar
+			async tapTab(e) {
 				let tabIndex = e.target.dataset.current;
-				// 将分类放到此处，点击跳转分类页
-				if(tabIndex - 0 === 0) {
-					uni.navigateTo({
-						url: "/pages/home/subCategory_nav"
-					})
-					return
+				if(this.dataList[tabIndex].swiperList.length === 0) {
+					this.dataList[tabIndex].swiperList = this.swiperList;
 				}
-				
-				
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
 				if (this.tabIndex === tabIndex) {
 					return false;
 				} else {
-					let tabBar = await this.getElSize("tab-bar"),
-						tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
-					this.scrollLeft = tabBarScrollLeft;
+					this.setScrollLeft(tabIndex);
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
+				}
+				let timer = setTimeout(()=>{
+					this.load();
+					timer = null;
+				},100)	
+				
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
+			},
+			// 设置顶部nav的滚动距离
+			async setScrollLeft(index){
+				let tabBar = await this.getElSize("tab-bar"),
+					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+				// let subCategoryNavWidth = uni.upx2px(100);
+				let width = 0;
+				for (let i = 0; i < index; i++) {
+					let result = await this.getElSize('tar'+i);
+					width += result.width;
+				}
+				let winWidth = uni.getSystemInfoSync().windowWidth,
+					nowElement = await this.getElSize('tar'+index),
+					nowWidth = nowElement.width;
+// 				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
+// 					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
+// 				}
+				if (width + nowWidth - tabBarScrollLeft > winWidth) {
+					this.scrollLeft = width + nowWidth - winWidth;
+				}
+				if (width < tabBarScrollLeft) {
+					this.scrollLeft = width;
 				}
 			},
 			randomfn() {
@@ -507,7 +454,8 @@
 				for (let i = 0, length = this.tabBars.length; i < length; i++) {
 					let aryItem = {
 						loadingText: '加载更多...',
-						data: []
+						data: [],
+						swiperList: []
 					};
 					if(i < 1){
 						for (let j = 1; j <= 10; j++) {
@@ -515,7 +463,7 @@
 							item.show = false;
 							item.loaded = false;
 							aryItem.data.push(item);
-							
+							aryItem.swiperList = this.swiperList;
 						}
 					}
 					ary.push(aryItem);
@@ -524,9 +472,10 @@
 			},
 			// 图片懒加载
 			load() {
-				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
+				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
 					images.forEach((image, index) => {
 						if (image.top <= this.windowHeight) {
+							// this.dataList[this.tabIndex].data[image.dataset.index].show = true;
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
 							item.show = true;
 							// 重新刷新数据
@@ -535,29 +484,24 @@
 					})
 				}).exec()
 			},
+			// 图片加载完毕的回调
 			onLoad(e) {
-				// this.dataList[e.target.dataset.index].data.loaded = true;
 				// 图片url为空就不会执行这里
+				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
-		},
-		onShow() {
-// 			if (!this.show) {
-// 				this.show = true
-				setTimeout(() => {
-					this.load()
-				}, 1000)
-			// }
+			// Scroll-view组件的滚动监听
+			onPageScroll: _.throttle(function(){
+				// 控制图片懒加载
+				this.load();
+				// 控制刷新开启关闭
+				this.isSupportRefresh();
+			}, 100)
 		},
 		created() {
 			this.init();
-			// 获取设备高度
-			this.windowHeight = uni.getSystemInfoSync().windowHeight;
-			setTimeout(() => {
-				this.load()
-			}, 1000)
 		}
 	}
 </script>
@@ -591,7 +535,7 @@
 
 			.messages {
 				width: 100upx;
-				height: 100upx;
+				height: 88upx;
 				flex-shrink: 1;
 				display: flex;
 				justify-content: center;
@@ -605,38 +549,30 @@
 				}
 			}
 
-			.search {
+			.search-wrap {
 				width: calc(100% - 246upx);
+				height: 88upx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				position: relative;
-
-				.input {
-					width: calc(100% - 60upx);
+				.search{
+					width: 100%;
 					height: 56upx;
 					background-color: #ffffff;
-					color: #666;
-					padding-left: 50upx;
-					font-size: 30upx;
+					font-size: 28upx;
 					border-radius: 4upx;
+					.icon {
+						width: 56upx;
+						height: 56upx;
+						color: #666;
+					}
+					.input {
+						line-height: 56upx;
+						color: #999;
+					}
 				}
 
-				.icon {
-					width: 50upx;
-					height: 50upx;
-					position: absolute;
-					color: #a18090;
-					z-index: 996;
-					top: 16upx;
-					/*  #ifdef  APP-PLUS  */
-					top: 4upx;
-					/*  #endif  */
-					left: 16upx;
-					/*  #ifdef  APP-PLUS  */
-					left: 10upx;
-					/*  #endif  */
-				}
+				
 			}
 
 			.location {
@@ -678,20 +614,45 @@
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
+			padding-bottom: 120upx;
+			box-sizing: border-box;
 			.custom-tabs{	
+// 				.subCategory{
+// 					width: 100upx;
+// 					line-height: 88upx;
+// 					height: 88upx;
+// 					border:none;
+// 					background-color: #fff;
+// 					z-index: 1000;
+// 					position: fixed;
+// 					right: 0;
+// 					/* #ifdef H5 */
+// 					top: 88upx;
+// 					/* #endif */	
+// 					/*  #ifdef  APP-PLUS  */
+// 					top: calc(var(--status-bar-height) + 88upx);
+// 					/* #endif */
+// 					text-align: center;
+// 					box-shadow: -2upx 0upx 20upx -2upx #242424;
+// 				}
 				.uni-swiper-tab{
-					line-height: 88upx;
+					// width: calc(100% - 100upx);
+					width: 100%;
 					height: 88upx;
+					line-height: 88upx;
 					border:none;
 					background-color: #fff;
 					z-index: 100;
 					position: fixed;
+					left: 0;
 					/* #ifdef H5 */
 					top: 88upx;
 					/* #endif */	
 					/*  #ifdef  APP-PLUS  */
 					top: calc(var(--status-bar-height) + 88upx);
 					/* #endif */
+// 					padding-right: 20upx;
+// 					box-sizing: border-box;
 					.swiper-tab-list{
 						width:auto;
 						position: relative;
@@ -749,8 +710,8 @@
 						background-color: #fff;
 						margin: 0 0 15upx 0;
 						.placeholder {
-							opacity: 0.3;
-							transition: opacity 0.4s linear;
+							opacity: 0.1;
+							// transition: opacity 0.2s linear;
 						}
 						
 						.placeholder.loaded {

@@ -129,11 +129,13 @@
 	import service from '../../common/service.js';
 	//引用mSearch组件，如不需要删除即可
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
+	// import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
 			//引用mSearch组件，如不需要删除即可
-			mSearch
+			mSearch,
+			// recommendGoods
 		},
 		data() {
 			return {
@@ -153,9 +155,9 @@
 				// 图片懒加载
 				show: false,
 				// 图片默认路径
-				placeholderSrc: "/static/img/logo@2x.png",
+				placeholderSrc: "/static/img/logo@0.5x.png",
 				// 设备屏幕高度
-				windowHeight: 0
+				windowHeight: 0,
 			}
 		},
 		onLoad() {
@@ -164,7 +166,7 @@
 			this.windowHeight = uni.getSystemInfoSync().windowHeight;
 		},
 		onPageScroll() {
-			this.load()
+			this.pageScroll();
 		},
 		computed:{
 // 			totalNum(){
@@ -339,23 +341,24 @@
 				})
 			},
 			// 获取推荐产品列表
-			getRecommendGoodsList(key){
-				const data = {
-					title: key,
-					page: this.page
+			getRecommendGoodsList(){
+				let params = {
+					userId : this.$store.state.userId,
+					areaId: "",
+					num: this.num
 				}
 				uni.showLoading();
-// 				service.getGoodListBySearch(data).then(res=>{
-// 					uni.hideLoading();
-// 					let data = res.data.data;
-// 					this.RecommendGoodsList = data.data;
-// 				}).catch(err=>{
-// 					uni.hideLoading();
-// 					uni.showToast({
-// 						icon: "none",
-// 						title:  err.errMsg || err.data.data,
-// 					})
-// 				})
+				service.getRecommendGoodList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					this.RecommendGoodsList = data;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg || err.data.data,
+					})
+				})
 				
 				setTimeout(()=>{
 					uni.hideLoading();
@@ -442,6 +445,9 @@
 				item.loaded = true;
 				this.$set(this.goodsList, e.target.dataset.index, item);
 			},
+			pageScroll: _.throttle(function(){
+				this.load();
+			}, 100),
 			goBack(){
 				uni.navigateBack()
 			}
@@ -679,8 +685,9 @@
 						background-color: #fff;
 						margin: 0 0 15upx 0;
 						.placeholder {
-							opacity: 0.3;
-							transition: opacity 0.4s linear;
+							opacity: 0.1;
+							transition: opacity 0.1s linear;
+							background-image: url()
 						}
 						
 						.placeholder.loaded {
@@ -689,7 +696,7 @@
 						
 						.uni-media-list-logo {
 							width: 100%;
-							height: 246upx;
+							height: 300upx;
 							position: relative;
 						}
 						
@@ -697,6 +704,10 @@
 							position: absolute;
 						}
 						
+// 						image{
+// 							width: 100%;
+// 							height: 246upx;
+// 						}
 							
 						.name {
 							width: 100%;

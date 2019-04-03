@@ -20,24 +20,20 @@
 		
 		<view class="content">
 			<view class="nav">
-				<view class="nav-left" :style="'height:'+height+'px'">
-					<scroll-view scroll-y :style="'height:'+height+'px'">
-						<view class="nav-left-item" @tap="categoryClickMain(item,index)" :key="index" :class="index==categoryActive?'active':''" v-for="(item,index) in categoryList">
-							{{item.name}}
-						</view>
-					</scroll-view>
-				</view>
-				<view class="nav-right" :style="'height:'+height+'px'"> 
-					<scroll-view scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation >
-						<view class="title uni-center">
-							-&nbsp;分类&nbsp;-
-						</view>
-						<view :id="index==0?'first':''" class="nav-right-item" v-for="(item, index) in subCategoryList" :key="index" @tap="toSubCategory(categoryActive, item.id)">
-							<image :src="item.img" />
-							<view class="name">{{item.name}}</view>
-						</view>			
-					</scroll-view>
-				</view>
+				<scroll-view class="nav-left" scroll-y :style="'height:'+height+'px'">
+					<view class="nav-left-item" @tap="categoryClickMain(item,index)" :key="index" :class="index==categoryActive?'active':''" v-for="(item,index) in categoryList">
+						{{item.name}}
+					</view>
+				</scroll-view>
+				<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation >
+					<view class="title uni-center">
+						-&nbsp;分类&nbsp;-
+					</view>
+					<view :id="index==0?'first':''" class="nav-right-item" v-for="(item, index) in subCategoryList" :key="index" @tap="toSubCategory(categoryActive, item.id)">
+						<image :src="item.img" />
+						<view class="name">{{item.name}}</view>
+					</view>			
+				</scroll-view>
 			</view>
 		</view>
 	</view>

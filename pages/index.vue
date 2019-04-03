@@ -5,7 +5,6 @@
 		<vipCenterPage v-if="page_code=='vipCenter'"></vipCenterPage>
 		<shopCartPage v-if="page_code=='shopCart'"></shopCartPage>
 		<minePage v-if="page_code=='mine'"></minePage>
-		<!-- <myloading></myloading> -->
 		<footerNav></footerNav>
 	</view>
 </template>
@@ -39,7 +38,7 @@
 		},
 		methods: {
 			
-		}
+		},
 		
 	}
 </script>

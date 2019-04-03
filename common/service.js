@@ -148,7 +148,20 @@ const getGoodListBySearch = function(params) {
 	return vm.$http.post('v1/api/goods/search', data)
 }
 
-
+/**     
+  * @method 用户商品推荐   
+  * @param {String} userId   ["0","1"]  
+  * @param {String} areaId  地区id
+  * @param {Number} num   推荐商品数    
+  **/
+const getRecommendGoodList = function(params) {
+	let data = {
+		userId: params.userId,
+		areaId: params.areaId,
+		num: params.num,
+	}
+	return vm.$http.post('v1/api/goods/recommend', data)
+}
 
 /**     
   * @method 查询购物车列表   
@@ -279,7 +292,8 @@ const HOME_MODULE = {
 	getGoodSecondClass,
 	getGoodListByType,
 	getGoodListById,
-	getGoodListBySearch
+	getGoodListBySearch,
+	getRecommendGoodList
 	
 }
 const NEARBY_MODULE = {

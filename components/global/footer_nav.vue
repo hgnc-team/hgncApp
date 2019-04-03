@@ -2,7 +2,8 @@
 	<view>
 		<view class="footerNav">
 			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
-				<uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon>
+				<!-- <uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon> -->
+				<image :src="index==now_index?item.select_icon:item.icon" mode=""></image>
 				<view style="margin-top: 4upx;">{{item.name}}</view>
 			</view>
 		</view>
@@ -28,13 +29,6 @@
 // 					url: `../../${item.name_code}/${item.name_code}_page`
 // 				})
 				
-				// 点击附近，跳转到其对应的页面
-				if(item.name_code === "nearby") {
-					uni.navigateTo({
-						url: "../../nearby/nearby_page"
-					})
-					return
-				}
 				// 切换底部导航做权限判定，登录后才可进入(我的)
 				if(item.name_code === "mine") {
 					this.$guardToLogin(index).then(()=>{
