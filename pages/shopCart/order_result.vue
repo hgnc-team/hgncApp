@@ -207,7 +207,7 @@
 			},
 			// 返回首页
 			backToIndex() {
-				this.$store.commit("change_page",0);
+				this.$store.dispatch("change_page", "home");
 				uni.reLaunch({
 					url: "/pages/index"
 				})

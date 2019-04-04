@@ -116,7 +116,7 @@
 		},
 		data() {
 			return {
-				rightText: '编辑',
+				rightText: '',
 				// 全选，返回
 				isCheckAll: false,
 				allPrice: 0, //所有价格
@@ -244,6 +244,9 @@
 			},
 			// 编辑
 			onClickRight() {
+				if(this.showNoData) {
+					return
+				}
 				if (this.rightText == "编辑") {
 					this.rightText = "完成";
 
@@ -382,12 +385,15 @@
 			},
 			// 去首页
 			navToIndex(){
-				this.$store.commit("change_page",0);
+				this.$store.dispatch("change_page", "home");
+				uni.navigateTo({
+					url: "/pages/index"
+				})
 			},
 			// 去登录
 			navToLogin(){
 				uni.navigateTo({
-					url: `/pages/login/login?targetPageIndex=2`
+					url: `/pages/login/login?pageCode=shopCart`
 				})
 			}
 		},
@@ -413,6 +419,7 @@
 			}
 		},
 		created() {
+			this.rightText = this.showNoData ? "" : "编辑";
 			this.init();
 		}
 	};

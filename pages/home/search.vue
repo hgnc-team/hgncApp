@@ -22,7 +22,7 @@
 				
 				<!-- 原样式 end -->
 			</view>
-			<view class="cart uni-inline-item"  :class="isShowIcon?'active':''">
+			<view class="cart uni-inline-item"  :class="isShowIcon?'active':''" @tap="toCart">
 				<uni-icon type="star"></uni-icon>
 			</view>
 		</view>
@@ -421,9 +421,17 @@
 					]
 				}, 1000);
 			},
+			// 商品详情
 			toGoods(item){
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${item.id}`
+				})
+			},
+			// 购物车
+			toCart(){
+				this.$store.dispatch("change_page", "shopCart");
+				uni.navigateTo({
+					url: "/pages/index"
 				})
 			},
 			// 图片懒加载

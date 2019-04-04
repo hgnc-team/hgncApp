@@ -214,9 +214,9 @@
 			// 跳转购物车
 			toCart(){
 				console.log(222)
-				this.$store.commit("change_page", 2)
+				this.$store.dispatch("change_page", "shopCart")
 				uni.navigateTo({
-					url:"../index"
+					url:"/pages/index"
 				})
 				
 			},

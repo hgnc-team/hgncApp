@@ -515,17 +515,10 @@
 			setfooterBar(userLevel) {
 				// 用户等级大于1的才能看到会员中心
 				let barType =  userLevel >= 1 ? "menu_5" : "menu_4";
-				let index =  this.targetPageIndex || this.$store.state.footer_store.now_page_index;
-				if(userLevel >= 1) {
-					// 由于插入"会员中心",占据下边为2的位置,所以原本下标为2以后的都要往后挪一位;
-					if(index >= 2) {
-						index += 1;
-					}
-				}
 				// 触发设置导航
 				this.$store.dispatch(barType);
 				// 切换导航下标
-				this.$store.commit("change_page",index);
+				this.$store.dispatch("change_page",this.pageCode);
 			},
 			// 返回登录前一页
 			goBack() {
@@ -540,7 +533,7 @@
 			// 获取路由参数
 			this.loginData.phone = option.phone || "";
 			this.loginData.password = option.password || "";
-			this.targetPageIndex = option.targetPageIndex != 'undefined' ? option.targetPageIndex : 0;		
+			this.pageCode = option.pageCode;		
 		}
 	}
 </script>
