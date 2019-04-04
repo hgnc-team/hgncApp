@@ -40,18 +40,18 @@
 			}
 		},
 		computed:{
-			selectIcon(index, item){
-				switch (index){
-					case 4:
-						return '25%'
-						break;
-					case 5:
-						return '20%'
-						break;
-					default:
-						break;
-				}
-			},
+// 			selectIcon(index, item){
+// 				switch (index){
+// 					case 4:
+// 						return '25%'
+// 						break;
+// 					case 5:
+// 						return '20%'
+// 						break;
+// 					default:
+// 						break;
+// 				}
+// 			},
 			item_width(){
 				let length = this.$store.state.footer_store.footer_nav.length;
 				switch (length){

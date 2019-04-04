@@ -58,7 +58,7 @@
 
 		/*  #endif  */
 		.uni-navbar__content {
-			padding: 0 30upx;
+			padding: 0 20upx;
 			box-sizing: border-box;
 			box-shadow: none;
 			border: none;
