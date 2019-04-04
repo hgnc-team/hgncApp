@@ -93,7 +93,7 @@
 		text-align: center;
 		font-size: 28upx;
 		height: 120upx;
-		margin-top: 4upx;
+		margin-top: 8upx;
 	}
 	.select_text{
 		color: #000;
@@ -101,7 +101,7 @@
 	.footer_item image{
 		width: 40upx;
 		height: 40upx;
-		top: 4upx;
+		top: 8upx;
 	}
 }
 
