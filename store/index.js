@@ -17,6 +17,8 @@ const store = new Vuex.Store({
 		userLevel: 0,
 		// 用户id
 		userId: "",
+		// 用户的邀请码
+		userInviteCode: '',
 		// 是否校验用户密码
 		isCheckPassword: false,
 		// 全局的自定义标题栏的样式
@@ -28,9 +30,10 @@ const store = new Vuex.Store({
 	mutations: {
 		// 登录动作
 		LOGIN(state, data) {
-		    state.userName = data.userName || 'PY_'+data.inviteCode;
+		    state.userName = data.userName || 'PY_'+ data.phone;
 			state.userLevel = data.role;
 			state.userId = data.id;
+			state.userInviteCode = data.inviteCode
 		    state.hasLogin = true;
 		},
 		// 退出登录

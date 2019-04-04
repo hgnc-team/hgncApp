@@ -106,8 +106,8 @@
 			refreshMemberInfo() {
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',
-					userName: this.$store.state.userName ? this.$store.state.userName: 'PY' + this.$store.state.phone,
-					inviteCode: this.$store.state.inviteCode
+					userName: this.$store.state.userName,
+					inviteCode: this.$store.state.userInviteCode
 				}
 			},
 			login(){
