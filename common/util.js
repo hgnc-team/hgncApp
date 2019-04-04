@@ -107,50 +107,17 @@ const graceChecker = {
 }
 
 // 模拟底部其他非nav页面跳转nav页面
-// "附近"直接跳转page页，其他的跳转index页面，改变下标去模拟
 const switchTab = function(type){
-	// 底部四导航按钮
-	const MENU_LEN_4 = 4;
-	// 底部五导航按钮
-	const MENU_LEN_5 = 5;
-	if (type === 'home') {
-		// 跳转首页
-		store.commit("change_page", 0);
-		uni.navigateTo({
-			url:"/pages/index"
-		})
-	} else if(type === 'nearby') {
-		// 跳转附近
-		uni.navigateTo({
-			url:"/pages/nearby/nearby_page"
-		})
-	} else if(type === 'vipCenter') {
-		// 跳转会员中心 ，下标比为2
-		store.commit("change_page", 2);
-		uni.navigateTo({
-			url:"/pages/index"
-		})
-	} else if(type === 'shopCart') {
-		// 跳转购物车
-		let cart_index = store.state.footer_store.footer_nav_len === MENU_LEN_4 ? 2 : 3;
-		store.commit("change_page", cart_index);
-		uni.navigateTo({
-			url:"/pages/index"
-		})
-	} else if (type === 'mine') {
-		// 跳转我的
-		let mine_index = store.state.footer_store.footer_nav_len === MENU_LEN_4 ? 3 : 4;
-		store.commit("change_page", mine_index);
-		uni.navigateTo({
-			url:"/pages/index"
-		})
-	} 
+	store.dispatch("change_page", type);
+	uni.navigateTo({
+		url:"/pages/index"
+	})
 }
 /**
   * @method  进入有权限的页面之前判断当前是否登录 
-  * @pram {Number} targetPageIndex 目标页面的下标
+  * @pram {String} code 目标页面的标识
   **/
-const guardToLogin = function(targetPageIndex) {
+const guardToLogin = function(code) {
 	return new Promise((reslove, reject)=>{
 		// 获取登录状态
 		const hasLogin = store.state.hasLogin;
@@ -159,7 +126,7 @@ const guardToLogin = function(targetPageIndex) {
 		} else {
 			// 未登录跳转登录页面
 			uni.navigateTo({
-				url: `/pages/login/login?targetPageIndex=${targetPageIndex}`,
+				url: `/pages/login/login?pageCode=${code}`,
 				animationType: "slide-in-bottom"
 			});
 			reject();

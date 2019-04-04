@@ -28,15 +28,15 @@
 // 				uni.navigateTo({
 // 					url: `../../${item.name_code}/${item.name_code}_page`
 // 				})
-				
+
 				// 切换底部导航做权限判定，登录后才可进入(我的)
 				if(item.name_code === "mine") {
-					this.$guardToLogin(index).then(()=>{
-						this.$store.commit("change_page",index);
+					this.$guardToLogin(item.name_code).then(()=>{
+						this.$store.dispatch("change_page", item.name_code);
 					}).catch(()=>{});
 					return
 				}
-				this.$store.commit("change_page",index);
+				this.$store.dispatch("change_page", item.name_code);
 			}
 		},
 		computed:{
@@ -64,7 +64,6 @@
 					default:
 						break;
 				}
-				this.$store.commit("change_nav_len", length);
 			},
 			footer_nav(){
 				return this.$store.state.footer_store.footer_nav
@@ -93,7 +92,7 @@
 		text-align: center;
 		font-size: 28upx;
 		height: 120upx;
-		margin-top: 4upx;
+		margin-top: 8upx;
 	}
 	.select_text{
 		color: #000;
@@ -101,7 +100,7 @@
 	.footer_item image{
 		width: 40upx;
 		height: 40upx;
-		top: 4upx;
+		top: 8upx;
 	}
 }
 

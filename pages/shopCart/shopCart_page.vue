@@ -9,11 +9,11 @@
 		<!-- 内容 -->
 		<view class="content">
 			<view class="no-data" v-if="showNoData">
-				<view class="icon">
-					<uni-icon type="cart" size="50"></uni-icon>
-				</view>
-				<view class="">
-					您的购物车为空哦
+				<image src="/static/img/common/emptyCart.jpg" mode="aspectFit"></image>
+				<view class="empty-tips flex-center-center">
+					空空如也
+					<view class="navigator" v-if="hasLogin" @tap="navToIndex"> 随便逛逛 ></view>
+					<view class="navigator" v-if="!hasLogin" @tap="navToLogin"> 去登陆></view>
 				</view>
 			</view>
 			<scroll-view scroll-x="true" class="scrollView" v-for="(item,index) in goodsList" :key="index" :id="item.id"
@@ -116,7 +116,7 @@
 		},
 		data() {
 			return {
-				rightText: '编辑',
+				rightText: '',
 				// 全选，返回
 				isCheckAll: false,
 				allPrice: 0, //所有价格
@@ -244,6 +244,9 @@
 			},
 			// 编辑
 			onClickRight() {
+				if(this.showNoData) {
+					return
+				}
 				if (this.rightText == "编辑") {
 					this.rightText = "完成";
 
@@ -380,6 +383,19 @@
 					url: `/pages/home/goods_detail?id=${id}`
 				})
 			},
+			// 去首页
+			navToIndex(){
+				this.$store.dispatch("change_page", "home");
+				uni.navigateTo({
+					url: "/pages/index"
+				})
+			},
+			// 去登录
+			navToLogin(){
+				uni.navigateTo({
+					url: `/pages/login/login?pageCode=shopCart`
+				})
+			}
 		},
 // 		onReachBottom() {
 // 			uni.showToast({title: '触发上拉加载'});
@@ -403,6 +419,7 @@
 			}
 		},
 		created() {
+			this.rightText = this.showNoData ? "" : "编辑";
 			this.init();
 		}
 	};
@@ -418,12 +435,23 @@
 			.no-data{
 				width: 100%;
 				height: 300upx;
+				padding-top: 200upx;
 				text-align: center;
 				color: #666;
-				.icon{
-					width: 100%;
-					height: 200upx;
-					border: 1upx;
+				image{
+					width: 240upx;
+					height: 160upx;
+					margin-bottom:30upx;
+				}
+				.empty-tips{
+					display:flex;
+					font-size: 28upx;
+					color: #666;
+					text-align: center;
+					.navigator{
+						color: #4c9bfa;
+						margin-left: 16upx;
+					}
 				}
 			}
 			.scrollView{

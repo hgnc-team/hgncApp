@@ -110,7 +110,7 @@
             "proxy" : {
                 "/api/*" : {
                     "target" : "http://server.maiyidesan.cn",
-                    // "target" : "http://10.90.131.120:7002",
+                    // "target" : "http://10.90.131.104:7001",
                     "changeOrigin" : true,
                     "secure" : false
                 }

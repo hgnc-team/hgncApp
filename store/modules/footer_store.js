@@ -1,3 +1,4 @@
+import _ from "lodash";
 export default {
 	state:{
 		footer_nav:[
@@ -31,20 +32,21 @@ export default {
 			}
 		],
 		now_page_index:0,
-		footer_nav_len: 4
 	},
 	mutations:{
-		change_nav_list(state,data){
+		CHANGE_NAV_LIST(state, data){
 			state.footer_nav = data;
 		},
-		change_page(state,index){
+		CHANGE_PAGE(state, index){
 			state.now_page_index = index;
-		},
-		change_nav_len(state, len){
-			state.footer_nav_len = len;
 		}
 	},
 	actions:{
+		change_page(ctx, code){
+			let index = _.findIndex(ctx.state.footer_nav, item => item.name_code === code);
+			index = index > -1 ? index : 0;
+			ctx.commit("CHANGE_PAGE", index)
+		},
 		menu_4(ctx){
 			let menu_list = [
 				{
@@ -77,7 +79,7 @@ export default {
 				}
 			]
 			
-			ctx.commit("change_nav_list",menu_list)
+			ctx.commit("CHANGE_NAV_LIST",menu_list)
 		},
 		menu_5(ctx){
 			let menu_list = [
@@ -118,7 +120,7 @@ export default {
 				},
 			]
 			
-			ctx.commit("change_nav_list",menu_list)
+			ctx.commit("CHANGE_NAV_LIST",menu_list)
 		}
 	}
 }
