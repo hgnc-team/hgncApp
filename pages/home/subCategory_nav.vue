@@ -173,7 +173,7 @@
 					width: 50upx;
 					height: 50upx;
 					position: absolute;
-					color: #a18090;
+					color: #242424;
 					z-index: 996;
 					top: 16upx;
 					/*  #ifdef  APP-PLUS  */
@@ -190,7 +190,7 @@
 					line-height: 2;
 					background-color: #666;
 					border-radius: 4upx;
-					padding: 0 10upx 0 70upx;
+					padding: 0 10upx 0 65upx;
 					box-sizing: border-box;
 				}
 			}

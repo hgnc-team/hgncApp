@@ -61,8 +61,7 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "M+",
-		"navigationBarBackgroundColor": "#242424",
-		"backgroundColor": "#000"
+		"navigationBarBackgroundColor": "#242424"
 	},
 	
 	"subPackages": [{
@@ -101,14 +100,8 @@
 			"path": "subCategory",
 			"style": {
 				"navigationBarTitleText": "商品分类",
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-								"type": "favorite"
-							}
-						]
-					}
-				}
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "goods_detail",
