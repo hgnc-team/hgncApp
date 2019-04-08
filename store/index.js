@@ -17,6 +17,10 @@ const store = new Vuex.Store({
 		userLevel: 0,
 		// 用户id
 		userId: "",
+		// 用户头像
+		userFace: "",
+		// 用户手机号
+		userPhone: "",
 		// 用户的邀请码
 		userInviteCode: '',
 		// 是否校验用户密码
@@ -33,7 +37,9 @@ const store = new Vuex.Store({
 		    state.userName = data.userName || 'PY_'+ data.phone;
 			state.userLevel = data.role;
 			state.userId = data.id;
-			state.userInviteCode = data.inviteCode
+			state.userFace = data.face || '/static/HM-PersonalCenter/face_default.png';
+			state.userPhone = data.phone;
+			state.userInviteCode = data.inviteCode;
 		    state.hasLogin = true;
 		},
 		// 退出登录
