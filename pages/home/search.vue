@@ -65,10 +65,10 @@
 					默认
 					<view class="bottom-line"></view>
 				</view>
-				<view class="sales uni-flex-item flex-center-center uni-center" :class="currentTab=='sales'?'active':''" @tap="changeTab('sales')">
+				<!-- <view class="sales uni-flex-item flex-center-center uni-center" :class="currentTab=='sales'?'active':''" @tap="changeTab('sales')">
 					销量
 					<view class="bottom-line"></view>
-				</view>
+				</view> -->
 				<view class="price uni-flex-item flex-center-center uni-center" :class="currentTab=='price'?'active':''" @tap="changeTab('price')">
 					价格
 					<view class="bottom-line"></view>
@@ -139,17 +139,30 @@
 		},
 		data() {
 			return {
+				// 默认展示关键词
 				defaultKeyword: "",
+				// 输入的关键词
 				keyword: "",
+				// 历史搜索
 				oldKeywordList: [],
+				// 热门搜索
 				hotKeywordList: [],
 				goodsList: [],
+				// 推荐产品列表
 				RecommendGoodsList:[],
+				// 热门搜索的开关
 				forbid: '',
+				// 筛选条件
 				currentTab: 'default',
+				// 价格的升降序
+				isPriceDesc: true, 
+				// 是否展示搜索到的产品列表
 				isShowSearchList: false,
+				// 是否展示购物车图标
 				isShowIcon: false,
+				// 是否查询到产品
 				hasData: false,
+				// 产品总数
 				totalNum: 0,
 				page:1,
 				// 图片懒加载
@@ -259,9 +272,14 @@
 // 				console.log("this.keyword",this.keyword)
 // 				console.log("this.defaultKeyword",this.defaultKeyword)
 				this.keyword = key;
-				this.saveKeyword(key); //保存为历史 
+				//保存为历史 
+				this.saveKeyword(key);
+				// 展示购物车图标
 				this.isShowIcon = true;
-				this.getGoodsList(key);
+				// 清空数据列表
+				this.goodsList = [];
+				// 查询数据
+				this.getGoodsListByOrder();
 			},
 			//保存关键字到历史记录
 			saveKeyword(keyword) {
@@ -296,17 +314,43 @@
 				});
 			},
 			changeTab(type){
+				// type： deafult sales  price
+				// 价格可以切换升降序
+				if(type === "price") {
+					this.currentTab = type;
+					this.goodsList = [];
+					this.getGoodsListByOrder();
+					this.isPriceDesc = !this.isPriceDesc;
+					return
+				}
+				
+				// 默认和销量
 				if(this.currentTab != type){
 					this.currentTab = type;
-					this.getGoodsList(this.keyword);
+					this.goodsList = [];
+					this.getGoodsListByOrder();
+				}
+			},
+			// 按筛选条件查询列表
+			getGoodsListByOrder(){
+				if(this.currentTab === "price") {
+					// 价格可以切换升降序
+					let orderBy = this.isPriceDesc ? [["price", "desc"]] : [["price", "asc"]];
+					this.getGoodsList(this.keyword, orderBy);
+				} else {
+					// 默认和销量只有降序
+					// let orderBy = this.currentTab === 'default' ? [["createTime", "desc"]] : [["sales", "desc"]];
+					let orderBy = [["createTime", "desc"]];
+					this.getGoodsList(this.keyword, orderBy);
 				}
 			},
 			// 查询产品列表
-			getGoodsList(key){
-				this.goodsList = [];
+			getGoodsList(key, orderBy){
 				const data = {
 					title: key,
-					page: this.page
+					page: this.page,
+					pageSize: 10,
+					orderBy: orderBy 
 				}
 				this.isShowSearchList = true;
 				uni.showLoading({
@@ -320,7 +364,7 @@
 					if(data.data.length > 0) {
 						this.hasData = true;
 						const  goodsList = data.data;
-						this.goodsList = _.concat(goodsList, goodsList, goodsList,goodsList, goodsList);
+						this.goodsList = _.concat(goodsList);
 						_.forEach(this.goodsList, item => {
 							item.show = false;
 							item.loaded = false;

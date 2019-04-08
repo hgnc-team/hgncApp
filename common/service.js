@@ -110,13 +110,15 @@ const getGoodSecondClass = function(params) {
   * @param {String} type   商品类型   
   * @param {Number} page   列表页数   1
   * @param {Number} pageSize   一页商品数   默认为10条
+  * @param {Array} orderBy   筛选条件
   * @return {promise} 返回一个promise对象     
   **/
 const getGoodListByType = function(params) {
 	let data = {
 		type: params.type,
 		page: params.page,
-		pageSize: 10
+		pageSize: params.pageSize,
+		orderBy: params.orderBy
 	}
 	return vm.$http.post('v1/api/goods/goodsPageList', data)
 }
@@ -137,13 +139,15 @@ const getGoodListById = function(params) {
   * @method 根据商品title模糊搜索商品（带分页）   
   * @param {String} title   ["0","1"]  
   * @param {Number} page   列表页数   1
-  * @param {Number} pageSize   一页商品数   默认为2条 
+  * @param {Number} pageSize   一页商品数    
+  * @param {Array} orderBy   排序
   **/
 const getGoodListBySearch = function(params) {
 	let data = {
 		title: params.title,
 		page: params.page,
-		pageSize: 10,
+		pageSize: params.pageSize,
+		orderBy: params.orderBy
 	}
 	return vm.$http.post('v1/api/goods/search', data)
 }

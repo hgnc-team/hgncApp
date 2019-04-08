@@ -1,47 +1,46 @@
 <template>
 	<view class="subCategoryPage">
 		<!-- 状态栏 -->
-		<statusBar></statusBar>
-		<!-- 导航栏 -->
-		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
-		 @click-right="onClickRight" right-icon="search" :title="title"></uni-nav-bar>
-		<!--  #ifdef  H5  -->
-		<!-- 选项卡分类选择 -->
-		<view class="custom-tabs uni-flex">
-			<topTabMenu :current="tabs.current" :values="tabs.items" @clickItem="changeTabs" class="uni-inline-item" ></topTabMenu>
-		</view>
-		<!--  #endif    -->
-		<view class="content">
-			<!--  #ifdef  APP-PLUS  -->
-			<van-tabs :active="active" z-index="10000" animated swipeable swipe-threshold="5" custom-class="custom-class" nav-class="nav-class" tab-class="tab-class" tab-active-class="tab-active-class">
-				<van-tab :title="tab.name" v-for="(tab, i) in tabs.items" :key="i">
-			<!--  #endif    -->
-					<!-- 过滤 -->
-					<view class="filter-wrap uni-flex">
-						<view class="hot uni-flex-item uni-center">
-							热门
+		<!-- <statusBar></statusBar> -->
+		<view class="swiper-content">
+			<view class="uni-tab-bar">
+				<!-- 分类导航 -->
+				<view class="custom-tabs">
+					<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
+						<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''"
+						 :id="'tar'+index" :data-current="index" :data-id="tab.id" @tap="tapTab">
+							{{tab.name}}
+							<view class="bottom-line"></view>
 						</view>
-						<view class="price uni-flex-item uni-center">
-							价格
-						</view>
-					</view>
-					<!-- 商品列表 -->
-					<view class="goods-list">
-						<view class="product-list">
-							<view class="product" v-for="product in productList" :key="product.id" @tap="toGoodDetail(product)">
-								<image mode="widthFix" :src="product.img"></image>
-								<view class="name">{{product.title}}</view>
-								<view class="info">
-									<view class="price">{{product.id}}</view>
-									<view class="slogan">{{product.type}}</view>
+					</scroll-view>
+				</view>
+				<!-- 商品内容 -->
+				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="swiperChangeTab">
+					<swiper-item v-for="(tab,index1) in dataList" :key="index1" :data-id="tab.id">
+						<scroll-view class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0"
+						 @scroll="onPageScroll">
+							<!-- 商品列表 -->
+							<view class="product-list" v-if="tab.data.length > 0">
+								<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">
+									<view class="uni-media-list-logo">
+										<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="imgLoaded" :src="item.show?item.imageUrl:''" />
+										<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
+									</view>
+									<view class="name">{{item.title}}</view>
+									<view class="info">
+										<view class="price">￥{{item.price}}</view>
+										<view class="slogan">{{item.slogan}}</view>
+									</view>
 								</view>
 							</view>
-						</view>
-					</view>
-			<!--  #ifdef  APP-PLUS  -->
-				</van-tab>
-			</van-tabs>
-			<!--  #endif    -->
+							<bottomInfo></bottomInfo>
+							<view class="uni-tab-bar-loading">
+								{{tab.loadingText}}
+							</view>
+						</scroll-view>
+					</swiper-item>
+				</swiper>
+			</view>
 		</view>
 	</view>
 </template>
@@ -60,69 +59,98 @@
 			uniNavBar,
 			topTabMenu
 		},
-		data(){
+		data() {
 			return {
-				title:"",
-				tabs: {
-					// 选项卡
-					items: [],
-					current: 0
-				},
-				page: 1,
-				productList: [],
-				currentPageindex: 0,
-				
+				// 导航栏标题
+				title: "",
+				tabBars: [],
+				tabIndex: 0,
+				scrollLeft: 0,
+				dataList: [],
+				// 图片默认路径
+				placeholderSrc: "/static/img/logo@0.5x.png",
+
 			}
 		},
 		onReachBottom() {
-			uni.showToast({title: '触发上拉加载'});
-// 			let len = this.productList.length;
-// 			if (len >= 40) {
-// 				this.loadingText = "到底了";
-// 				return false;
-// 			}
-// 			let end_goods_id = this.productList[len - 1].goods_id;
-// 			for (let i = 1; i <= 10; i++) {
-// 				this.productList.push(this.productList[i]);
-// 			}
+			uni.showToast({
+				title: '触发上拉加载'
+			});
 		},
 		methods: {
-			// 获取顶部分类列表
-			getSubCategory(id){
+			// 初始化顶部分类
+			initSubCategory(id, subId) {
 				let idArr = [];
 				idArr.push(id);
-				service.getGoodSecondClass({"topClass": idArr}).then(res=>{
-					console.log(res);
+				service.getGoodSecondClass({
+					"topClass": idArr
+				}).then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
-					if(data.length > 0) {
-						this.tabs.items = data;
+					if (data.length > 0) {
+						this.tabBars = data;
+						// 处理产品列表
+						this.initDataList(this.tabBars);
+						// 获取当前tab
+						this.tabIndex = this.getCurrentTab(subId);
+						// 设置当前tab
+						this.setScrollLeft(this.tabIndex);
+						// 获取分类下的商品列表
+						let orderBy = [
+							["createTime", "desc"]
+						];
+						this.getGoodsList(this.tabIndex, "39", orderBy);
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
 						title: err.errMsg || err.data.data,
+					})
+				})
+			},
+			// 获取当前tabIndex
+			getCurrentTab(id) {
+				let index = _.findIndex(this.tabBars, item => item.id === id);
+				return index > -1 ? index : 0;
+			},
+			// 初始化产品列表
+			initDataList(tabBars) {
+				_.forEach(tabBars, item => {
+					this.dataList.push({
+						loadingText: '加载更多...',
+						data: [],
+						id: item.id,
+						page: 1
 					})
 				})
 			},
 			// 获取商品列表
-			getGoodsList(id){
+			getGoodsList(index, id, orderBy) {
 				let params = {
 					type: id,
-					page: this.page
+					page: this.dataList[index].page,
+					pageSize: 10,
+					orderBy: orderBy
 				};
 				uni.showLoading();
-				service.getGoodListByType(params).then(res=>{
+				service.getGoodListByType(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
-					console.log(data);
-					if(data.data.length > 0) {
-						_.forEach(data.data, item=>{
-							this.productList.push(item)
+					if (data.data.length > 0) {
+						_.forEach(data.data, item => {
+							// 初始化懒加载相关配置
+							item.show = false;
+							item.loaded = false;
 						})
+						this.dataList[index].data = _.concat(this.dataList[index].data, data.data);
+					} else {
+						if(this.dataList[index].page > 1) {
+							this.dataList[index].page--;
+						}
+						this.dataList[index].loadingText = '没有更多了';
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -130,111 +158,283 @@
 					})
 				})
 			},
-			// 返回
-			onClickLeft(){
-				uni.navigateBack()
-			},
 			// 跳转搜索页面
-			onClickRight(){
+			onClickRight() {
 				uni.navigateTo({
 					url: "/pages/home/search"
 				})
 			},
-			// 切换商品类型
-			changeTabs(index){
-				this.productList = [];
-				this.getGoodsList(this.tabs.items[index].id);
-			},
-			// 跳转商品分类页面
-			toGoodDetail(product){
+			// 跳转商品详情
+			toGoods(product) {
 				let id = product.id;
 				uni.navigateTo({
-					url: `/pages/home/goods_detail?${id}`
+					url: `/pages/home/goods_detail?id=${id}`
 				})
-			}
+			},
+			loadMore(e) {
+				let timer = setTimeout(() => {
+					this.addData(e);
+					this.load();
+					timer = null;
+				}, 50)
+			},
+			addData(e) {
+				this.dataList[this.tabIndex].page++;
+				let id = this.dataList[this.tabIndex].id;
+				let orderBy = [
+					["createTime", "desc"]
+				];
+				this.getGoodsList(this.tabIndex, id, orderBy);
+			},
+			// 滑动切换商品类型
+			async swiperChangeTab(e) {
+				let index = e.target.current;
+				// 点击切换时，会触发滑动切换
+				if (this.isClickChange) {
+					this.tabIndex = index;
+					this.isClickChange = false;
+					return;
+				}
+				this.setScrollLeft(index);
+				this.isClickChange = false;
+				this.tabIndex = index;
+				if (this.dataList[index].data.length === 0) {
+					let id = this.dataList[index].id;
+					let orderBy = [
+						["createTime", "desc"]
+					];
+					this.getGoodsList(index, id, orderBy)
+				}
+				let timer = setTimeout(() => {
+					this.load();
+					timer = null;
+				}, 50)
+			},
+			//得到元素的size
+			getElSize(id) {
+				return new Promise((res, rej) => {
+					uni.createSelectorQuery().select("#" + id).fields({
+						size: true,
+						scrollOffset: true
+					}, (data) => {
+						res(data);
+					}).exec();
+				})
+			},
+			//点击切换tab-bar
+			async tapTab(e) {
+				let tabIndex = e.target.dataset.current;
+				if (this.tabIndex === tabIndex) {
+					return false;
+				} else {
+					this.setScrollLeft(tabIndex);
+					this.isClickChange = true;
+					this.tabIndex = tabIndex;
+				}
+				if (this.dataList[tabIndex].data.length === 0) {
+					let id = e.target.dataset.id;
+					let orderBy = [
+						["createTime", "desc"]
+					];
+					this.getGoodsList(tabIndex, id, orderBy)
+				}
+				let timer = setTimeout(() => {
+					this.load();
+					timer = null;
+				}, 50)
+			},
+			// 设置顶部nav的滚动距离
+			async setScrollLeft(index) {
+				let tabBar = await this.getElSize("tab-bar"),
+					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+				let width = 0;
+				for (let i = 0; i < index; i++) {
+					let result = await this.getElSize('tar' + i);
+					width += result.width;
+				}
+				let winWidth = uni.getSystemInfoSync().windowWidth,
+					nowElement = await this.getElSize('tar' + index),
+					nowWidth = nowElement.width;
+				if (width + nowWidth - tabBarScrollLeft > winWidth) {
+					this.scrollLeft = width + nowWidth - winWidth;
+				}
+				if (width < tabBarScrollLeft) {
+					this.scrollLeft = width;
+				}
+			},
+			// 图片懒加载
+			load() {
+				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
+					images.forEach((image, index) => {
+						if (image.top <= this.windowHeight) {
+							// this.dataList[this.tabIndex].data[image.dataset.index].show = true;
+							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
+							item.show = true;
+							// 重新刷新数据
+							this.$set(this.dataList[this.tabIndex].data, image.dataset.index, item);
+						}
+					})
+				}).exec()
+			},
+			// 图片加载完毕的回调
+			imgLoaded(e) {
+				// 图片url为空就不会执行这里
+				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
+				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
+				item.loaded = true;
+				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
+			},
+			// Scroll-view组件的滚动监听
+			onPageScroll: _.throttle(function() {
+				// 控制图片懒加载
+				this.load();
+				// 控制刷新开启关闭
+				// this.isSupportRefresh();
+			}, 50)
 		},
-		onLoad(options){
+		onLoad(options) {
+			// 获取设备高度
+			this.windowHeight = uni.getSystemInfoSync().windowHeight;
+			// 获取标题
 			this.title = options.name;
-			this.getSubCategory(options.id);
-			//  39有数据
-			options.subId = "39";
-			this.getGoodsList(options.subId);
+			// 初始化分类列表
+			this.initSubCategory(options.id, options.subId);
+			
 		}
 	}
 </script>
 
 <style lang="scss">
-	.subCategoryPage{
-		.content{
-			position: relative;
-			/* #ifdef H5 */
-			top: 88upx;
-			/* #endif */	
-			/*  #ifdef  APP-PLUS  */
-			top: calc(var(--status-bar-height) + 88upx);
-			/*  #endif  */
-			
-			.filter-wrap {
-				height: 88upx;
-				border-top: 1px solid #f0f0f0;
-				align-items: center;
-			}
-			.goods-list {
-// 				background-color: #f0f0f0;
-// 				font-weight: 600;
-						
-				.product-list {
+	page {
+		width: 100%;
+		height: 100%;
+		background-color: #f0f0f0;
+	}
+
+	.subCategoryPage {
+		width: 100%;
+		height: 100%;
+
+		.swiper-content {
+			width: 100%;
+			height: 100%;
+			.custom-tabs {
+				.uni-swiper-tab {
 					width: 100%;
-					display: flex;
-					justify-content: space-between;
-					flex-wrap: wrap;
-					padding: 30upx 30upx 0;
-					box-sizing: border-box;
-			
-					.product {
-						width: 47.75%;
-						border-radius: 10upx;
-						background-color: #fff;
-						margin: 0 0 15upx 0;
-			
-						image {
-							width: 100%;
-							height: 246upx;
-							background-color: #f0f0f0;
-						}
-			
-						.name {
-							width: 100%;
-							padding: 10upx 0;
-							display: -webkit-box;
-							-webkit-box-orient: vertical;
-							-webkit-line-clamp: 2;
-							overflow: hidden;
-							font-weight: 400;
-							font-size: 26upx;
-						}
-			
-						.info {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-							width: 100%;
-							font-weight: 100;
-			
-							.price {
-								color: #4c9bfa;
-								font-size: 30upx;
-								font-weight: 600;
-							}
-			
-							.slogan {
-								color: #c2c2c2;
-								font-size: 24upx;
+					height: 88upx;
+					line-height: 88upx;
+					border-bottom: 1upx solid #f0f0f0;
+					background-color: #fff;
+					z-index: 100;
+					position: fixed;
+					left: 0;
+					.swiper-tab-list {
+						width: auto;
+						position: relative;
+						font-size: 26upx;
+						color: #707070;
+						padding: 0 20upx;
+						box-sizing: border-box;
+
+						&.active {
+							color: #242424;
+							font-size: 27upx;
+
+							.bottom-line {
+								width: calc(100% - 40upx);
+								height: 6upx;
+								position: absolute;
+								bottom: -20upx;
+								left: 50%;
+								transform: translateX(-50%);
+								background-color: #242424;
 							}
 						}
 					}
-			
 				}
+			}
+
+			.swiper-box {
+				height: calc(100% - 120upx);
+				padding-top: 88upx;
+				box-sizing: border-box;
+			}
+
+			.product-list {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				padding: 30upx;
+				box-sizing: border-box;
+				background-color: #fff;
+				.product {
+					width: 47.75%;
+					background-color: #fff;
+					margin: 0 0 15upx 0;
+
+					.placeholder {
+						opacity: 0.1;
+						// transition: opacity 0.2s linear;
+					}
+
+					.placeholder.loaded {
+						opacity: 0;
+					}
+
+					.uni-media-list-logo {
+						width: 100%;
+						height: 300upx;
+						position: relative;
+					}
+
+					.uni-media-list-logo .image {
+						position: absolute;
+					}
+
+					.name {
+						width: 100%;
+						padding: 10upx 0;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						overflow: hidden;
+						font-weight: 400;
+						font-size: 26upx;
+					}
+
+					.info {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						width: 100%;
+						font-weight: 100;
+
+						.price {
+							color: #4c9bfa;
+							font-size: 30upx;
+							font-weight: 600;
+						}
+
+						.slogan {
+							color: #c2c2c2;
+							font-size: 24upx;
+						}
+					}
+				}
+
+			}
+
+			.uni-tab-bar-loading {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 60upx;
+				color: #979797;
+				font-size: 24upx;
+				background-color: #f0f0f0;
+				padding: 0;
 			}
 		}
 	}
