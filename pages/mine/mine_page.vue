@@ -171,7 +171,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	page {
 		background-color: #fff
 	}
@@ -349,5 +349,12 @@
 		margin-top: 50upx;
 		text-align: center;
 	}
+	.uni-list-item /deep/ .uni-list-item__container:after{
+		left: 50px;
+	}
+	.uni-list-item:last-child  /deep/ .uni-list-item__container:after {
+		display:none;
+	}
 </style>
+
 
