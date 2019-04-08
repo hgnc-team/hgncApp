@@ -325,7 +325,7 @@
 			},
 			//轮播图跳转
 			toSwiper(e) {
-				this.initBar()
+				// this.initBar()
 				uni.showToast({
 					title: e.src
 				});

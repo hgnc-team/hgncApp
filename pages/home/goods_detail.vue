@@ -57,6 +57,7 @@
 				<view class="title uni-h4">
 					商品详情
 				</view>
+				<rich-text :nodes="detailImage"></rich-text>
 				<view class="image">
 					<image src="/static/img/common/goodDetail.png" mode="widthFix"></image>
 				</view>
@@ -101,7 +102,7 @@
 			<view class="mask"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t uni-flex">
-					<image class="uni-inline-item" src="https://gd3.alicdn.com/imgextra/i3/0/O1CN01IiyFQI1UGShoFKt1O_!!0-item_pic.jpg_400x400.jpg"></image>
+					<image class="uni-inline-item" :src="good.imageUrl"></image>
 					<view class="right uni-flex-item uni-column">
 						<text class="price text-price">¥328.00</text>
 						<view class="selected uni-text-small">
@@ -178,6 +179,8 @@
 					imageUrl: "",
 					flowImages: [],
 				},
+				// 图文详情
+				detailImage: [],
 				// 分享的内容
 				shareObj:{
 					// 分享链接
@@ -346,6 +349,8 @@
 					let data = res.data.data;
 					if(data.length > 0) {
 						this.good = data[0];
+						// 获取图文详情
+						this.initDetailImage(this.good.detailImages);
 					}					
 				}).catch(err=>{
 					console.log(err)
@@ -355,6 +360,14 @@
 						title:  err.errMsg || err.data.data,
 					})
 				})
+			},
+			// 初始化图文详情
+			initDetailImage(images){
+				let imagsNodes = [];
+				_.forEach(images, item => {
+					imagsNodes.push(`<img style="width:100%;display:block;" src="${item.img}" />`)
+				})
+				this.detailImage = imagsNodes;
 			},
 			/**  
 			 * 左侧按钮点击事件  
