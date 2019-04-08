@@ -43,9 +43,7 @@
 		</view>
 		<view class="list">
 			<uni-list>
-				<uni-list-item title="换绑手机" @click="changeTelphone" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
-				<uni-list-item title="收货地址" @click="toAddress" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
-				<uni-list-item title="密码管理" @click="setSecondaryPassword" show-extra-icon="true" :extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}"></uni-list-item>
+				<uni-list-item  v-for="item in pageList" :key="item.index" :title="item.title"  @click="handleClick(item.index)"  :thumb="item.thumbUrl"></uni-list-item>
 			</uni-list>
 		</view>
 		<view class="version">
@@ -72,23 +70,41 @@
 					//name-标题 icon-图标 badge-角标
 					{
 						name: '待付款',
-						icon: 'l1.png',
+						icon: 'icon01.png',
 						badge: 1
 					},
 					{
 						name: '待发货',
-						icon: 'l2.png',
-						badge: 2
+						icon: 'icon02.png',
+						badge: 0
 					},
 					{
 						name: '待收货',
-						icon: 'l3.png',
-						badge: 6
+						icon: 'icon03.png',
+						badge: 0
 					},
 					{
 						name: '交易成功',
-						icon: 'l4.png',
-						badge: 9
+						icon: 'icon04.png',
+						badge: 0
+					}
+				],
+				// 跳转其他功能页面列表
+				pageList:[
+					{
+						index: 0,
+						title:'换绑手机',
+						thumbUrl: '/static/HM-PersonalCenter/cellphone.png'
+					},
+					{
+						index: 1,
+						title:'收货地址',
+						thumbUrl: '/static/HM-PersonalCenter/dizhi.png'
+					},
+					{
+						index: 2,
+						title:'密码管理',
+						thumbUrl: '/static/HM-PersonalCenter/pwd.png'
 					}
 				]
 			};
@@ -130,25 +146,27 @@
 					url: `/pages/mine/order_list?index=${index}`
 				})
 			},
-			// 换绑手机
-			changeTelphone(){
-				uni.navigateTo({
-					url: "/pages/mine/change_telphone"
-				})
-			},
-			// 管理密码
-			setSecondaryPassword(){
-				uni.navigateTo({
-					url: "/pages/mine/gesture_lock?mode=set"
-				})
-			},
-			// 收货地址
-			toAddress(){
-				uni.navigateTo({
-					url: "/pages/mine/address_management"
-				})
-			}
 			
+			// 点击跳转
+			handleClick(index) {
+				// 换绑手机
+				if(index === 0) {
+					uni.navigateTo({
+						url: "/pages/mine/change_telphone"
+					})
+				// 收货地址
+				} else if (index === 1) {
+					uni.navigateTo({
+						url: "/pages/mine/address_management"
+					})
+				// 管理密码
+				} else if (index === 2) {
+					uni.navigateTo({
+						url: "/pages/mine/gesture_lock?mode=set"
+					})
+					
+				}
+			}	
 		}
 	}
 </script>
@@ -231,6 +249,7 @@
 			.to-all-orders{
 				text-align: right;
 				line-height: 2;
+				color:#aaaaaa;
 			}
 		}
 		.box {
@@ -251,20 +270,17 @@
 				flex-direction: column;
 				.icon {
 					position: relative;
-					width: 7vw;
-					height: 7vw;
-					margin: 0 1vw;
-					border: 1upx;
-
+					width: 40upx;
+					height: 40upx;
 					.badge {
 						position: absolute;
-						width: 4vw;
-						height: 4vw;
-						background-color: #ec6d2c;
-						top: -1vw;
-						right: -1vw;
+						width: 36upx;
+						height: 36upx;
+						background-color: #1358ef;
+						top: -18upx;
+						left: 40upx;
 						border-radius: 100%;
-						font-size: 20upx;
+						font-size: 18upx;
 						color: #fff;
 						display: flex;
 						align-items: center;
@@ -279,7 +295,7 @@
 					}
 				}
 				.text{
-					
+					margin-top:18upx;
 				}
 			}
 		}
