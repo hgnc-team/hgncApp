@@ -3,17 +3,20 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<view class="header">
+			<view class="title" v-if="title">
+				{{title}}
+			</view>
 			<view class="userinfo">
 				<view class="face"><image :src="userinfo.face"></image></view>
 				<view class="info">
 					<view class="username">{{ userinfo.username }}</view>
-					<view class="integral">手机号:{{ userinfo.telPhone }}</view>
+					<view class="integral">{{ userinfo.telPhone }}</view>
 				</view>
 				<view class="info2 uni-text-small">
-					<view class="username">{{ userinfo.levelName }}, 您好！</view>
-					<view class="id">
-						<text>id:{{ userinfo.id }}</text>
-						<button type="primary" size="mini">点击复制</button>
+					<text>ID</text>
+					<text>{{userinfo.id}}</text>
+					<view class="icon">
+						<uni-icon type=""></uni-icon>
 					</view>
 				</view>
 			</view>
@@ -115,6 +118,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
+	import { mapState, mapMutations, mapActions } from 'vuex';
 	export default {
 		components: {
 			uniList,
@@ -131,6 +135,29 @@
 					telPhone: '1435*****2132'
 				}
 			};
+		},
+		computed: {
+			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode']),
+			title() {
+				let title = "";
+				switch (this.userLevel){
+					case 4:
+						title = "大区经理，你好！"
+						break;
+					case 3:
+						title = "业务总监，你好！"
+						break;
+					case 2:
+						title = "销售经理，你好！"
+						break;
+					case 1:
+						title = ""
+						break;
+					default:
+						break;
+				}
+				return title;
+			}
 		},
 		methods: {
 			init() {
@@ -203,22 +230,29 @@
 <style lang="scss">
 .vipCenterPage {
 	.header {
-		background-color: #eee;
+		background-color: #242424;
 		width: 100%;
 		height: 260upx;
 		padding: 10upx;
-		display: flex;
-		align-items: center;
-
+		.title{
+			text-align: center;
+			color: #fff;
+			padding: 10upx;
+			
+		}
 		.userinfo {
-			width: 90%;
+			width: 100%;
 			display: flex;
-
+			align-items: center;
+			justify-content: center;
+			padding: 30upx 0 30upx 30upx;
+			box-sizing: border-box;
 			.face {
 				flex-shrink: 0;
-				width: 120upx;
-				height: 120upx;
-
+				width: 136upx;
+				height: 136upx;
+				border-radius: 100%;
+				border: 2upx solid #fff;
 				image {
 					width: 100%;
 					height: 100%;
@@ -234,7 +268,7 @@
 				.username {
 					width: 100%;
 					color: #fff;
-					font-size: 40upx;
+					font-size: 32upx;
 				}
 
 				.integral {
@@ -247,6 +281,13 @@
 					border-radius: 20upx;
 					font-size: 24upx;
 				}
+			}
+			
+			.info2{
+				height: 48upx;
+				background-color: #e5bd77;
+				border-top-left-radius: 24upx ;
+				border-bottom-left-radius: 24upx ;
 			}
 		}
 
