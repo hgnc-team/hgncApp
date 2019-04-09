@@ -16,13 +16,20 @@ const STATE_KEY = 'STATE_KEY';
 // uni.getStorageSync(USERS_KEY);
 // uni.setStorageSync(USERS_KEY, JSON.stringify(users));
 
+/**     
+  * @method 获取后台自定义配置   
+  * @return {promise} 返回一个promise对象     
+  */
+const getConfigs = function() {
+	return vm.$http.post('/v1/api/common/configs', {})
+}
+
 
 /**     
   * @method 登录   
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
   * @return {promise} 返回一个promise对象   
-  * @throws   
   */
 const login = function(userInfo) {
 	let data = {
@@ -286,6 +293,7 @@ const deleteAddress = function(params) {
 }
 
 const LOGIN_MODULE = {
+	getConfigs,
 	login,
 	register,
 	getSms,

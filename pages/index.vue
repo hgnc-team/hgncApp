@@ -17,7 +17,8 @@
 	import minePage from "../components/index/mine_page.vue";
 	import footerNav from "../components/index/footer_nav.vue";
 	
-	import { mapState } from "vuex";
+	import { mapMutations, mapState } from "vuex";
+	import service from "../common/service.js";
 	export default {
 		data() {
 			return {}
@@ -37,10 +38,27 @@
 			}
 		},
 		onLoad() {
-			
+			this.getConfigs();
 		},
 		methods: {
-			
+			...mapMutations(['SET_CONFIGS']), 
+			// 获取后台相关配置
+			getConfigs(){
+				uni.showLoading({
+					title: "加载中"
+				})
+				service.getConfigs().then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					this.SET_CONFIGS(data);
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: (err.data && err.data.data) || err.errMsg,
+					})
+				})
+			},
 		},
 		
 	}
