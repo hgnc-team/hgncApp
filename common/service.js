@@ -11,6 +11,7 @@ import Vue from 'vue';
 let vm = new Vue();
 
 import store from '../store/index.js';
+console.log(store);
 const userId = store.state.userId;
 
 // 管理账号信息
@@ -26,7 +27,6 @@ const STATE_KEY = 'STATE_KEY';
 const getConfigs = function() {
 	return vm.$http.post('/v1/api/common/configs', {})
 }
-
 
 /**     
   * @method 登录   

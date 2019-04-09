@@ -160,7 +160,7 @@
 			}, 1000);
 		},
 		computed: {
-			...mapState(['hasLogin', 'shopCart_store']),
+			...mapState(['hasLogin', 'userId','shopCart_store']),
 			setStyle() {
 				let paddingBottom = this.hasLogin ? 98 : 0;
 				return `padding-bottom:${paddingBottom}upx`;
@@ -182,7 +182,7 @@
 			},
 			getCartList(){
 				uni.showLoading();
-				service.getCartList().then(res=>{
+				service.getCartList({userId: this.userId}).then(res=>{
 					uni.hideLoading();
 					const data = res.data.data.data;
 					_.forEach(data, item => {
@@ -191,21 +191,6 @@
 					})
 					// 同步购物车数据;
 					this.INIT_GOODS(data);
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon: 'none',
-						title: err.errMsg || err.data.data,
-					});
-				})
-			},
-			// 获取商品推荐列表
-			getRecommendList(){
-				uni.showLoading();
-				service.getCartList().then(res=>{
-					uni.hideLoading();
-					const data = res.data.data;
-					console.log(res)
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
