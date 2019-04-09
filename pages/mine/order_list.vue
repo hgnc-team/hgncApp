@@ -8,7 +8,8 @@
 			<view class="order-item" v-for="(item, index) in orderList" :key="index" >
 				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
 					<view class="title uni-h5 uni-flex-item">
-						{{item.name}}
+						<image style="width: 40upx; height: 40upx;margin-top:17upx;display:inline-block;float:left;margin-right:20upx;" src="/static/HM-PersonalCenter/shop_icon.png"
+                        @error="imageError"></image>{{item.name}} <text style="color:#bdbdbd;margin-left:16upx;"> > </text>
 					</view>
 					<view class="status uni-inline-item">
 						{{item.status}}
@@ -23,19 +24,17 @@
 							{{item.title}}
 						</view>
 						<view class="code uni-text-small text-color-gray uni-column uni-flex">
-							<text>订单编号:{{item.orderNum}}</text>
-							<text>订单时间:{{item.orderTime}}</text>
-						</view>
-						<view class="address  uni-text-small text-color-gray">
-							送货地址：{{item.address}}
+							<text>订单编号: {{item.orderNum}}</text>
+							<text>订单时间: {{item.orderTime}}</text>
+							<text style="line-height:1.4">送货地址: {{item.address}}</text>
 						</view>
 					</view>
 				</view>
-				<view class="total" style="text-align: right;">
+				<!-- <view class="total" style="text-align: right;">
 					合计:{{item.price}}
-				</view>
+				</view> -->
 				<view class="btn" style="text-align: right;" @tap="toGoodsDetail(item.id)">
-					<button type="primary" size="mini">再来一单</button>
+					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 				</view>
 			</view>
 		</view>
@@ -206,10 +205,10 @@
 				margin-top:16upx;
 				.title-wrap{
 					width: 100%;
-					height: 88upx;
+					height: 74upx;
 					border-bottom: 1upx solid #f0f0f0;		
 					.title{
-						line-height: 88upx;
+						line-height: 74upx;
 					}
 					.status{
 						width: 100upx;
@@ -217,14 +216,19 @@
 				}
 				.order-info{
 					.image{
-						width: 130upx;
-						height: 130upx;
+						width: 184upx;
+						height: 184upx;
+						margin-top:30upx;
 						margin-right: 20upx;
 						
 						image{
 							width: 100%;
 							height: 100%;
 						}
+					}
+					
+					.info{
+						margin-top:18upx;
 					}
 				}
 			}
