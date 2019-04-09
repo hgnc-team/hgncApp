@@ -72,6 +72,9 @@
 				<view class="price uni-flex-item flex-center-center uni-center" :class="currentTab=='price'?'active':''" @tap="changeTab('price')">
 					价格
 					<view class="bottom-line"></view>
+					<!-- 三角 -->
+					<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
+					<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
 				</view>
 			</view>
 			<view class="content">
@@ -315,6 +318,9 @@
 			},
 			changeTab(type){
 				// type： deafult sales  price
+				if(type === "default") {
+					this.isPriceDesc = true;
+				}
 				// 价格可以切换升降序
 				if(type === "price") {
 					this.currentTab = type;
@@ -679,6 +685,36 @@
 					position: relative;
 					.bottom-line{
 						display: none; 
+					}
+				}
+				.price{
+					/*向上*/
+					.triangle_border_up{
+						width:0;
+						height:0;
+						border-width:0 10upx 10upx;
+						border-style:solid;
+						border-color:transparent transparent #999;/*透明 透明  灰*/
+						position:absolute;
+						top: 30upx;
+						right: 135upx;
+						&.up{
+							border-color:transparent transparent #333;/*透明 透明  灰*/
+						}
+					}
+					/*向下*/
+					.triangle_border_down{
+						width:0;
+						height:0;
+						border-width:10upx 10upx 0;
+						border-style:solid;
+						border-color:#999 transparent transparent;/*灰 透明 透明 */
+						position:absolute;
+						top: 44upx;
+						right: 135upx;
+						&.down{
+							border-color:#333 transparent transparent;/*灰 透明 透明 */
+						}
 					}
 				}
 				.active{
