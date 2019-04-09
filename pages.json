@@ -67,15 +67,17 @@
 	"subPackages": [{
 		// 首页
 		"root": "pages/home",
-		"pages": [{
-			"path": "home_page",
-			"style": {
-				"navigationBarTitleText": "首页",
-				"app-plus": {
-					"titleNView": false
-				}
-			}
-		},{
+		"pages": [
+// 			{
+// 			"path": "home_page",
+// 			"style": {
+// 				"navigationBarTitleText": "首页",
+// 				"app-plus": {
+// 					"titleNView": false
+// 				}
+// 			}
+// 		},
+		{
 			"path": "messages",
 			"style": {
 				"navigationBarTitleText": "我的通知"
@@ -121,15 +123,17 @@
 	}, {
 		// 附近
 		"root": "pages/nearby",
-		"pages": [{
-			"path": "nearby_page",
-			"style": {
-				"navigationBarTitleText": "附近",
-				"app-plus": {
-					"titleNView": false
-				}
-			}
-		},{
+		"pages": [
+// 			{
+// 			"path": "nearby_page",
+// 			"style": {
+// 				"navigationBarTitleText": "附近",
+// 				"app-plus": {
+// 					"titleNView": false
+// 				}
+// 			}
+// 		},
+		{
 			"path": "shop_index",
 			"style": {
 				"navigationBarTitleText": "店铺首页"
@@ -162,12 +166,14 @@
 	}, {
 		// 会员中心
 		"root": "pages/vipCenter",
-		"pages": [{
-			"path": "vipCenter_page",
-			"style": {
-				"navigationBarTitleText": "会员中心"
-			}
-		},{
+		"pages": [
+// 			{
+// 			"path": "vipCenter_page",
+// 			"style": {
+// 				"navigationBarTitleText": "会员中心"
+// 			}
+// 		},
+		{
 			"path": "fund_management",
 			"style": {
 				"navigationBarTitleText": "资金管理"
@@ -226,12 +232,14 @@
 	}, {
 		// 购物车
 		"root": "pages/shopCart",
-		"pages": [{
-			"path": "shopCart_page",
-			"style": {
-				"navigationBarTitleText": "购物车"
-			}
-		},{
+		"pages": [
+// 			{
+// 			"path": "shopCart_page",
+// 			"style": {
+// 				"navigationBarTitleText": "购物车"
+// 			}
+// 		},
+		{
 			"path": "pay",
 			"style": {
 				"navigationBarTitleText": "提交订单"
@@ -245,12 +253,14 @@
 	}, {
 		// 我的
 		"root": "pages/mine",
-		"pages": [{
-			"path": "mine_page",
-			"style": {
-				"navigationBarTitleText": "我的"
-			}
-		},{
+		"pages": [
+// 			{
+// 			"path": "mine_page",
+// 			"style": {
+// 				"navigationBarTitleText": "我的"
+// 			}
+// 		},
+		{
 			"path": "order_list",
 			"style": {
 				"navigationBarTitleText": "我的订单"

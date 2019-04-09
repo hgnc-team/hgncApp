@@ -26,7 +26,7 @@
 			change_nav(item, index){
 				// 方便微信调试用
 // 				uni.navigateTo({
-// 					url: `../../${item.name_code}/${item.name_code}_page`
+// 					url: `/pages/${item.name_code}/${item.name_code}_page`
 // 				})
 
 				// 切换底部导航做权限判定，登录后才可进入(我的)
