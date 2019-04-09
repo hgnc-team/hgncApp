@@ -5,7 +5,8 @@
  * @date 2019-3-11   
  * @version V1.0  
  */
-import store from '../store/index.js'
+import store from '../store/index.js';
+import _ from 'lodash';
 /**     
   * @method 表单优雅校验   
   * @param {String} error 错误提示  
@@ -137,15 +138,15 @@ const guardToLogin = function(code) {
 /**     
   * @method  alert确认框       
   **/
-const alert = function(parms) {
+const alert = function(params) {
 	uni.showModal({
-		title:parms.title,
-		content: parms.content,
+		title:params.title,
+		content: params.content,
 		showCancel: false,
 		confirmColor: "#242424",
 		success: (res) => {
 			if (res.confirm) {
-				parms.success()
+				params.success()
 			}
 		}
 	})
@@ -154,14 +155,14 @@ const alert = function(parms) {
 /**     
   * @method 确认框       
   **/
-const confirm = function(parms) {
+const confirm = function(params) {
 	uni.showModal({
-		title:parms.title,
-		content: parms.content,
+		title:params.title,
+		content: params.content,
 		confirmColor: "#242424",
 		success: (res) => {
 			if (res.confirm) {
-				parms.success()
+				params.success()
 			} else if (res.cancel) {
 				console.log('用户点击取消');
 			}
@@ -169,10 +170,38 @@ const confirm = function(parms) {
 	})
 }
 
+/**     
+  * @method 拼接图片路径
+  * @domain {String} 后台配置图片域名
+  * @type {String} 需要配置的模块 商品模块-goods
+  * @goodID {String} 
+  * @imageName {String} 图片名称 英文冒号分割 detail_1.jpg;detail_2.jpg;
+  * return String | Array   https://images.maiyidesan.cn/goods/018fsmw30000100/title1.jpg
+  **/
+const setImageUrl = function(params) {
+	let baseUrl = "https://";
+	let domain = store.state.imageDomain;
+	let type = params.type;
+	let goodId = params.goodId;
+	let imageName = params.imageName;
+	let imgArr = _.split(imageName, ";");
+	// 判断imageName是否带分号
+	if(imgArr.length > 1) {
+		let arr = [];
+		_.forEach(imgArr, item => {
+			arr.push({img: `${baseUrl}${domain}/${type}/${goodId}/${item}`})
+		})
+		return arr
+	} else {
+		return `${baseUrl}${domain}/${type}/${goodId}/${imageName}`
+	}
+}
+
 export default {
 	graceChecker,
 	switchTab,
 	guardToLogin,
 	alert,
-	confirm
+	confirm,
+	setImageUrl
 }

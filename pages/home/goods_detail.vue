@@ -10,25 +10,25 @@
 		
 		<view class="content">
 			<!-- 轮播图 -->
-			<customSwiper :swiperList="good.flowImages" @toSwiper="toSwiper" :height="520"></customSwiper>
+			<customSwiper :swiperList="flowImages" @toSwiper="toSwiper" :height="520"></customSwiper>
 			<view class="goods-info">
 				<!-- 商品文字描述 -->
 				<view class="info-item">
 					<view class="uni-h4">
-						{{good.title}}
+						{{title}}
 					</view>
 					<view class="uni-text-small text-color-gray">
-						<text>日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g日本直邮本土版 CPB肌肤之钥 2018钻光奢华气垫粉霜BB 12g</text>
+						<text>{{detail}}</text>
 					</view>
 				</view>
 				<!-- 商品价格积分 -->
 				<view class="price-info info-item uni-flex">
 					<view class="price uni-flex">
 						<view class="uni-inline-item text-price uni-h4" style="font-size: 36upx;">
-							￥{{good.price}}
+							￥{{price}}
 						</view>
 						<text class="uni-inline-item tag uni-text-small">
-							可获双倍积分
+							可获{{currentPointRate}}倍积分
 						</text>
 					</view>
 					<!-- <view class="number uni-flex text-color-gray">
@@ -57,10 +57,10 @@
 				<view class="title uni-h4">
 					商品详情
 				</view>
-				<rich-text :nodes="detailImage"></rich-text>
-				<view class="image">
+				<rich-text :nodes="detailImagesNode"></rich-text>
+				<!-- <view class="image">
 					<image src="/static/img/common/goodDetail.png" mode="widthFix"></image>
-				</view>
+				</view> -->
 			</view>
 			
 			<!-- 猜你喜欢 -->
@@ -102,7 +102,7 @@
 			<view class="mask"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t uni-flex">
-					<image class="uni-inline-item" :src="good.imageUrl"></image>
+					<image class="uni-inline-item" :src="imageUrl"></image>
 					<view class="right uni-flex-item uni-column">
 						<text class="price text-price">¥328.00</text>
 						<view class="selected uni-text-small">
@@ -169,18 +169,24 @@
 				numberValue: 1,
 				// 加入购物车|直接购买
 				type: "",
-				// 商品内容
-				good: {
-					id:"",
-					title: "",
-					price: 0,
-					detail: "",
-					pointRate: "",
-					imageUrl: "",
-					flowImages: [],
-				},
+				// 商品id
+				id:"",
+				// 商品标题
+				title: "",
+				// 商品价格
+				price: 0,
+				// 描述
+				detail: "",
+				// 商品积分率
+				pointRate: "",
+				// 选择配置处的图片
+				imageUrl: "",
+				// 轮播图片
+				flowImages: [],
 				// 图文详情
-				detailImage: [],
+				detailImages: [],
+				// 图文详情的节点
+				detailImagesNode: [],
 				// 分享的内容
 				shareObj:{
 					// 分享链接
@@ -332,10 +338,13 @@
 			}
 		},
 		computed:{
-			...mapState(['userId', 'shopCart_store']),
+			...mapState(['userId', 'shopCart_store', 'imageDomain', 'gobalPointRate']),
 			...mapGetters(["total_num"]),
 			goodsList(){
 				return this.shopCart_store.goodsList;
+			},
+			currentPointRate(){
+				return this.pointRate || this.gobalPointRate;
 			}
 		},
 		methods: {
@@ -348,9 +357,31 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					if(data.length > 0) {
-						this.good = data[0];
-						// 获取图文详情
-						this.initDetailImage(this.good.detailImages);
+						this.id = data[0].id;
+						this.title = data[0].title;
+						this.price = data[0].price;
+						this.detail = data[0].detail;
+						this.pointRate = data[0].pointRate;
+						// 配置规格展示图片
+						this.imageUrl = util.setImageUrl({
+							type: "goods",
+							goodId: data[0].id,
+							imageName: data[0].imageUrl
+						});
+						// 配置轮播图片
+						this.flowImages = util.setImageUrl({
+							type: "goods",
+							goodId: data[0].id,
+							imageName: data[0].flowImages
+						});
+						// 配置图文详情图片
+						this.detailImages = util.setImageUrl({
+							type: "goods",
+							goodId: data[0].id,
+							imageName: data[0].detailImages
+						});
+						// 初始化图文详情
+						this.initDetailImage(this.detailImages);
 					}					
 				}).catch(err=>{
 					console.log(err)
@@ -367,7 +398,8 @@
 				_.forEach(images, item => {
 					imagsNodes.push(`<img style="width:100%;display:block;" src="${item.img}" />`)
 				})
-				this.detailImage = imagsNodes;
+				this.detailImagesNode = `<div style="width:100%">${imagsNodes.join('')}</div>`;
+				console.log(this.detailImagesNode);
 			},
 			/**  
 			 * 左侧按钮点击事件  
