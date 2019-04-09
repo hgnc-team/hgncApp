@@ -179,21 +179,25 @@ const confirm = function(params) {
   * return String | Array   https://images.maiyidesan.cn/goods/018fsmw30000100/title1.jpg
   **/
 const setImageUrl = function(params) {
-	let baseUrl = "https://";
-	let domain = store.state.imageDomain;
-	let type = params.type;
-	let goodId = params.goodId;
-	let imageName = params.imageName;
-	let imgArr = _.split(imageName, ";");
-	// 判断imageName是否带分号
-	if(imgArr.length > 1) {
-		let arr = [];
-		_.forEach(imgArr, item => {
-			arr.push({img: `${baseUrl}${domain}/${type}/${goodId}/${item}`})
-		})
-		return arr
+	if(params.imageName) {
+		let baseUrl = "https://";
+		let domain = store.state.imageDomain;
+		let type = params.type;
+		let goodId = params.goodId;
+		let imageName = params.imageName;
+		let imgArr = _.split(imageName, ";");
+		// 判断imageName是否带分号
+		if(imgArr.length > 1) {
+			let arr = [];
+			_.forEach(imgArr, item => {
+				arr.push({img: `${baseUrl}${domain}/${type}/${goodId}/${item}`})
+			})
+			return arr
+		} else {
+			return `${baseUrl}${domain}/${type}/${goodId}/${imageName}`
+		}
 	} else {
-		return `${baseUrl}${domain}/${type}/${goodId}/${imageName}`
+		return []
 	}
 }
 

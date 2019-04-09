@@ -393,7 +393,6 @@
 			// 获取推荐产品列表
 			getRecommendGoodsList(){
 				let params = {
-					userId : this.$store.state.userId,
 					areaId: "",
 					num: this.num
 				}

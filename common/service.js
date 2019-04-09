@@ -10,6 +10,9 @@ import Vue from 'vue';
 //必须实例化 Vue
 let vm = new Vue();
 
+import store from '../store/index.js';
+const userId = store.state.userId;
+
 // 管理账号信息
 const USERS_KEY = 'USERS_KEY';
 const STATE_KEY = 'STATE_KEY';
@@ -167,7 +170,7 @@ const getGoodListBySearch = function(params) {
   **/
 const getRecommendGoodList = function(params) {
 	let data = {
-		userId: params.userId,
+		userId: "",
 		areaId: params.areaId,
 		num: params.num,
 	}
@@ -179,7 +182,7 @@ const getRecommendGoodList = function(params) {
   * @param {String} userId  用户id  
   * @return {promise} 返回一个promise对象     
   **/
-const getCartList = function(userId) {
+const getCartList = function(userId=userId) {
 	let data = {
 		userId: userId,
 	}
@@ -193,7 +196,7 @@ const getCartList = function(userId) {
   **/
 const addToCart = function(params) {
 	let data = {
-		userId: params.userId,
+		userId: userId || params.userId,
 		goodsId: params.goodsId
 	}
 	return vm.$http.post('/v1/api/cart/add', data)
@@ -207,7 +210,7 @@ const addToCart = function(params) {
   **/
 const deleteFromCart = function(params) {
 	let data = {
-		userId: params.userId,
+		userId: userId || params.userId,
 		goodsIds: params.ids
 	}
 	return vm.$http.post('/v1/api/cart/delete', data)
@@ -220,7 +223,7 @@ const deleteFromCart = function(params) {
   **/
 const getAddressList = function(params) {
 	let data = {
-		userId: params.userId
+		userId: userId || params.userId
 	}
 	return vm.$http.post('/v1/api/address/list', data)
 }
@@ -263,7 +266,7 @@ const editAddress = function(params) {
   **/
 const addAddress = function(params) {
 	let data = {
-		"userId": params.userId,
+		"userId": userId || params.userId,
 		"params": {
 			province: params.province,
 			city: params.city,
@@ -292,6 +295,20 @@ const deleteAddress = function(params) {
 	return vm.$http.post('/v1/api/address/del', data)
 }
 
+/**     
+  * @method 创建订单  
+  * @param {String} userId  用户id 
+  * @param {Array} goods  产品信息列表 [{"goodsId":"1120025","num":1,"price":100.5,"detail":"商品颜色大小等","imageUrl":"11.png"}	] 
+  * @return {promise} 返回一个promise对象     
+  **/
+const createOrder = function(params) {
+	let data = {
+		userId: userId || params.userId,
+		goods: params.goods
+	}
+	return vm.$http.post('/v1/api/order/create', data)
+}
+
 const LOGIN_MODULE = {
 	getConfigs,
 	login,
@@ -317,7 +334,8 @@ const VIPCENTER_MODULE = {
 const SHOPCART_MODULE = {
 	getCartList,
 	addToCart,
-	deleteFromCart
+	deleteFromCart,
+	createOrder
 }
 const MINE_MODULE = {
 	getAddressList,

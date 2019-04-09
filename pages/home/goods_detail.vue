@@ -106,24 +106,25 @@
 					<view class="right uni-flex-item uni-column">
 						<text class="price text-price">¥328.00</text>
 						<view class="selected uni-text-small">
-							请选择
-							<text class="selected-text" v-for="(sItem, sIndex) in specList" :key="sIndex">
-								{{sItem.name}}
+							<text class="selected-text">
+								请选择&nbsp;&nbsp;{{specTitle}}
+							</text>
+							<text class="selected-text text-color-gray">
+								库存{{specSelected.inventory}}件
 							</text>
 						</view>
 					</view>
 				</view>
-				<view v-for="(item,index) in specList" :key="index" class="attr-list">
-					<text class="uni-bold">{{item.name}}</text>
+				<view class="attr-list">
+					<text class="uni-bold">{{specTitle}}</text>
 					<view class="item-list">
 						<text 
-							v-for="(childItem, childIndex) in specChildList" 
-							v-if="childItem.pid === item.id"
-							:key="childIndex" class="tit"
-							:class="{selected: childItem.selected, disabled:childItem.disabled}"
-							@click="selectSpec(childIndex, childItem.pid,childItem.disabled)"
+							v-for="(item, index) in specList" 
+							:key="index" class="tit"
+							:class="{selected: item.selected, disabled:item.inventory <= 0}"
+							@click="selectSpec(index, item.inventory <= 0)"
 						>
-							{{childItem.name}}
+							{{item.title}}
 						</text>
 					</view>
 				</view>
@@ -164,7 +165,6 @@
 		data() {
 			return {
 				specClass: 'none',
-				specSelected:[],
 				// 加入购物车数量
 				numberValue: 1,
 				// 加入购物车|直接购买
@@ -187,6 +187,16 @@
 				detailImages: [],
 				// 图文详情的节点
 				detailImagesNode: [],
+				// 规格标题
+				specTitle: "",
+				// 规格选项
+				specList: [],
+				// 规格选择对象
+				specSelected: {
+					inventory: "",
+					price: "",
+					title: ""
+				},
 				// 分享的内容
 				shareObj:{
 					// 分享链接
@@ -198,28 +208,6 @@
 					// 分享图标
 					strShareImageUrl: ""
 				},
-				//轮播
-				swiperList: [{
-						sid: 0,
-						src: '自定义src0',
-						img: '/static/img/common/banner1.jpg',
-					},
-					{
-						sid: 1,
-						src: '自定义src1',
-						img: '/static/img/common/banner2.jpg'
-					},
-					{
-						sid: 2,
-						src: '自定义src2',
-						img: '/static/img/common/banner3.jpg'
-					},
-					{
-						sid: 3,
-						src: '自定义src3',
-						img: '/static/img/common/banner4.jpg'
-					}
-				],
 				//猜你喜欢列表
 				productList: [{
 						goods_id: 0,
@@ -249,87 +237,21 @@
 						price: '￥668',
 						slogan: '678人付款'
 					}
-				],
-				specList: [
-					{
-						id: 1,
-						name: '尺码',
-					},
-					{	
-						id: 2,
-						name: '颜色',
-					},
-				],
-				specChildList: [
-					{
-						id: 1,
-						pid: 1,
-						name: '46',
-						disabled: false
-					},
-					{
-						id: 2,
-						pid: 1,
-						name: '45',
-						disabled: true
-					},
-					{
-						id: 3,
-						pid: 1,
-						name: '44',
-						disabled: false
-					},
-					{
-						id: 4,
-						pid: 1,
-						name: '43',
-						disabled: true
-					},
-					{
-						id: 5,
-						pid: 1,
-						name: '42',
-						disabled: false
-					},
-					{
-						id: 6,
-						pid: 1,
-						name: '41.5',
-						disabled: true
-					},
-					{
-						id: 7,
-						pid: 2,
-						name: '白色',
-						disabled: false
-					},
-					{
-						id: 8,
-						pid: 2,
-						name: '珊瑚粉',
-						disabled: true
-					},
-					{
-						id: 9,
-						pid: 2,
-						name: '草木绿',
-						disabled: false
-					},
-				]
+				]	
 			}
 		},
 		onNavigationBarButtonTap(e) {
-			if(this.good.id) {
+			if(this.id) {
 				// 定义分享内容
 				this.shareObj = {
 					// 分享链接
 					strShareUrl: "https://uniapp.dcloud.io",
 					// 分享标题
-					strShareTitle: this.good.title,
+					strShareTitle: this.title,
 					// 内容描述
-					strShareSummary: this.good.detail,
+					strShareSummary: this.detail,
 					// 分享图标
-					strShareImageUrl: this.good.imageUrl
+					strShareImageUrl: this.imageUrl
 				}
 				// 调用分享组件里面的分享方法
 				if(e.index === 0) {
@@ -345,6 +267,15 @@
 			},
 			currentPointRate(){
 				return this.pointRate || this.gobalPointRate;
+			}
+		},
+		watch:{
+			'specList.selected': {
+				handler() {
+					
+				},
+				deep: true,
+				immediate: true
 			}
 		},
 		methods: {
@@ -381,7 +312,17 @@
 							imageName: data[0].detailImages
 						});
 						// 初始化图文详情
-						this.initDetailImage(this.detailImages);
+						this.detailImagesNode = this.initImagesNode(this.detailImages);
+						// 初始化规格相关信息
+						this.specTitle = data[0].standardTitle;
+						this.specList = this.initSpecList(data[0].standard);
+						//  默认选中第一条
+						this.specList[0].selected = true;
+						this.specSelected = {
+							title: this.specList[0].title,
+							price: this.specList[0].price,
+							inventory: this.specList[0].inventory
+						}
 					}					
 				}).catch(err=>{
 					console.log(err)
@@ -393,13 +334,17 @@
 				})
 			},
 			// 初始化图文详情
-			initDetailImage(images){
+			initImagesNode(images){
 				let imagsNodes = [];
 				_.forEach(images, item => {
 					imagsNodes.push(`<img style="width:100%;display:block;" src="${item.img}" />`)
 				})
-				this.detailImagesNode = `<div style="width:100%">${imagsNodes.join('')}</div>`;
-				console.log(this.detailImagesNode);
+				return `<div style="width:100%">${imagsNodes.join('')}</div>`;
+			},
+			// 初始化规格列表
+			initSpecList(list){
+				// 默认选中第一条
+				return _.forEach(list, item =>  {item.selected = false});
 			},
 			/**  
 			 * 左侧按钮点击事件  
@@ -450,24 +395,20 @@
 				}
 			},
 			//选择规格
-			selectSpec(index, pid, disabled){
+			selectSpec(index, disabled){
 				if(disabled) {
 					return
 				}
-				let list = this.specChildList;
-				list.forEach(item=>{
-					if(item.pid === pid){
-						this.$set(item, 'selected', false);
-					}
-				})
-			
-				this.$set(list[index], 'selected', true);
+				this.initSpecList(this.specList);
+				this.$set(this.specList[index], 'selected', true);
 				//存储已选择
-				this.specSelected.forEach(item=>{
-					if(item.pid === pid){
-						item = list[index];
-					}
-				})
+				this.specSelected = {
+					title: this.specList[index].title,
+					price: this.specList[index].price,
+					inventory: this.specList[index].inventory
+				}
+				// 更新展示的库存
+				// this.$set(this.specSelected, 'inventory', this.specList[index].inventory);
 			},
 			// 修改加入购物车产品数量
 			changeNum(value){
@@ -477,11 +418,11 @@
 			// 加入购物车
 			addToCart(){
 				// 查询商品是否已经存在于购物车
-				let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.good.id) > -1;
+				let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.id) > -1;
 				console.log(isExist);
 				console.log(this.goodsList.length);
 				// 购物车增加长度限制 最多50个
-				if(!isExist && this.goodsList.length >= 2) {
+				if(!isExist && this.goodsList.length >= 50) {
 					uni.showToast({
 						icon:"none",
 						title: "亲，购物车商品数量超出了限制哦，请删除部分后在添加"
@@ -490,7 +431,7 @@
 				}
 				let parms = {
 					userId: this.userId,
-					goodsId: this.good.id
+					goodsId: this.id
 				}
 				uni.showLoading();
 				service.addToCart(parms).then(res=>{
@@ -503,7 +444,7 @@
 					if(!isExist) {
 						// 同步vuex数据
 						this.ADD_GOODS({
-							goodsId: this.good.id
+							goodsId: this.id
 						});
 					}
 					
@@ -517,15 +458,39 @@
 			},
 			// 创建订单；
 			creatOrder(){
-				// 创建订单；
-				
-				uni.navigateTo({
-					url: '/pages/shopCart/pay'
-				});
+				let params = {
+					goods: [{
+						goodsId: this.id,
+						num: this.numberValue,
+						price: this.price,
+						detail: this.specSelected.title,
+						imageUrl: ""
+					}]
+				}
+				uni.showLoading();
+				util.createOrder().then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					uni.navigateTo({
+						url: `/pages/shopCart/pay?orderId=${data.id}`
+					});
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg || err.data.data
+					})
+				})
 			},
 			// 规格选定后
 			specSeleted(){
-				
+				if(this.specSelected.inventory <= 0) {
+					uni.showToast({
+						icon:"none",
+						title: "亲，所选商品库存不足！"
+					})
+					return
+				}
 				if(this.type === "toCart") {
 					// 加入购物车
 					this.addToCart();
@@ -540,18 +505,7 @@
 		},
 		onLoad(e) {
 			this.init(e.id);
-			//规格 默认选中第一条
-			this.specList.forEach(item=>{
-				for(let cItem of this.specChildList){
-					if(cItem.pid === item.id){
-						this.$set(cItem, 'selected', true);
-						this.specSelected.push(cItem);
-						break; //forEach不能使用break
-					}
-				}
-			})
 		},
-		
 	}
 </script>
 
@@ -771,9 +725,9 @@
 							font-weight: 600;
 						}
 						.selected{
-							.selected-text{
-								margin-left: 20upx;
-							}
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
 						}
 					}
 				}
