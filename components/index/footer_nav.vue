@@ -24,11 +24,6 @@
 		},
 		methods:{
 			change_nav(item, index){
-				// 方便微信调试用
-// 				uni.navigateTo({
-// 					url: `/pages/${item.name_code}/${item.name_code}_page`
-// 				})
-
 				// 切换底部导航做权限判定，登录后才可进入(我的)
 				if(item.name_code === "mine") {
 					this.$guardToLogin(item.name_code).then(()=>{
@@ -40,18 +35,6 @@
 			}
 		},
 		computed:{
-// 			selectIcon(index, item){
-// 				switch (index){
-// 					case 4:
-// 						return '25%'
-// 						break;
-// 					case 5:
-// 						return '20%'
-// 						break;
-// 					default:
-// 						break;
-// 				}
-// 			},
 			item_width(){
 				let length = this.$store.state.footer_store.footer_nav.length;
 				switch (length){
