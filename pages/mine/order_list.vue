@@ -21,7 +21,10 @@
 					</view>
 					<view class="info uni-flex-item">
 						<view class="name uni-h5">
-							{{item.title}}
+							<text style="color:#242424;font-weight:bold;">{{item.title}}</text><text style="color:#aaa;font-size:20upx;margin-left:10upx;">X1</text>
+							<view class="total-price">
+								￥<text>{{item.price}}</text>
+							</view>
 						</view>
 						<view class="code uni-text-small text-color-gray uni-column uni-flex">
 							<text>订单编号: {{item.orderNum}}</text>
@@ -30,10 +33,7 @@
 						</view>
 					</view>
 				</view>
-				<!-- <view class="total" style="text-align: right;">
-					合计:{{item.price}}
-				</view> -->
-				<view class="btn" style="text-align: right;" @tap="toGoodsDetail(item.id)">
+				<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.id)">
 					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 				</view>
 			</view>
@@ -229,6 +229,14 @@
 					
 					.info{
 						margin-top:18upx;
+						.name{
+							// 合计的价格
+							.total-price{
+								float:right;
+								font-weight:bold;
+								color:#1c5ef0;
+							}
+						}
 					}
 				}
 			}
