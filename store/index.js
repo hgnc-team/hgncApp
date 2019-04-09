@@ -23,6 +23,10 @@ const store = new Vuex.Store({
 		userPhone: "",
 		// 用户的邀请码
 		userInviteCode: '',
+		// 商品积分率
+		gobalPointRate: 0,
+		// 图片地址域名
+		imageDomain: "",
 		// 是否校验用户密码
 		isCheckPassword: false,
 		// 全局的自定义标题栏的样式
@@ -41,6 +45,11 @@ const store = new Vuex.Store({
 			state.userPhone = data.phone;
 			state.userInviteCode = data.inviteCode;
 		    state.hasLogin = true;
+		},
+		// 后台相关配置
+		SET_CONFIGS(state, data){
+			state.gobalPointRate = data.DEFAULT_GOODS_POINTRATE;
+			state.imageDomain = data.DEFAULT_IMAGE_DOMAIN;
 		},
 		// 退出登录
 		LOGOUT(state) {  

@@ -127,7 +127,7 @@
 			}
 		},
 		methods:{
-			// 注入vuex的两个方法
+			// 注入vuex的方法
 			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS']), 
 			// 初始化第三方登录图标
 			initProvider() {
@@ -253,6 +253,7 @@
 					this.setfooterBar(userLevel);
 					// 同步store里面的用户名称，等级
 					this.LOGIN(data);
+					// 返回上一页面
 					this.goBack();
 
 				}).catch((err)=>{
@@ -498,7 +499,6 @@
 						this.INIT_ADDRESS(data);
 					} 
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
