@@ -7,11 +7,11 @@
 				<view class="face">
 					<image :src="userinfo.face"></image>
 				</view>
-				<view class="info" v-if="$store.state.hasLogin">
+				<view class="info" v-if="hasLogin">
 					<view class="username">{{userinfo.userName}}</view>
 					<view class="integral">ID: {{userinfo.inviteCode}}</view>
 				</view>
-				<view class="info" v-if="!$store.state.hasLogin" @tap="login">
+				<view class="info" v-if="!hasLogin" @tap="login">
 					<view class="username">登录/注册</view>
 				</view>
 			</view>
@@ -41,11 +41,9 @@
 			</view>
 			<view class="bg-bar"></view>
 		</view>
-		<view class="list">
-			<uni-list>
-				<uni-list-item  v-for="item in pageList" :key="item.index" :title="item.title"  @click="handleClick(item.index)"  :thumb="item.thumbUrl"></uni-list-item>
-			</uni-list>
-		</view>
+		<uni-list>
+			<uni-list-item  v-for="(item, index) in pageList" :key="index" :title="item.title"  @click="handleClick(item.index)"  :thumb="item.thumbUrl"></uni-list-item>
+		</uni-list>
 		<view class="version">
 			当前版本号: {{version}}
 		</view>
@@ -56,7 +54,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
-	import { mapMutations } from 'vuex';
+	import { mapMutations, mapState } from 'vuex';
 	export default {
 		components: {
 			uniList,
@@ -106,8 +104,12 @@
 						title:'密码管理',
 						thumbUrl: '/static/HM-PersonalCenter/pwd.png'
 					}
+				
 				]
 			};
+		},
+		computed:{
+			...mapState(["hasLogin"])
 		},
 		mounted() {
 			// 刷新用户信息
@@ -116,7 +118,9 @@
 		onLoad() {
 			//加载
 			this.refreshMemberInfo();
-			// this.version = plus.runtime.version;
+			// #ifdef APP-PLUS
+			this.version = plus.runtime.version;
+			// #endif
 		},
 		methods: {
 			refreshMemberInfo() {
@@ -127,8 +131,6 @@
 				}
 			},
 			login(){
-				// this.login()
-				// this.$store.commit('login');
 				uni.navigateTo({
 					url: "/pages/login/login",
 					animationType: "slide-in-bottom"
@@ -171,189 +173,156 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	page {
 		background-color: #fff
 	}
+	.minePage{
+		
+		.header {
+			background-color:#000;
+			// 线性渐变
+			background: linear-gradient(135deg, #242424, #343434);
+			width:100%;
+			height:320upx;
+			// padding:0 4%;
+			padding:0;
+			display:flex;
+			// align-items:center;
 
-	.header {
-		background-color:#000;
-		// 线性渐变
-		background: linear-gradient(135deg, #242424, #343434);
-		width:100%;
-		height:320upx;
-		// padding:0 4%;
-		padding:0;
-		display:flex;
-		// align-items:center;
+			.userinfo {
+				display: flex;
+				.face {
+					width: 200upx;
+					text-align:center;
+					image {
+						display:inline-block;
+						border:4px solid #fff;
+						box-sizing: border-box;
+						margin-top:136upx;
+						width: 130upx;
+						height: 130upx;
+						border-radius: 100%
+					}
+				}
 
-		.userinfo {
-			display: flex;
-			.face {
-				width: 200upx;
-				text-align:center;
+				.info {
+					color: #fff;
+					.username {
+						margin-top:162upx;
+						width:100%;
+						height:40upx;
+						line-height:40upx;
+						font-size: 32upx
+					}
+
+					.integral {
+						width:100%;
+						padding:0;
+						height: 40upx;
+						font-size: 24upx
+					}
+				}
+			}
+
+			.setting {
+				flex-shrink: 0;
+				width: 6vw;
+				height: 6vw;
+
 				image {
-					display:inline-block;
-					border:4px solid #fff;
-					box-sizing: border-box;
-					margin-top:136upx;
-					width: 130upx;
-					height: 130upx;
-					border-radius: 100%
-				}
-			}
-
-			.info {
-				color: #fff;
-				.username {
-					margin-top:162upx;
-					width:100%;
-					height:40upx;
-					line-height:40upx;
-					font-size: 32upx
-				}
-
-				.integral {
-					width:100%;
-					padding:0;
-					height: 40upx;
-					font-size: 24upx
+					width: 100%;
+					height: 100%
 				}
 			}
 		}
 
-		.setting {
-			flex-shrink: 0;
-			width: 6vw;
-			height: 6vw;
-
-			image {
-				width: 100%;
-				height: 100%
-			}
+		.hover {
+			background-color: #eee
 		}
-	}
 
-	.hover {
-		background-color: #eee
-	}
-
-	.orders {
-		background-color: #fff;
-		width: 100%;
-		.title{
+		.orders {
+			background-color: #fff;
 			width: 100%;
-			padding: 15upx 30upx;
-			border-bottom: 1upx solid #eee; 
-			box-sizing: border-box; 
-			.to-all-orders{
-				text-align: right;
-				line-height: 2;
-				color:#aaaaaa;
-			}
-		}
-		.box {
-			width: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			.label {
+			.title{
 				width: 100%;
-				height: 160upx;
-				color: #666666;
-				padding: 20upx 0;
-				font-size: 26upx;
+				padding: 15upx 30upx;
+				border-bottom: 1upx solid #eee; 
+				box-sizing: border-box; 
+				.to-all-orders{
+					text-align: right;
+					line-height: 2;
+					color:#aaaaaa;
+				}
+			}
+			.box {
+				width: 100%;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				flex-direction: column;
-				.icon {
-					position: relative;
-					width: 40upx;
-					height: 40upx;
-					.badge {
-						position: absolute;
-						width: 36upx;
-						height: 36upx;
-						background-color: #1358ef;
-						top: -18upx;
-						left: 40upx;
-						border-radius: 100%;
-						font-size: 18upx;
-						color: #fff;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						z-index: 10;
+
+				.label {
+					width: 100%;
+					height: 160upx;
+					color: #666666;
+					padding: 20upx 0;
+					font-size: 26upx;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					flex-direction: column;
+					.icon {
+						position: relative;
+						width: 40upx;
+						height: 40upx;
+						.badge {
+							position: absolute;
+							width: 36upx;
+							height: 36upx;
+							background-color: #1358ef;
+							top: -18upx;
+							left: 40upx;
+							border-radius: 100%;
+							font-size: 18upx;
+							color: #fff;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							z-index: 10;
+						}
+
+						image {
+							width: 7vw;
+							height: 7vw;
+							z-index: 9;
+						}
 					}
-
-					image {
-						width: 7vw;
-						height: 7vw;
-						z-index: 9;
+					.text{
+						margin-top:18upx;
 					}
 				}
-				.text{
-					margin-top:18upx;
-				}
 			}
-		}
-		.bg-bar{
-			width: 100%;
-			height: 30upx;
-			background-color: #eee;
-		}
-	}
-
-	.list {
-		width: 100%;
-		.li {
-			width: 92%;
-			height: 100upx;
-			padding: 0 4%;
-			border-bottom: solid 1upx #e7e7e7;
-			display: flex;
-			align-items: center;
-
-			&.noborder {
-				border-bottom: 0
-			}
-
-			.icon {
-				flex-shrink: 0;
-				width: 50upx;
-				height: 50upx;
-
-				image {
-					width: 50upx;
-					height: 50upx
-				}
-			}
-
-			.text {
-				padding-left: 20upx;
+			.bg-bar{
 				width: 100%;
-				color: #666
-			}
-
-			.to {
-				flex-shrink: 0;
-				width: 40upx;
-				height: 40upx
+				height: 30upx;
+				background-color: #eee;
 			}
 		}
-	}
-	.version{
-		width: 100%;
-		margin-top: 50upx;
-		text-align: center;
-	}
-	.uni-list-item /deep/ .uni-list-item__container:after{
-		left: 50px;
-	}
-	.uni-list-item:last-child  /deep/ .uni-list-item__container:after {
-		display:none;
+
+		.list {
+			width: 100%;
+		}
+		.version{
+			width: 100%;
+			margin-top: 50upx;
+			text-align: center;
+		}
+		.uni-list-item /deep/ .uni-list-item__container:after{
+			left: 50px;
+		}
+		.uni-list-item:last-child  /deep/ .uni-list-item__container:after {
+			display:none;
+		}
 	}
 </style>
 

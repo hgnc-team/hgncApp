@@ -89,7 +89,7 @@ const getGoodTopClass = function(params) {
 	let data = {
 		classScheme: params.classScheme,
 	}
-	return vm.$http.post('v1/api/goods/topClass', data)
+	return vm.$http.post('/v1/api/goods/topClass', data)
 }
 
 /**     
@@ -101,7 +101,7 @@ const getGoodSecondClass = function(params) {
 	let data = {
 		topClass: params.topClass,
 	}
-	return vm.$http.post('v1/api/goods/secondClass', data)
+	return vm.$http.post('/v1/api/goods/secondClass', data)
 }
 
 
@@ -120,7 +120,7 @@ const getGoodListByType = function(params) {
 		pageSize: params.pageSize,
 		orderBy: params.orderBy
 	}
-	return vm.$http.post('v1/api/goods/goodsPageList', data)
+	return vm.$http.post('/v1/api/goods/goodsPageList', data)
 }
 
 /**     
@@ -132,7 +132,7 @@ const getGoodListById = function(params) {
 	let data = {
 		ids: params.ids,
 	}
-	return vm.$http.post('v1/api/goods/goodsList', data)
+	return vm.$http.post('/v1/api/goods/goodsList', data)
 }
 
 /**     
@@ -149,7 +149,7 @@ const getGoodListBySearch = function(params) {
 		pageSize: params.pageSize,
 		orderBy: params.orderBy
 	}
-	return vm.$http.post('v1/api/goods/search', data)
+	return vm.$http.post('/v1/api/goods/search', data)
 }
 
 /**     
@@ -164,7 +164,7 @@ const getRecommendGoodList = function(params) {
 		areaId: params.areaId,
 		num: params.num,
 	}
-	return vm.$http.post('v1/api/goods/recommend', data)
+	return vm.$http.post('/v1/api/goods/recommend', data)
 }
 
 /**     

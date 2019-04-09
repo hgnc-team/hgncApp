@@ -75,7 +75,7 @@ export default {
 			}
 			
 			// 统一的请求日志记录
-			// _reqlog(_config)
+			_reqlog(_config)
 			// console.log(_config);
 			uni.request(_config);
 		});

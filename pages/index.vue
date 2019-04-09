@@ -10,12 +10,14 @@
 </template>
 
 <script>
-	import homePage from "./home/home_page.vue";
-	import nearbyPage from "./nearby/nearby_page.vue";
-	import vipCenterPage from "./vipCenter/vipCenter_page.vue";
-	import shopCartPage from "./shopCart/shopCart_page.vue";
-	import minePage from "./mine/mine_page.vue";
-	import footerNav from "../components/global/footer_nav.vue";
+	import homePage from "../components/index/home_page.vue";
+	import nearbyPage from "../components/index/nearby_page.vue";
+	import vipCenterPage from "../components/index/vipCenter_page.vue";
+	import shopCartPage from "../components/index/shopCart_page.vue";
+	import minePage from "../components/index/mine_page.vue";
+	import footerNav from "../components/index/footer_nav.vue";
+	
+	import { mapState } from "vuex";
 	export default {
 		data() {
 			return {}
@@ -29,8 +31,9 @@
 			footerNav
 		},	
 		computed: {
+			...mapState(["footer_store"]),
 			page_code() {
-				return this.$store.state.footer_store.footer_nav[this.$store.state.footer_store.now_page_index].name_code;
+				return this.footer_store.footer_nav[this.footer_store.now_page_index].name_code;
 			}
 		},
 		onLoad() {

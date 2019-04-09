@@ -74,7 +74,7 @@
 		</view>
 	
 		<!-- 底部结算 -->
-		<view class="bottom-jiesuan uni-flex" v-if="hasLogin">
+		<view class="bottom-jiesuan uni-flex" v-if="!showNoData">
 			<view class="info uni-flex">
 				<view class="allSelectText uni-flex">
 					<!-- #ifdef H5 -->
