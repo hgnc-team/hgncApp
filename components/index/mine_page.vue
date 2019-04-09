@@ -42,7 +42,9 @@
 			<view class="bg-bar"></view>
 		</view>
 		<uni-list>
-			<uni-list-item  v-for="(item, index) in pageList" :key="index" :title="item.title"  @click="handleClick(item.index)"  :thumb="item.thumbUrl"></uni-list-item>
+			<uni-list-item  :title="pageList[0].title"  @click="handleClick(0)"  :thumb="pageList[0].thumbUrl"></uni-list-item>
+			<uni-list-item  :title="pageList[1].title"  @click="handleClick(1)"  :thumb="pageList[1].thumbUrl"></uni-list-item>
+			<uni-list-item  :title="pageList[2].title"  @click="handleClick(2)"  :thumb="pageList[2].thumbUrl"></uni-list-item>
 		</uni-list>
 		<view class="version">
 			当前版本号: {{version}}
@@ -82,7 +84,7 @@
 						badge: 0
 					},
 					{
-						name: '交易成功',
+						name: '已完成',
 						icon: 'icon04.png',
 						badge: 0
 					}
