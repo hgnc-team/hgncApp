@@ -8,7 +8,7 @@
 			<view class="order-item" v-for="(item, index) in orderList" :key="index" >
 				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
 					<view class="title uni-h5 uni-flex-item">
-						{{item.title}}
+						{{item.name}}
 					</view>
 					<view class="status uni-inline-item">
 						{{item.status}}
@@ -16,11 +16,11 @@
 				</view>
 				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
 					<view class="image uni-inline-item" >
-						<image :src="item.src" mode="aspectFit"></image>
+						<image :src="item.url" mode="aspectFit"></image>
 					</view>
 					<view class="info uni-flex-item">
 						<view class="name uni-h5">
-							{{item.name}}
+							{{item.title}}
 						</view>
 						<view class="code uni-text-small text-color-gray uni-column uni-flex">
 							<text>订单编号:{{item.orderNum}}</text>
@@ -59,51 +59,51 @@
 			return {	
 				tabs: {
 					// 选项卡
-					items: ['全部', '待付款', '待发货', '待收货', '交易成功'],
+					items: ['全部', '待付款', '待发货', '待收货', '已完成'],
 					current: 0,
-					styleType: "line",
-					activeColor: '#007aff'
+					styleType: "text",
+					activeColor: '#242424'
 				},
 				orderList: [{
 					name: "大藏小玩",
-					title: "放送的是多少",
-					id: 1,
+					title: "仿宋代明月石",
+					id: 102212,
 					status: "已完成",
-					url: '/static/img/common/logo.png',
+					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
 					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12.15",
-					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
-					price: "￥500.00"
+					orderTime: "2018-12-04 12:10",
+					address: "湖北省武汉市常青花园1栋1单元312室70928号",
+					price: "500.00"
 				},{
 					name: "大藏小玩",
-					title: "放送的是多少",
-					id: 1,
-					status: "已完成",
-					url: '/static/img/common/logo.png',
+					title: "仿宋代明月石",
+					id: 102213,
+					status: "待发货",
+					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
 					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12.15",
-					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
-					price: "￥500.00"
+					orderTime: "2018-12-04 12:11",
+					address: "湖北省武汉市常青花园1栋1单元312室70928号",
+					price: "500.00"
 				},{
 					name: "大藏小玩",
-					title: "放送的是多少",
-					id: 1,
-					status: "已完成",
-					url: '/static/img/common/logo.png',
+					title: "仿宋代明月石",
+					id: 102214,
+					status: "待付款",
+					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
 					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12.15",
-					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
-					price: "￥500.00"
+					orderTime: "2018-12-04 12:13",
+					address: "湖北省武汉市常青花园1栋1单元312室70928号",
+					price: "500.00"
 				},{
 					name: "大藏小玩",
-					title: "放送的是多少",
-					id: 1,
-					status: "已完成",
-					url: '/static/img/common/logo.png',
+					title: "仿宋代明月石",
+					id: 102215,
+					status: "待收货",
+					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
 					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12.15",
-					address: "哇哈是的撒谎肯德基撒谎的空间撒谎的空间撒谎的空间撒谎的空间撒谎的",
-					price: "￥500.00"
+					orderTime: "2018-12-04 12:16",
+					address: "湖北省武汉市常青花园1栋1单元312室70928号",
+					price: "500.00"
 				}]
 			}
 		},
@@ -142,15 +142,16 @@
 
 <style lang="scss">
 	.orderListPage{
+		background-color:#f0f0f0;
 		.tabs{
 			width: 100%;
-			height: 88upx;
+			height: 80upx;
 			position: fixed;
 			/* #ifdef H5 */
-			top: 88upx;
+			top: 80upx;
 			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
-			top: calc(var(--status-bar-height) + 88upx);
+			top: calc(var(--status-bar-height) + 80upx);
 			/* #endif */
 			z-index: 1000;
 			background-color: #fff;
@@ -158,19 +159,51 @@
 				width: 100%;
 				height: 100%;
 			}
+			
+			.segmented-control /deep/ .segmented-control-item.text{
+				line-height:80upx;
+				text-align:center;
+				position:relative;
+			}
+			
+			.segmented-control /deep/ .segmented-control-item.text:after{
+				content: ' ';
+				display:inline-block;
+				height:6upx;
+				width:40%;
+				background-color:#fff;
+				position:absolute;
+				bottom:-6upx;
+				left:0;
+				z-index:10000;
+			}
+			
+			.segmented-control /deep/ .segmented-control-item.text:before{
+				content: ' ';
+				display:inline-block;
+				height:6upx;
+				width:40%;
+				background-color:#fff;
+				position:absolute;
+				bottom:-6upx;
+				right:0;
+				z-index:10000;
+			}
 		}
 		.content{
 			/* #ifdef H5 */
-			padding-top: 88upx;
+			padding-top: 80upx;
 			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
-			padding-top: calc(var(--status-bar-height) + 88upx); 
+			padding-top: calc(var(--status-bar-height) + 80upx); 
 			/* #endif */	
 			.order-item{
+				background-color:#fff;
 				width: 100%;
 				border: 1px solid #eee;
 				padding: 0 30upx;
 				box-sizing: border-box;
+				margin-top:16upx;
 				.title-wrap{
 					width: 100%;
 					height: 88upx;

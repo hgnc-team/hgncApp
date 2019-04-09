@@ -84,7 +84,7 @@
 						badge: 0
 					},
 					{
-						name: '交易成功',
+						name: '已完成',
 						icon: 'icon04.png',
 						badge: 0
 					}
