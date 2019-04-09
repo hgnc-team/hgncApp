@@ -458,29 +458,33 @@
 			},
 			// 创建订单；
 			creatOrder(){
-				let params = {
-					goods: [{
-						goodsId: this.id,
-						num: this.numberValue,
-						price: this.price,
-						detail: this.specSelected.title,
-						imageUrl: ""
-					}]
-				}
-				uni.showLoading();
-				util.createOrder().then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					uni.navigateTo({
-						url: `/pages/shopCart/pay?orderId=${data.id}`
-					});
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon:"none",
-						title: err.errMsg || err.data.data
-					})
-				})
+				uni.navigateTo({
+					url: `/pages/shopCart/pay`
+				});
+// 				let params = {
+// 					userId: this.userId,
+// 					goods: [{
+// 						goodsId: this.id,
+// 						num: this.numberValue,
+// 						price: this.price,
+// 						detail: this.specSelected.title,
+// 						imageUrl: ""
+// 					}]
+// 				}
+// 				uni.showLoading();
+// 				service.createOrder(params).then(res=>{
+// 					uni.hideLoading();
+// 					let data = res.data.data;
+// 					uni.navigateTo({
+// 						url: `/pages/shopCart/pay?orderId=${data.id}`
+// 					});
+// 				}).catch(err=>{
+// 					uni.hideLoading();
+// 					uni.showToast({
+// 						icon:"none",
+// 						title: (err.data && err.data.data) || err.errMsg
+// 					})
+// 				})
 			},
 			// 规格选定后
 			specSeleted(){

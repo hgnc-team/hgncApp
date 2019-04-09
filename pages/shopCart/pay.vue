@@ -58,7 +58,7 @@
 		<view class="order-info">
 			<view class="order-info-item uni-flex">
 				<view class="title uni-flex-item">
-					订单时间
+					订单编号
 				</view>
 				<view class="info uni-flex-item">
 					214325435435435435
