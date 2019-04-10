@@ -74,7 +74,9 @@
 									</view>
 								</view>
 							</view>
+							<!-- 底部信息 -->
 							<bottomInfo></bottomInfo>
+							<!-- 加载更多 -->
 							<view class="uni-tab-bar-loading">
 								{{tab.loadingText}}
 							</view>

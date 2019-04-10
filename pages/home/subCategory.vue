@@ -99,7 +99,7 @@
 						let orderBy = [
 							["createTime", "desc"]
 						];
-						this.getGoodsList(this.tabIndex, "39", orderBy);
+						this.getGoodsList(this.tabIndex, subId, orderBy);
 					}
 				}).catch(err => {
 					uni.hideLoading();

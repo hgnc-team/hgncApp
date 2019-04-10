@@ -59,6 +59,8 @@
 			<view class="place"></view>
 			<!-- 商品推荐 -->
 			<recommendGoods :title="'推荐商品'" :num="4"></recommendGoods>
+			<!-- 底部信息 -->
+			<bottomInfo></bottomInfo>
 		</view>
 	
 		<!-- 底部结算 -->
