@@ -1,13 +1,14 @@
+<!-- 推荐商品 -->
 <template>
 	<view class="Recommend-goods-list">
 		<view class="title uni-h4">{{title}}</view>
-		<view class="product-list common-ma-30">
-			<view class="product" v-for="(item, index) in RecommendGoodsList" :key="index" @tap="toGoods(item)">		
-				<image mode="widthFix" :src="item.img"></image>
-				<view class="name">{{item.name}}</view>
+		<view class="product-list">
+			<view class="product" v-for="(item, index) in goodList" :key="index" @tap="toGoods(item)">		
+				<image mode="widthFix" :src="item.imageUrl"></image>
+				<view class="name">{{item.title}}</view>
 				<view class="info">
-					<view class="price">{{item.price}}</view>
-					<view class="slogan">{{item.slogan}}</view>
+					<view class="price">￥{{item.price}}</view>
+					<!-- <view class="slogan">{{item.slogan}}</view> -->
 				</view>	
 			</view>
 		</view>
@@ -44,6 +45,7 @@
 				service.getRecommendGoodList(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
+					console.log(data);
 					this.goodList = data;
 				}).catch(err=>{
 					uni.hideLoading();
@@ -51,18 +53,16 @@
 						icon: "none",
 						title:  err.errMsg || err.data.data,
 					})
+				})
 			},
 			toGoods(item){
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${item.id}`
 				})
-			},
+			}
 		},
-		created: {
-			this.init()
-		},
-		mounted: {
-			// this.init()
+		created() {
+			this.init();
 		}
 	}
 </script>
@@ -71,24 +71,20 @@
 	.Recommend-goods-list {
 		background-color: #fff;
 		font-weight: 600;
-		padding-top: 20upx;
+		padding: 30upx;
+		box-sizing: border-box;
 		.title {
 			width: 100%;
 			height: 60upx;
 			color: #242424;
 			font-size: 40upx;
 			margin-bottom: 36upx;
-			padding: 0 30upx;
-			box-sizing: border-box;
 		}			
 		.product-list {
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
-			flex-wrap: wrap;
-			padding: 0 30upx;
-			box-sizing: border-box;
-	
+			flex-wrap: wrap;	
 			.product {
 				width: 47.75%;
 				background-color: #fff;

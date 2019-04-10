@@ -90,7 +90,7 @@
 								<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 							</view>
 							
-							<view class="name">{{item.title}}</view>
+							<view class="name">￥{{item.title}}</view>
 							<view class="info">
 								<view class="price">{{item.price}}</view>
 								<view class="slogan">{{item.type}}</view>
@@ -100,26 +100,16 @@
 				</view>
 				<view class="hasNoData"  v-if="!hasData">
 					<view class="notice">
-						<view class="icon"></view>
-						<view>
+						<view class="image flex-center-center" >
+							<image src="/static/img/common/search-no-data.png" mode="scaleToFill"></image>
+						</view>
+						<view class="uni-text-small">
 							抱歉,未找到{{keyword}}相关产品
 						</view>
 					</view>
 					<view class="place-bar"></view>
 					<!-- 推荐商品列表 -->
-					<view class="Recommend-goods-list" v-if="RecommendGoodsList.length > 0">
-						<view class="title uni-h4">推荐商品</view>
-						<view class="product-list common-ma-30">
-							<view class="product" v-for="(item, index) in RecommendGoodsList" :key="index" @tap="toGoods(item)">		
-								<image mode="widthFix" :src="item.img"></image>
-								<view class="name">{{item.name}}</view>
-								<view class="info">
-									<view class="price">{{item.price}}</view>
-									<view class="slogan">{{item.slogan}}</view>
-								</view>	
-							</view>
-						</view>
-					</view>
+					<recommendGoods></recommendGoods>
 				</view>				
 			</view>
 			
@@ -132,13 +122,13 @@
 	import service from '../../common/service.js';
 	//引用mSearch组件，如不需要删除即可
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
-	// import recommendGoods from '../../components/common/recommend-goods.vue';
+	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
 			//引用mSearch组件，如不需要删除即可
 			mSearch,
-			// recommendGoods
+			recommendGoods
 		},
 		data() {
 			return {
@@ -380,7 +370,6 @@
 						}, 100)
 					} else {
 						this.hasData = false;
-						this.getRecommendGoodsList();
 					}
 				}).catch(err=>{
 					uni.hideLoading();
@@ -389,86 +378,6 @@
 						title:  err.errMsg || err.data.data,
 					})
 				})
-			},
-			// 获取推荐产品列表
-			getRecommendGoodsList(){
-				let params = {
-					areaId: "",
-					num: this.num
-				}
-				uni.showLoading();
-				service.getRecommendGoodList(params).then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					this.RecommendGoodsList = data;
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon: "none",
-						title:  err.errMsg || err.data.data,
-					})
-				})
-				
-				setTimeout(()=>{
-					uni.hideLoading();
-					this.RecommendGoodsList = [{
-							goods_id: 0,
-							img: '../../static/img/common/good1.jpg',
-							name: '老街口-红糖麻花500g/袋',
-							price: '￥58',
-							slogan: '1096人付款'
-						},
-						{
-							goods_id: 1,
-							img: '../../static/img/common/good2.jpg',
-							name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-							price: '￥68',
-							slogan: '686人付款'
-						},
-						{
-							goods_id: 2,
-							img: '../../static/img/common/good3.jpg',
-							name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-							price: '￥368',
-							slogan: '1234人付款'
-						},
-						{
-							goods_id: 3,
-							img: '../../static/img/common/good4.jpg',
-							name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-							price: '￥668',
-							slogan: '678人付款'
-						},
-						{
-							goods_id: 4,
-							img: '../../static/img/common/good5.jpg',
-							name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-							price: '￥218',
-							slogan: '52244人付款'
-						},
-						{
-							goods_id: 5,
-							img: '../../static/img/common/good6.jpg',
-							name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
-							price: '￥288',
-							slogan: '232人付款'
-						},
-						{
-							goods_id: 6,
-							img: '../../static/img/common/good7.jpg',
-							name: '进口智利三文鱼400g',
-							price: '￥216',
-							slogan: '3235人付款'
-						},
-						{
-							goods_id: 7,
-							img: '../../static/img/common/good8.jpg',
-							name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
-							price: '￥58',
-							slogan: '35人付款'
-						}
-					]
-				}, 1000);
 			},
 			// 商品详情
 			toGoods(item){
@@ -748,9 +657,15 @@
 						height: 264upx;
 						text-align: center;
 						color: #999;
-						.icon{
+						padding-top: 30upx;
+						box-sizing: border-box;
+						.image{
 							width: 100%;
-							height: 196upx;
+							height: 160upx;
+							image{
+								width: 164upx;
+								height: 148upx;
+							}
 						}
 					}
 					.Recommend-goods-list{
