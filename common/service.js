@@ -193,7 +193,9 @@ const getCartList = function(userId) {
 const addToCart = function(params) {
 	let data = {
 		userId: params.userId,
-		goodsId: params.goodsId
+		goodsId: params.goodsId,
+		num: params.num,
+		standardId: params.standardId
 	}
 	return vm.$http.post('/v1/api/cart/add', data)
 }
