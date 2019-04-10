@@ -330,12 +330,6 @@
 					title: e.src
 				});
 			},
-			//推荐商品跳转
-			toPick(e) {
-				uni.showToast({
-					title: '推荐商品' + e.goods_id
-				});
-			},
 			//商品跳转
 			toGoods(e) {
 				uni.navigateTo({

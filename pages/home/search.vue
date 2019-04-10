@@ -109,7 +109,7 @@
 					</view>
 					<view class="place-bar"></view>
 					<!-- 推荐商品列表 -->
-					<recommendGoods></recommendGoods>
+					<recommendGoods :title="'推荐商品'" :num="4"></recommendGoods>
 				</view>				
 			</view>	
 		</view>

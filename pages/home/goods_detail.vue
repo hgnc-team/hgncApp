@@ -64,19 +64,7 @@
 			</view>
 			
 			<!-- 猜你喜欢 -->
-			<view class="goods-list">
-				<view class="title">猜你喜欢</view>
-				<view class="product-list">
-					<view class="product" v-for="product in productList" :key="product.goods_id" @tap="toGoods(product)">
-						<image mode="widthFix" :src="product.img"></image>
-						<view class="name">{{product.name}}</view>
-						<view class="info">
-							<view class="price">{{product.price}}</view>
-							<view class="slogan">{{product.slogan}}</view>
-						</view>
-					</view>
-				</view>
-			</view>
+			<recommendGoods :title="'猜你喜欢'" :num="4"></recommendGoods>
 			<bottomInfo></bottomInfo>
 		</view>
 		<view class="goods-footer uni-flex">
@@ -153,6 +141,7 @@
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	import _ from "lodash";
 	import share from "../../components/common/share.vue";
+	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
@@ -160,7 +149,8 @@
 			uniNavBar,
 			customSwiper,
 			uniNumberBox,
-			share
+			share,
+			recommendGoods
 		},
 		data() {
 			return {
@@ -208,36 +198,6 @@
 					// 分享图标
 					strShareImageUrl: ""
 				},
-				//猜你喜欢列表
-				productList: [{
-						goods_id: 0,
-						img: '/static/img/common/good1.jpg',
-						name: '老街口-红糖麻花500g/袋',
-						price: '￥58',
-						slogan: '1096人付款'
-					},
-					{
-						goods_id: 1,
-						img: '/static/img/common/good2.jpg',
-						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-						price: '￥68',
-						slogan: '686人付款'
-					},
-					{
-						goods_id: 2,
-						img: '/static/img/common/good3.jpg',
-						name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-						price: '￥368',
-						slogan: '1234人付款'
-					},
-					{
-						goods_id: 3,
-						img: '/static/img/common/good4.jpg',
-						name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-						price: '￥668',
-						slogan: '678人付款'
-					}
-				]	
 			}
 		},
 		onNavigationBarButtonTap(e) {
@@ -562,73 +522,6 @@
 					height: auto;
 				}
 				margin-bottom: 30upx;
-			}
-			.goods-list {
-				padding-top: 20upx;
-				background-color: #fff;
-				font-weight: 600;
-				
-				.title {
-					width: 100%;
-					height: 60upx;
-					color: #242424;
-					font-size: 40upx;
-					margin-bottom: 36upx;
-					padding: 0 30upx;
-					box-sizing: border-box;
-				}			
-				.product-list {
-					width: 100%;
-					display: flex;
-					justify-content: space-between;
-					flex-wrap: wrap;
-					padding: 0 30upx;
-					box-sizing: border-box;
-			
-					.product {
-						width: 47.75%;
-						border-radius: 20upx;
-						background-color: #fff;
-						margin: 0 0 15upx 0;
-			
-						image {
-							width: 100%;
-							height: 246upx;
-							background-color: #f0f0f0;
-						}
-			
-						.name {
-							width: 100%;
-							padding: 10upx 0;
-							display: -webkit-box;
-							-webkit-box-orient: vertical;
-							-webkit-line-clamp: 2;
-							overflow: hidden;
-							font-weight: 400;
-							font-size: 26upx;
-						}
-			
-						.info {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-							width: 100%;
-							font-weight: 100;
-			
-							.price {
-								color: #4c9bfa;
-								font-size: 30upx;
-								font-weight: 600;
-							}
-			
-							.slogan {
-								color: #c2c2c2;
-								font-size: 24upx;
-							}
-						}
-					}
-			
-				}
 			}
 		}
 

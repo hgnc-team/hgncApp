@@ -58,19 +58,7 @@
 			</scroll-view>
 			<view class="place"></view>
 			<!-- 商品推荐 -->
-			<view class="goods-list">
-				<view class="title">商品推荐</view>
-				<view class="product-list">
-					<view class="product" v-for="product in productList" :key="product.goods_id" @tap="toDetail(product.goods_id)">
-						<image mode="widthFix" :src="product.img"></image>
-						<view class="name">{{product.name}}</view>
-						<view class="info">
-							<view class="price">{{product.price}}</view>
-							<view class="slogan">{{product.slogan}}</view>
-						</view>
-					</view>
-				</view>
-			</view>
+			<recommendGoods :title="'推荐商品'" :num="4"></recommendGoods>
 		</view>
 	
 		<!-- 底部结算 -->
@@ -109,10 +97,12 @@
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import { mapState, mapMutations, mapActions } from 'vuex';
+	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
-			uniNavBar
+			uniNavBar,
+			recommendGoods
 		},
 		data() {
 			return {
@@ -120,37 +110,6 @@
 				// 全选，返回
 				isCheckAll: false,
 				allPrice: 0, //所有价格
-				//猜你喜欢列表
-				productList: [
-					{
-						goods_id: 1,
-						img: '/static/img/common/good2.jpg',
-						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-						price: '￥68',
-						slogan: '686人付款'
-					},
-					{
-						goods_id: 2,
-						img: '/static/img/common/good6.jpg',
-						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
-						price: '￥288',
-						slogan: '232人付款'
-					},
-					{
-						goods_id: 3,
-						img: '/static/img/common/good7.jpg',
-						name: '进口智利三文鱼400g',
-						price: '￥216',
-						slogan: '3235人付款'
-					},
-					{
-						goods_id: 4,
-						img: '/static/img/common/good8.jpg',
-						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
-						price: '￥58',
-						slogan: '35人付款'
-					}
-				]
 			};
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
@@ -527,70 +486,6 @@
 				width: 100%;
 				height: 30upx;
 				background-color: #F0F0F0;
-			}
-			.goods-list {
-				background-color: #fff;
-				font-weight: 600;
-				padding-top: 20upx;
-				.title {
-					width: 100%;
-					height: 60upx;
-					color: #242424;
-					font-size: 40upx;
-					margin-bottom: 36upx;
-					padding: 0 30upx;
-					box-sizing: border-box;
-				}			
-				.product-list {
-					width: 100%;
-					display: flex;
-					justify-content: space-between;
-					flex-wrap: wrap;
-					padding: 0 30upx;
-					box-sizing: border-box;
-			
-					.product {
-						width: 47.75%;
-						background-color: #fff;
-						margin: 0 0 15upx 0;
-						image {
-							width: 100%;
-							height: 246upx;
-							background-color: #f0f0f0;
-						}
-			
-						.name {
-							width: 100%;
-							padding: 10upx 0;
-							display: -webkit-box;
-							-webkit-box-orient: vertical;
-							-webkit-line-clamp: 2;
-							overflow: hidden;
-							font-weight: 400;
-							font-size: 26upx;
-						}
-			
-						.info {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-							width: 100%;
-							font-weight: 100;
-			
-							.price {
-								color: #4c9bfa;
-								font-size: 30upx;
-								font-weight: 600;
-							}
-			
-							.slogan {
-								color: #c2c2c2;
-								font-size: 24upx;
-							}
-						}
-					}
-			
-				}
 			}
 		}
 		.jiesuan {
