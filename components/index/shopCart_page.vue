@@ -22,7 +22,9 @@
 					<view class="shangpin uni-flex">
 						<!-- #ifdef H5 -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<checkbox  :value="item.isChecked+ ''" @change="proActive(item)"></checkbox >
+							<checkbox-group @change="proActive(item)">
+								<checkbox  :value="item.isChecked+ ''" :checked="item.isChecked"></checkbox >
+							</checkbox-group>
 						</view>
 						<!-- #endif -->
 						<!-- #ifdef APP-PLUS -->
@@ -69,7 +71,9 @@
 				<view class="allSelectText uni-flex">
 					<!-- #ifdef H5 -->
 					<view class="uni-inline-item">
-						<checkbox  :value="isCheckAll + ''" @change="allCheck" style="margin-right: 20upx;"></checkbox >
+						<checkbox-group @change="allCheck()">
+							<checkbox  :value="isCheckAll + ''" :checked="isCheckAll" style="margin-right: 20upx;"></checkbox >
+						</checkbox-group>
 					</view>
 					<!-- #endif -->
 					<!-- #ifdef APP-PLUS -->
@@ -99,6 +103,7 @@
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import { mapState, mapMutations, mapActions } from 'vuex';
+	import util from '../../common/util.js';
 	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
@@ -109,7 +114,7 @@
 		data() {
 			return {
 				rightText: '',
-				// 全选，返回
+				// 全选
 				isCheckAll: false,
 				allPrice: 0, //所有价格
 			};
@@ -135,23 +140,24 @@
 		},
 		methods: {
 			// 注入vuex的两个方法
-			...mapMutations(['INIT_GOODS']), 
+			...mapMutations(['INIT_GOODS', 'INIT_ORDER_lIST']), 
 			...mapActions(['deleteGoods']),
 			init(){
 				// 获取购物车商品列表
 				this.getCartList();
 			},
+			//  购物车商品列表分两步查询，先查询产品ids，再通过ids查询产品详细信息
+			// 先查询产品ids
 			getCartList(){
 				uni.showLoading();
-				service.getCartList({userId: this.userId}).then(res=>{
+				service.getCartList(this.userId).then(res=>{
 					uni.hideLoading();
 					const data = res.data.data.data;
-					_.forEach(data, item => {
-						item.scrollLeft = 0;
-						item.isChecked = false;
-					})
-					// 同步购物车数据;
-					this.INIT_GOODS(data);
+					if(data.length > 0) {
+						// 通过ids批量查询商品详情
+					}
+					
+					
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -160,6 +166,81 @@
 					});
 				})
 			},
+			// 通过ids查询产品详细信息
+			getCartListDetail(cartData){
+				// 配置查询ids数组
+				let goodsId = []
+				_.forEach(cartData, item => {
+					goodsId.push(item.goodsId);
+				})
+				uni.showLoading();
+				service.getGoodListById({ids: goodsId}).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					if(data.length > 0) {
+						let goodsList = [];
+						// 组建购物车产品列表
+						_.forEach(data, (item, index) => {
+							// 查询是否用相应的规格
+							let standardIndex = this.getStandardIndex(item.standardId, cartData[index].standard);
+							goodsList.push({
+								scrollLeft: 0,
+								// 是否被选中
+								isChecked: false,
+								// 数据id，删除时有用
+								id: cartData[index].id,
+								// 商品id
+								goodsId: item.id,
+								// 商品数量
+								num: item.num,
+								// 价格 优先展示规格里面的单价
+								price: standardIndex > -1 ? cartData[index].standard[standardIndex].price : item.price,
+								// 商品标题
+								title: item.title,
+								// 规格id
+								standardId: item.standardId,
+								// 规格描述
+								standardText: standardIndex > -1 ? cartData[index].standard[standardIndex].title : "",
+								imageUrl: util.setImageUrl({
+									type: "goods",
+									goodId: item.id,
+									imageName: item.imageUrl
+								}),
+							})
+						})
+						this.id = data[0].id;
+						this.title = data[0].title;
+						this.price = data[0].price;
+						this.detail = data[0].detail;
+						this.pointRate = data[0].pointRate;
+												
+						// 初始化规格相关信息
+						this.specTitle = data[0].standardTitle;
+						this.specList = this.initSpecList(data[0].standard);
+						//  默认选中第一条
+						this.specList[0].selected = true;
+						this.specSelected = {
+							id: this.specList[0].id,
+							title: this.specList[0].title,
+							price: this.specList[0].price,
+							inventory: this.specList[0].inventory
+						}
+					}	
+					// 同步购物车数据;
+					this.INIT_GOODS(goodsList);
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg || err.data.data,
+					})
+				})
+			},
+			// 根据规格id查询对应的规格描述
+			getStandardIndex(id, arr){
+				let index = _.findIndex(arr, item => id === item.id);
+			},
 			touchS(e) {
 				startX = e.mp.changedTouches[0].clientX;
 			},
@@ -167,7 +248,7 @@
 				endX = e.mp.changedTouches[0].clientX;
 				if (Math.abs(endX - startX) > 10) {
 					if (endX - startX > 0) {
-						_.forEach(this.shopData, (item)=>{
+						_.forEach(this.goodsList, (item)=>{
 							_.forEach(item, (goods) => {
 								if (goods.pro_id == e.currentTarget.id) {
 									goods.scrollLeft = 0;
@@ -175,7 +256,7 @@
 							})
 						})
 					} else {
-						_.forEach(this.shopData, (item)=>{
+						_.forEach(this.goodsList, (item)=>{
 							_.forEach(item, (goods) => {
 								if (goods.pro_id == e.currentTarget.id) {
 									goods.scrollLeft = 75;
@@ -202,17 +283,16 @@
 			proActive(pro) {
 				pro.isChecked = !pro.isChecked;
 				pro.isChecked ?
-					this._checkTrue(pro) :
+					this._checkTrue(pro):
 					this._checkFalse(pro);
 				// 计算商品价格
 				this._totalPrice();
-				
 			},
 			// 选择商品
 			_checkTrue() {
-				let listLen = this.shopData.length;
+				let listLen = this.goodsList.length;
 				let allCount = 0;
-				_.forEach(this.shopData, (item)=>{
+				_.forEach(this.goodsList, item =>{
 					if(item.isChecked) {
 						allCount++;
 					}
@@ -229,10 +309,10 @@
 			allCheck() {	
 				this.isCheckAll = !this.isCheckAll;
 				this.isCheckAll ?
-					this.shopData.forEach((item) => {
+					this.goodsList.forEach((item) => {
 						item.isChecked = true;
 					}) :
-					this.shopData.forEach((item) => {
+					this.goodsList.forEach((item) => {
 						item.isChecked = false;
 					});
 			},
@@ -249,7 +329,7 @@
 			// 每次调用此方法，将初始值为0，便利价格并累加
 			_totalPrice() {
 				this.allPrice = 0;
-				this.shopData.forEach(item => {
+				this.goodsList.forEach(item => {
 					this.allPrice += item.isChecked && item.now_price * item.pro_count;
 				});
 				if(this.allPrice <= 0) {
@@ -267,7 +347,7 @@
 			// 多个删除
 			deleteMultiple() {
 				let ids = [];
-				_.forEach(this.shopData, (item, index) => {
+				_.forEach(this.goodsList, (item, index) => {
 					if(item.isChecked) {
 						ids.push({
 							id:item.goodsId, 
@@ -279,32 +359,39 @@
 			},
 			// 删除商品
 			deletePro(idsArr) {
-				let ids = [];
-				let indexs = [];
-				_.forEach(idsArr, item => {
-					ids.push(item.id);
-					indexs.push(item.index)
-				})
-				let params = {
-					userId: this.userId,
-					ids: ids
-				}
-				uni.showLoading({
-					title: "删除中..."
-				})
-				service.deleteFromCart(params).then(res=>{
-					uni.hideLoading();
-					uni.showToast({
-						title: "删除成功"
-					})
-					// 分发删除动作
-					this.deleteGoods(idsArr);
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon: 'none',
-						title: err.errMsg || err.data.data,
-					});
+				util.confirm({
+					title:"",
+					content: "确定要删除该商品吗？",
+					confirmColor: "#242424",
+					success: () => {
+						let ids = [];
+						let indexs = [];
+						_.forEach(idsArr, item => {
+							ids.push(item.id);
+							indexs.push(item.index)
+						})
+						let params = {
+							userId: this.userId,
+							ids: ids
+						}
+						uni.showLoading({
+							title: "删除中..."
+						})
+						service.deleteFromCart(params).then(res=>{
+							uni.hideLoading();
+							uni.showToast({
+								title: "删除成功"
+							})
+							// 分发删除动作
+							this.deleteGoods(idsArr);
+						}).catch(err=>{
+							uni.hideLoading();
+							uni.showToast({
+								icon: 'none',
+								title: err.errMsg || err.data.data,
+							});
+						})
+				}	
 				})
 			},
 			// 底部按钮（结算 | 删除）
@@ -313,8 +400,22 @@
 				if(isDelete) {
 					this.deleteMultiple();
 				} else {
-					// 结算
-					console.log('跳转到支付详情页面');
+					// 勾选的商品
+					let selectedGoods = [];
+					_.forEach(this.goodsList, item => {
+						if(item.isChecked) {
+							selectedGoods.push(item)
+						}
+					})
+					if(selectedGoods.length === 0) {
+						uni.showToast({
+							icon: "none",
+							title: "您还没有选择宝贝哦！"
+						})
+						return
+					}
+					// 同步vuex数据
+					this.INIT_ORDER_lIST(selectedGoods);
 					uni.navigateTo({
 						url: '/pages/shopCart/pay'
 					});
@@ -351,7 +452,7 @@
 			}
 		},
 		watch: { //深度监听所有数据，每次改变重新计算总价和总数
-			shopData: {
+			goodsList: {
 				deep: true,
 				handler(val, oldval) {
 					this._totalPrice();

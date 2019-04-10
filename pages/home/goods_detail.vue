@@ -90,9 +90,9 @@
 			<view class="mask"></view>
 			<view class="layer attr-content" @click.stop="stopPrevent">
 				<view class="a-t uni-flex">
-					<image class="uni-inline-item" :src="imageUrl"></image>
+					<image class="uni-inline-item" :src="specSelected.imageUrl"></image>
 					<view class="right uni-flex-item uni-column">
-						<text class="price text-price">¥328.00</text>
+						<text class="price text-price">¥{{specSelected.price}}</text>
 						<view class="selected uni-text-small">
 							<text class="selected-text">
 								请选择&nbsp;&nbsp;{{specTitle}}
@@ -169,8 +169,6 @@
 				detail: "",
 				// 商品积分率
 				pointRate: "",
-				// 选择配置处的图片
-				imageUrl: "",
 				// 轮播图片
 				flowImages: [],
 				// 图文详情
@@ -183,9 +181,11 @@
 				specList: [],
 				// 规格选择对象
 				specSelected: {
+					id: "",
 					inventory: "",
 					price: "",
-					title: ""
+					title: "",
+					imageUrl: ""
 				},
 				// 分享的内容
 				shareObj:{
@@ -239,7 +239,7 @@
 			}
 		},
 		methods: {
-			...mapMutations(['ADD_GOODS']),
+			...mapMutations(['ADD_GOODS', 'INIT_ORDER_lIST']),
 			init(id){
 				let ids = [];
 				ids.push(id)
@@ -253,12 +253,6 @@
 						this.price = data[0].price;
 						this.detail = data[0].detail;
 						this.pointRate = data[0].pointRate;
-						// 配置规格展示图片
-						this.imageUrl = util.setImageUrl({
-							type: "goods",
-							goodId: data[0].id,
-							imageName: data[0].imageUrl
-						});
 						// 配置轮播图片
 						this.flowImages = util.setImageUrl({
 							type: "goods",
@@ -274,14 +268,32 @@
 						// 初始化图文详情
 						this.detailImagesNode = this.initImagesNode(this.detailImages);
 						// 初始化规格相关信息
-						this.specTitle = data[0].standardTitle;
-						this.specList = this.initSpecList(data[0].standard);
-						//  默认选中第一条
-						this.specList[0].selected = true;
-						this.specSelected = {
-							title: this.specList[0].title,
-							price: this.specList[0].price,
-							inventory: this.specList[0].inventory
+						if(data[0].standard.length > 0) {
+							// 有规格
+							this.specTitle = data[0].standardTitle;
+							this.specList = this.initSpecList(data[0].standard);
+							//  默认选中第一条
+							this.specList[0].selected = true;
+							this.specSelected = {
+								id: this.specList[0].id,
+								title: this.specList[0].title,
+								price: this.specList[0].price,
+								inventory: this.specList[0].inventory,
+								// 配置规格展示图片
+								imageUrl: util.setImageUrl({
+									type: "goods",
+									goodId: this.specList[0].id,
+									imageName: this.specList[0].imageUrl
+								})
+							}
+						} else {
+							// 无规格
+							this.specSelected = {
+								id: "",
+								title: "",
+								price: data[0].price,
+								inventory: data[0].inventory,
+							}
 						}
 					}					
 				}).catch(err=>{
@@ -338,9 +350,16 @@
 			selectSpecAction(type){
 				// 判断是否登录
 				this.$guardToLogin().then(()=>{
-					// 选择规格
-					this.specClass = 'show';
+					// 判断是否有规格
 					this.type = type;
+					if(this.specList.length > 0) {
+						// 选择规格
+						this.specClass = 'show';
+					} else {
+						// 无规则 直接购买或者加入购物车
+						this.specSeleted()
+					}
+					
 				}).catch(()=>{});
 			},
 			//规格弹窗开关
@@ -363,9 +382,16 @@
 				this.$set(this.specList[index], 'selected', true);
 				//存储已选择
 				this.specSelected = {
+					id: this.specList[index].id,
 					title: this.specList[index].title,
 					price: this.specList[index].price,
-					inventory: this.specList[index].inventory
+					inventory: this.specList[index].inventory,
+					// 配置规格展示图片
+					imageUrl: util.setImageUrl({
+						type: "goods",
+						goodId: this.specList[index].id,
+						imageName: this.specList[index].imageUrl
+					})
 				}
 				// 更新展示的库存
 				// this.$set(this.specSelected, 'inventory', this.specList[index].inventory);
@@ -379,8 +405,6 @@
 			addToCart(){
 				// 查询商品是否已经存在于购物车
 				let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.id) > -1;
-				console.log(isExist);
-				console.log(this.goodsList.length);
 				// 购物车增加长度限制 最多50个
 				if(!isExist && this.goodsList.length >= 50) {
 					uni.showToast({
@@ -391,7 +415,9 @@
 				}
 				let parms = {
 					userId: this.userId,
-					goodsId: this.id
+					goodsId: this.id,
+					num: this.numberValue,
+					standardId: this.specSelected.id
 				}
 				uni.showLoading();
 				service.addToCart(parms).then(res=>{
@@ -418,6 +444,12 @@
 			},
 			// 创建订单；
 			creatOrder(){
+				// 同步vuex  
+				// todo  等购物车完成直接copy过来
+// 				let data = {
+// 					id = 
+// 				}
+				// this.INIT_ORDER_lIST(data)
 				uni.navigateTo({
 					url: `/pages/shopCart/pay`
 				});
@@ -448,10 +480,17 @@
 			},
 			// 规格选定后
 			specSeleted(){
-				if(this.specSelected.inventory <= 0) {
+				if(this.specSelected.inventory <= 0 || (this.specSelected.inventory < this.numberValue && this.numberValue === 1)) {
 					uni.showToast({
 						icon:"none",
-						title: "亲，所选商品库存不足！"
+						title: "亲，所选商品库存不足哦！"
+					})
+					return
+				}
+				if(this.specSelected.inventory < this.numberValue) {
+					uni.showToast({
+						icon:"none",
+						title: "亲，所选商品数量超出库存了哦！"
 					})
 					return
 				}

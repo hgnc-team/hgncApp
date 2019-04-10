@@ -7,11 +7,17 @@ export default {
 		// total_num: 0,
 		// 购物车数据
 		goodsList: [],
+		// 待提交到订单的产品
+		orderList: []
 	},
 	getters: {
 		// 购物车商品总数量
 		total_num(state){
 			return state.goodsList.length + "";
+		},
+		// 
+		getOrderList(state){
+			return state.orderList
 		}
 	},
 	mutations:{
@@ -27,7 +33,10 @@ export default {
 		UPDATA_GOODS(state, data) {
 			const {index,key,value}=data;
 			state.goodsList[index][key]=value;
-		}
+		},
+		INIT_ORDER_lIST(state, data) {
+			state.orderList = data;
+		},
 	},
 	actions:{
 		deleteGoods(ctx, arr){

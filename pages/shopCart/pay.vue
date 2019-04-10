@@ -25,8 +25,8 @@
 		<!-- <rain-color ref="rainColor" v-model="rainColor.value" :mode="rainColor.mode" :color="rainColor.colorArr" :w="rainColor.w" @click="addColor" /> -->
 		<!-- 购买商品 -->
 		<view class="goods-list"> 
-			<view class="goods-item uni-flex uni-row" v-for="(item, index) in goodsList" :key="index" :id="item.index">
-				<view class="image uni-inline-item" @tap="toDetail(item.pro_id)">
+			<view class="goods-item uni-flex uni-row" v-for="(item, index) in getOrderList" :key="index" :id="item.index">
+				<view class="image uni-inline-item" @tap="toDetail(item.goodsId)">
 					<image :src="item.pro_img" mode="aspectFit"></image>
 				</view>
 				<view class="info uni-flex-item">
@@ -217,7 +217,7 @@
 		},
 		computed: {
 			// 注入vuex的计算方法
-			...mapGetters(["getAddressList"]),
+			...mapGetters(["getAddressList", "getOrderList"]),
 			// 积分是否可用
 			isJfPayAvailable() {
 				return this.jBalance >= this.total; 
@@ -226,6 +226,7 @@
 			isMbPayAvailable() {
 				return this.mBalance >= this.total; 
 			},
+			// 默认地址
 			address(){
 				return this.getAddressList.length > 0 ? this.getAddressList[0] : null
 			}
