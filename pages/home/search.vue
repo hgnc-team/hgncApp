@@ -104,15 +104,18 @@
 							<image src="/static/img/common/search-no-data.png" mode="scaleToFill"></image>
 						</view>
 						<view class="uni-text-small">
-							抱歉,未找到{{keyword}}相关产品
+							抱歉,未找到“{{keyword}}”相关产品
 						</view>
 					</view>
 					<view class="place-bar"></view>
 					<!-- 推荐商品列表 -->
 					<recommendGoods></recommendGoods>
 				</view>				
-			</view>
-			
+			</view>	
+		</view>
+		
+		<view class="scrollToTop flex-center-center" @tap="scrollToTop" v-if="isShowScrollToTopBtn">
+			<uni-icon type="arrowthinup" size="36"></uni-icon>
 		</view>
 	</view>
 </template>
@@ -164,6 +167,8 @@
 				placeholderSrc: "/static/img/logo@0.5x.png",
 				// 设备屏幕高度
 				windowHeight: 0,
+				// 是否暂时返回顶部按钮
+				isShowScrollToTopBtn: false
 			}
 		},
 		onLoad() {
@@ -253,7 +258,6 @@
 			},
 			clear(keyword){
 				if(!keyword){
-					console.log(123);
 					this.isShowSearchList = false;
 					this.keyword = "";
 				}
@@ -356,7 +360,6 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					this.totalNum = data.total;
-					// console.log(this.totalNum);
 					if(data.data.length > 0) {
 						this.hasData = true;
 						const  goodsList = data.data;
@@ -392,6 +395,22 @@
 					url: "/pages/index"
 				})
 			},
+			// 返回顶部
+			scrollToTop(){
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 30
+				});
+			},
+			// 获取搜索商品列表区域的滚动高度
+			getScrollTop() {
+				uni.createSelectorQuery().select('.product-list').boundingClientRect(data => {
+					if(data) {
+						// 内容超过一屏
+						this.isShowScrollToTopBtn = data.top <= 0 ? true : false;
+					}
+				}).exec()
+			},
 			// 图片懒加载
 			load() {
 				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
@@ -412,6 +431,7 @@
 				this.$set(this.goodsList, e.target.dataset.index, item);
 			},
 			pageScroll: _.throttle(function(){
+				this.getScrollTop();
 				this.load();
 			}, 100),
 			goBack(){
@@ -743,6 +763,19 @@
 					}
 				}
 			}
+		}
+		
+		.scrollToTop{
+			width: 86upx;
+			height: 86upx;
+			background-color: #fff;
+			border-radius: 50%;
+			border: 1upx solid #f0f0f0;
+			position: fixed;
+			bottom: 156upx;
+			right: 30upx;
+			box-shadow: 6upx 6upx 20upx 3upx #c2c2c2;
+			z-index: 1000;
 		}
 	}
 </style>
