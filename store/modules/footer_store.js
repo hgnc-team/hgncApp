@@ -17,6 +17,13 @@ export default {
 				size:'small'
 			},
 			{
+				name:'会员中心',
+				name_code:'vipCenter',
+				icon:'/static/img/index/icon_member-center_nor@2x.png',
+				select_icon:'/static/img/index/icon_member-center_sel@2x.png',
+				size:'small'
+			},
+			{
 				name:'购物车',
 				name_code:'shopCart',
 				icon:'/static/img/index/icon_shopping-cart_nor@2x.png',
