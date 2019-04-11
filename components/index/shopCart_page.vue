@@ -32,6 +32,11 @@
 							<van-checkbox :value="item.isChecked" @change="proActive(item)"></van-checkbox>
 						</view>
 						<!-- #endif -->	
+						<!-- #ifdef MP-WEIXIN -->
+						<view class="uni-inline-item" style="margin-right: 20upx;">
+							<van-checkbox :value="item.isChecked" @change="proActive(item)"></van-checkbox>
+						</view>
+						<!-- #endif -->
 						<view class="shangpin-info uni-flex-item">
 							<view class="img uni-inline-item" @tap="toDetail(item.id)">
 								<image :src="item.imageUrl" mode="aspectFit"></image>
@@ -77,6 +82,11 @@
 					</view>
 					<!-- #endif -->
 					<!-- #ifdef APP-PLUS -->
+					<view class="uni-inline-item">
+						<van-checkbox :value="isCheckAll" @change="allCheck" style="margin-right: 20upx;z-index: 100;"></van-checkbox>
+					</view>
+					<!-- #endif -->
+					<!-- #ifdef MP-WEIXIN -->
 					<view class="uni-inline-item">
 						<van-checkbox :value="isCheckAll" @change="allCheck" style="margin-right: 20upx;z-index: 100;"></van-checkbox>
 					</view>
@@ -323,7 +333,7 @@
 				if (way > 0) {
 					val.num++;
 				} else {
-					val.num;
+					val.num--;
 					if (val.num < 1) {
 						val.num = 1;
 					}
@@ -465,7 +475,9 @@
 		},
 		created() {
 			this.rightText = this.showNoData ? "" : "编辑";
-			this.init();
+			if(this.hasLogin) {
+				this.init();
+			}
 		}
 	};
 </script>
