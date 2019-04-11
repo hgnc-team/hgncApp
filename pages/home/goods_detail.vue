@@ -404,7 +404,7 @@
 			// 加入购物车
 			addToCart(){
 				// 查询商品是否已经存在于购物车
-				let isExist = _.findIndex(this.goodsList, item => item.goodsId === this.id) > -1;
+				let isExist = _.findIndex(this.goodsList, item => item.standardId === this.specSelected.id) > -1;
 				// 购物车增加长度限制 最多50个
 				if(!isExist && this.goodsList.length >= 50) {
 					uni.showToast({
@@ -430,7 +430,9 @@
 					if(!isExist) {
 						// 同步vuex数据
 						this.ADD_GOODS({
-							goodsId: this.id
+							goodsId: this.id,
+							standardId: this.specSelected.id,
+							num: this.numberValue
 						});
 					}
 					
