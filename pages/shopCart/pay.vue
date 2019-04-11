@@ -27,16 +27,16 @@
 		<view class="goods-list"> 
 			<view class="goods-item uni-flex uni-row" v-for="(item, index) in getOrderList" :key="index" :id="item.index">
 				<view class="image uni-inline-item" @tap="toDetail(item.goodsId)">
-					<image :src="item.pro_img" mode="aspectFit"></image>
+					<image :src="item.imageUrl" mode="aspectFit"></image>
 				</view>
 				<view class="info uni-flex-item">
 					<view class="title  uni-flex uni-column">
-						<text class="uni-ellipsis">{{ item.pro_name }}</text>
-						<text class="text-color-gray uni-text-small">{{ item.tags }}</text>
+						<text class="uni-ellipsis">{{ item.title }}</text>
+						<text class="text-color-gray uni-text-small">{{ item.standardText }}</text>
 					</view>
 					<view class="price uni-flex">
-						<text class="text-price uni-flex-item">￥{{ item.now_price }}</text>
-						<text class="uni-flex" style="align-items: flex-end;">x {{ item.pro_count }}</text>
+						<text class="text-price uni-flex-item">￥{{ item.price }}</text>
+						<text class="uni-flex" style="align-items: flex-end;">x {{ item.num }}</text>
 					</view>
 				</view>
 			</view>
@@ -58,22 +58,6 @@
 		<view class="order-info">
 			<view class="order-info-item uni-flex">
 				<view class="title uni-flex-item">
-					订单编号
-				</view>
-				<view class="info uni-flex-item">
-					214325435435435435
-				</view>
-			</view>
-			<view class="order-info-item uni-flex">
-				<view class="title uni-flex-item">
-					下单时间
-				</view>
-				<view class="info uni-flex-item">
-					2018-10-05
-				</view>
-			</view>
-			<view class="order-info-item uni-flex">
-				<view class="title uni-flex-item">
 					发货方式
 				</view>
 				<view class="info uni-flex-item uni-flex">
@@ -88,7 +72,7 @@
 					订单总价
 				</view>
 				<view class="text-price info uni-flex-item">
-					￥2,220
+					￥{{totalPrice}}
 				</view>
 			</view>
 			<!-- <view class="order-info-item uni-flex">
@@ -117,7 +101,7 @@
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
 						<view class="checkbox uni-inline-item">
-							<radio value="zfb" :checked="payType === 'zfb'" ></radio>
+							<radio value="alipay" :checked="payType === 'alipay'" ></radio>
 						</view>
 					</view>
 				</view>	
@@ -159,9 +143,9 @@
 		<view class="footer uni-flex">
 			<view class="total uni-flex-item flex-center-center">
 				<text>共计：</text>
-				<text class="text-price">{{total}}M币</text>
+				<text class="text-price">{{totalPrice}}M币</text>
 			</view>
-			<view class="buy  uni-flex-item flex-center-center" @tap="toPay">
+			<view class="buy  uni-flex-item flex-center-center" @tap="creatOrder">
 				去付款
 			</view>
 		</view>
@@ -171,7 +155,7 @@
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
-	import { mapMutations, mapGetters, mapActions } from 'vuex';
+	import { mapMutations, mapGetters, mapActions, mapState } from 'vuex';
 	// import rainColor from "../../components/common/rain-color.vue"
 	export default {
 		components: {
@@ -180,62 +164,43 @@
 		},
 		data(){
 			return {
-				goodsList: [{
-					pro_id: 1,
-					pro_name: '老街口-红糖麻花500g/袋',
-					pro_name2: '(又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-					tags: '50mi,淡香',
-					reduce_price: 16,
-					now_price: 100,
-					pro_count: 1,
-					pro_img: '../../static/img/common/good1.jpg',
-					isChecked: false,
-					// 滚动条
-					scrollLeft: 0,
-				},{
-					pro_id: 2,
-					pro_name: '第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-					pro_name2: ' (又名：香奈儿 可可小姐淡香水（瓶装）50ml)',
-					tags: '50mi,淡香',
-					reduce_price: 16,
-					now_price: 100,
-					pro_count: 1,
-					pro_img: '../../static/img/common/good2.jpg',
-					isChecked: false,
-					// 滚动条
-					scrollLeft: 0,
-				}],
 				// 支付方式
-				payType: "zfb",
+				payType: "alipay",
 				// 积分余额
 				jBalance: 0,
 				// m币余额
 				mBalance: 0,
-				// 总价
-				total:0,
 			}
 		},
 		computed: {
 			// 注入vuex的计算方法
+			...mapState(["userId"]),
 			...mapGetters(["getAddressList", "getOrderList"]),
-			// 积分是否可用
-			isJfPayAvailable() {
-				return this.jBalance >= this.total; 
-			},
-			// M币是否可用
-			isMbPayAvailable() {
-				return this.mBalance >= this.total; 
-			},
 			// 默认地址
 			address(){
 				return this.getAddressList.length > 0 ? this.getAddressList[0] : null
+			},
+			totalPrice(){
+				let total = 0;
+				_.forEach(this.getOrderList, item => {
+					total += item.price * item.num
+				})
+				return total
+			},
+			// 积分是否可用
+			isJfPayAvailable() {
+				return this.jBalance >= this.totalPrice; 
+			},
+			// M币是否可用
+			isMbPayAvailable() {
+				return this.mBalance >= this.totalPrice; 
 			}
+			
 		},
 		methods: {
 			init(){
 				this.jBalance = 450;
 				this.mBalance = 650;
-				this.total = 505;
 			},
 			// 去地址管理页面
 			toAddress(){
@@ -253,71 +218,87 @@
 			radioChange(evt) {
 				this.payType = evt.detail.value;
 			},
+			// 创建订单
+			creatOrder(){
+				let goods = [];
+				_.forEach(this.getOrderList, item => {
+					goods.push({
+						goodsId: item.goodsId,
+						num: item.num,
+						price: item.price,
+						detail: item.standardText,
+						imageUrl: item.imageUrl
+					})
+				})
+				console.log(this.address.id)
+				let params = {
+					userId: this.userId,
+					goods: goods,
+					addressId: this.address.id
+				}
+				uni.showLoading();
+				service.createOrder(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					console.log(data);
+					// 去支付
+					// this.toPay(data);
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: (err.data && err.data.data) || err.errMsg
+					})
+				})
+			},
 			// 支付
-			toPay(){
-				console.log(this.payType);
+			toPay(data){
 				// 支付流程
-				if(this.payType === "zfb") {
+				if(this.payType === "alipay") {
 					// 支付宝支付
 					uni.showToast({
 						title: "支付宝支付"
 					})
-					// this.alipay();			
-
+					this.alipay(data);
 				} else if (this.payType === "jf") {
 					// 支付宝支付
 					uni.showToast({
 						title: "积分支付"
 					})
-					this.jfPay();
+					this.jfPay(data);
 				} else {
 					// 支付宝支付
 					uni.showToast({
 						title: "Mb支付宝支付"
 					})
-					this.mbPay();
+					this.mbPay(data);
 				}
-				
-				// this.toResult();
 			},
 			// 支付宝支付
-			alipay(){
-				// 请求后台接口获取订单数据
-				uni.showLoading();
-				service.getorderInfo().then(res=>{
-					uni.hideLoading();
-					const data = res.data.data;
-					// 然后调用api，吊起支付宝支付
-					uni.requestPayment({
-						provider: 'alipay',
-						orderInfo: {
-							"dealId": data.dealId,
-							"appKey": data.appKey,
-							"totalAmount": data.totalAmount,
-							"tpOrderId": data.tpOrderId,
-							"dealTitle": data.dealTitle,
-							"rsaSign": data.rsaSign,
-							"bizInfo": data.bizInfo
-						}, //订单数据
-						success: function(res) {
-							console.log('success:' + JSON.stringify(res));
-						},
-						fail: function(err) {
-							uni.showToast({
-								icon: "none",
-								title:  err.errMsg || err.data.data,
-							})
-						}
-					});
-				}).catch(err=>{
-					console.log(err)
-					uni.hideLoading();
-					uni.showToast({
-						icon: "none",
-						title: err.errMsg || err.data.data,
-					})
-				})
-				
+			alipay(data){
+				// 然后调用api，吊起支付宝支付
+				uni.requestPayment({
+					provider: 'alipay',
+					orderInfo: {
+						"dealId": data.dealId,
+						"appKey": data.appKey,
+						"totalAmount": data.totalAmount,
+						"tpOrderId": data.tpOrderId,
+						"dealTitle": data.dealTitle,
+						"rsaSign": data.rsaSign,
+						"bizInfo": data.bizInfo
+					}, //订单数据
+					success: function(res) {
+						console.log('success:' + JSON.stringify(res));
+						this.callbackAfterPay(data);
+					},
+					fail: function(err) {
+						uni.showToast({
+							icon: "none",
+							title:  err.errMsg || err.data.data,
+						})
+					}
+				});	
 			},
 			// 积分支付
 			jfPay(){
@@ -344,6 +325,26 @@
 					// 
 					this.toSecond();
 				}
+			},
+			// 支付成功了回调
+			callbackAfterPay(){
+				let parms = {
+					orderId: data.orderId,
+					payment: this.payType
+				}
+				uni.showLoading();
+				service.callbackAfterPay().then(res=>{
+					uni.hideLoading();
+					const data = res.data.data;
+					
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg || err.data.data,
+					})
+				})
 			},
 			// 去二级密码页面
 			toSecond(){

@@ -36,7 +36,6 @@ export default {
 			// 重新获取地址列表数据
 			let userId = ctx.rootState.userId;
 			ctx.commit("INIT_ADDRESS", []);
-			// let userId = "660efd50-4c6f-11e9-bc7c-95dfc83db603";
 			service.getAddressList({userId: userId}).then(res=>{
 				let data = res.data.data; 
 				ctx.commit("INIT_ADDRESS", data);

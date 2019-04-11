@@ -302,10 +302,26 @@ const deleteAddress = function(params) {
 const createOrder = function(params) {
 	let data = {
 		userId: params.userId,
-		goods: params.goods
+		goods: params.goods,
+		addressId: params.addressId
 	}
 	return vm.$http.post('/v1/api/order/create', data)
 }
+
+/**     
+  * @method 支付成功后的回调  
+  * @param {String} userId  用户id 
+  * @param {String} payment  支付方式
+  * @return {promise} 返回一个promise对象     
+  **/
+const callbackAfterPay = function(params) {
+	let data = {
+		orderId: params.orderId,
+		payment: params.payment
+	}
+	return vm.$http.post('/v1/api/order/paySuccess', data)
+}
+
 
 const LOGIN_MODULE = {
 	getConfigs,
@@ -333,7 +349,8 @@ const SHOPCART_MODULE = {
 	getCartList,
 	addToCart,
 	deleteFromCart,
-	createOrder
+	createOrder,
+	callbackAfterPay
 }
 const MINE_MODULE = {
 	getAddressList,
