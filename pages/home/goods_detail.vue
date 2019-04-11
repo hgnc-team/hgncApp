@@ -17,7 +17,7 @@
 					<view class="uni-h4">
 						{{title}}
 					</view>
-					<view class="uni-text-small text-color-gray">
+					<view class="uni-text-small text-color-gray" v-if="detail">
 						<text>{{detail}}</text>
 					</view>
 				</view>

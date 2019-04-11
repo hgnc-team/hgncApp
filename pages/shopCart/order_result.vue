@@ -2,16 +2,16 @@
 	<view class="orderResultPage">
 		<view class="result-wrap">
 			<view class="title">
-				<view class="icon flex-center-center" :class="orderStatus ==='success'?'success':'fail'">
+				<view class="icon flex-center-center" :class="payStatus ==='success'?'success':'fail'">
 					<uni-icon :type="icon" color="#fff"></uni-icon>
 				</view>
 				<view class="title uni-h4 flex-center-center" style="margin-top: 20upx;">
 					{{title}}
 				</view>
-				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="orderStatus ==='success'">
+				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='success'">
 					我们将尽快给您准备好货物，感谢您的支持
 				</view>
-				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="orderStatus ==='fail'">
+				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='fail'">
 					请在{{countDown}}内完成付款，否则订单将关闭
 				</view>
 			</view>
@@ -41,22 +41,13 @@
 		</view>
 		
 		<!-- 商品推荐 -->
-		<view class="goods-list" v-if="orderStatus ==='success'">
-			<view class="title">商品推荐</view>
-			<view class="product-list">
-				<view class="product" v-for="product in productList" :key="product.goods_id" @tap="toDetail(product.goods_id)">
-					<image mode="widthFix" :src="product.img"></image>
-					<view class="name">{{product.name}}</view>
-					<view class="info">
-						<view class="price">{{product.price}}</view>
-						<view class="slogan">{{product.slogan}}</view>
-					</view>
-				</view>
-			</view>
+		<view class="goods-list" v-if="payStatus ==='success'">
+			<!-- 商品推荐 -->
+			<recommendGoods :title="'商品推荐'" :num="4"></recommendGoods>
 		</view>
 		
 		<!-- 支付方式 -->
-		<view class="pay-type" v-if="orderStatus ==='fail'">
+		<view class="pay-type" v-if="payStatus ==='fail'">
 			<view class="pay-title uni-h5">
 				支付方式
 			</view>
@@ -112,11 +103,11 @@
 		</view>
 		
 		<!-- 交易成功展示 -->
-		<view class="footer flex-center-center" v-if="orderStatus === 'success'" @tap="backToIndex">
+		<view class="footer flex-center-center" v-if="payStatus === 'success'" @tap="backToIndex">
 			回到首页
 		</view>
 		<!-- 交易失败按钮 -->
-		<view class="footer uni-flex" v-if="orderStatus === 'fail'">
+		<view class="footer uni-flex" v-if="payStatus === 'fail'">
 			<view class="total uni-flex-item flex-center-center">
 				<text>共计：</text>
 				<text class="text-price">{{total}}M币</text>
@@ -133,14 +124,16 @@
 	import { mapMutations } from 'vuex';
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import util from "../../common/util.js";
+	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
-			uniIcon
+			uniIcon,
+			recommendGoods
 		},
 		data(){
 			return {
 				// 交易状态
-				orderStatus: "fail",
+				payStatus: "fail",
 				icon: "checkmarkempty",
 				title: "交易成功",
 				// 倒计时
@@ -187,6 +180,7 @@
 			}
 		},
 		computed: {
+			...mapGetters(["getOrderList"]),
 			isJfPayAvailable() {
 				return this.jBalance >= this.total; 
 			},
@@ -195,7 +189,7 @@
 			},
 		},
 		methods: {
-			...mapMutations(['SET_PASSWORD_CHECKSTATUS']),
+			...mapMutations(['SET_PASSWORD_CHECKSTATUS', 'INIT_ORDER_lIST']),
 			init(){
 				this.jBalance = 450;
 				this.mBalance = 650;
@@ -293,12 +287,15 @@
 			},
 		},
 		onLoad(option) {
-			this.title = this.orderStatus === "success" ? "付款成功" : "付款失败";
-			this.icon = this.orderStatus === "success" ? "checkmarkempty" : "closeempty";
+			this.title = this.payStatus === "success" ? "付款成功" : "付款失败";
+			this.icon = this.payStatus === "success" ? "checkmarkempty" : "closeempty";
 			this.init();
-			// 付款成功，重置二级密码校验状态为false
-			if(this.orderStatus === "success"){
+			// 付款成功
+			if(this.payStatus === "success"){
+				// 重置二级密码校验状态为false
 				this.SET_PASSWORD_CHECKSTATUS(false);
+				// 清空待支付订单列表
+				this.INIT_ORDER_lIST([]);
 			}	
 			
 		}
