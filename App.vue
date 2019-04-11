@@ -48,6 +48,8 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import "./static/css/uni.css";
+	// 引入字体文件
+	@import "./static/css/font/iconfont.css";
 
 	// 顶部导航栏全局配置
 	.uni-navbar {

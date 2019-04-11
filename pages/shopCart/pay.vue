@@ -3,7 +3,7 @@
 		<!-- 收货地址 -->
 		<view class="address-wrap uni-flex uni-row" @tap="toAddress">
 			<view class="icon-left uni-inline-item common-mr-20">
-				<uni-icon type="location-filled"></uni-icon>
+				<view class="iconfont iconicon_position_fill "></view>
 			</view>
 			<view class="default-address uni-inline-item">
 				<!-- 有地址 -->
@@ -92,9 +92,7 @@
 			<radio-group @change="radioChange">
 				<view class="pay-type-item uni-flex">
 					<view class="title uni-flex uni-flex-item">
-						<view class="icon uni-inline-item">
-							<uni-icon type="info" color="blue"></uni-icon>
-						</view>
+						<view class="iconfont iconicon_zhifubao uni-inline-item"></view>
 						<view class="name uni-inline-item">
 							支付宝支付
 						</view>
@@ -107,9 +105,7 @@
 				</view>	
 				<view class="pay-type-item uni-flex" :class="!isJfPayAvailable?'disabled':''">
 					<view class="title uni-flex uni-flex-item">
-						<view class="icon uni-inline-item">
-							<uni-icon type="info" color="blue"></uni-icon>
-						</view>
+						<view class="iconfont iconicon_integral uni-inline-item"></view>
 						<view class="name uni-inline-item">
 							积分支付（余额{{jBalance}}）
 						</view>
@@ -123,9 +119,7 @@
 				</view>	
 				<view class="pay-type-item uni-flex" :class="!isMbPayAvailable?'disabled':''">
 					<view class="title uni-flex uni-flex-item">
-						<view class="icon uni-inline-item">
-							<uni-icon type="info" color="blue"></uni-icon>
-						</view>
+						<view class="iconfont iconicon_m uni-inline-item"></view>
 						<view class="name uni-inline-item">
 							M币支付（余额{{mBalance}}）
 						</view>
@@ -230,7 +224,6 @@
 						imageUrl: item.imageUrl
 					})
 				})
-				console.log(this.address.id)
 				let params = {
 					userId: this.userId,
 					goods: goods,
@@ -291,12 +284,14 @@
 					success: function(res) {
 						console.log('success:' + JSON.stringify(res));
 						this.callbackAfterPay(data);
+						this.toResult(true);
 					},
 					fail: function(err) {
-						uni.showToast({
-							icon: "none",
-							title:  err.errMsg || err.data.data,
-						})
+// 						uni.showToast({
+// 							icon: "none",
+// 							title:  err.errMsg || err.data.data,
+// 						})
+						this.toResult(false);
 					}
 				});	
 			},
@@ -352,11 +347,19 @@
 					url: "/pages/mine/gesture_lock?mode=check"
 				})
 			},
-			// 支付成功
-			toResult() {
-				uni.navigateTo({
-					url: "/pages/shopCart/order_result"
-				})
+			// 支付结果
+			toResult(isSuccess) {
+				let payStatus = isSuccess ? "success" : "fail";
+				uni.showToast({
+					title: isSuccess ? "支付成功" : "支付失败",
+					icon: isSuccess ? "success" : "",
+					duration: 2000,
+					complete: () => {
+						uni.reLaunch({
+							url: `/pages/shopCart/order_result?payStatus=${payStatus}&orderId=${orderId}`
+						});
+					}
+				});
 			}
 		},
 		onLoad() {
@@ -468,6 +471,18 @@
 				height: 84upx;
 				padding: 0 30upx; 
 				box-sizing: border-box;
+				.iconfont{
+					margin-right: 10upx;
+				}
+				.iconicon_zhifubao{
+					color: #01aaef;
+				}
+				.iconicon_integral{
+					color: #fcbb3b;
+				}
+				.iconicon_m{
+					color: #ff8067;
+				}
 				.uni-flex-item{
 					border-bottom: 1upx solid #f0f0f0;
 				}
