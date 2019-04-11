@@ -1,5 +1,6 @@
 
 // import service from "../../common/service.js";
+import _ from "lodash";
 
 export default {
 	state:{
@@ -29,6 +30,7 @@ export default {
 		},
 		DELETE_GOODS(state, index) {
 			state.goodsList.splice(index, 1);
+			console.log(state.goodsList);
 		},
 		UPDATA_GOODS(state, data) {
 			const {index,key,value}=data;
@@ -40,9 +42,11 @@ export default {
 	},
 	actions:{
 		deleteGoods(ctx, arr){
+			let goodsList = _.cloneDeep(ctx.state.goodsList);
 			_.forEach(arr, item => {
-				ctx.commit("DELETE_GOODS", item.index);
+				let index = _.findIndex(ctx.state.goodsList, item1 => item.id === item1.id);
+				ctx.commit("DELETE_GOODS", index);
 			})
-		}
+		},
 	}
 }

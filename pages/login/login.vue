@@ -246,7 +246,7 @@
 					const userLevel = data.role || 0;
 					// console.log(data);
 					// 获取购物车数据
-					this.getGoodsData(data.id);
+					this.getCartList(data.id);
 					// 获取收货地址
 					this.getAddress(data.id);
 					// 设置底部导航栏
@@ -456,29 +456,103 @@
 					});
 				}
 			},
-			// 获取购物车数据
-			getGoodsData(userId){
-				if(!userId) {
-					return
-				}
-				uni.showLoading({
-					title: "加载中"
-				})
-				service.getCartList(userId).then(res => {
+			//  购物车商品列表分两步查询，先查询产品ids，再通过ids查询产品详细信息
+			// 先查询产品ids
+			getCartList(userId){
+				uni.showLoading();
+				service.getCartList(userId).then(res=>{
 					uni.hideLoading();
-					const data = res.data.data;
-					if(data.data.length > 0) {
+					const data = res.data.data.data;
+					if(data.length > 0) {
+						// 通过ids批量查询商品详情
+						this.getCartListDetail(data);
+					} else {
 						// 同步购物车数据;
-						this.INIT_GOODS(data.data);
+						this.INIT_GOODS([]);
 					}
-				}).catch((err)=>{
+				}).catch(err=>{
 					uni.hideLoading();
-					// 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: (err.data && err.data.data) || err.errMsg,
+						title: err.errMsg || err.data.data,
 					});
-				});
+				})
+			},
+			// 通过ids查询产品详细信息
+			getCartListDetail(cartData){
+				// 配置查询ids数组
+				let goodsId = []
+				_.forEach(cartData, item => {
+					goodsId.push(item.goodsId);
+				})
+				uni.showLoading();
+				service.getGoodListById({ids: goodsId}).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					
+					// 需要对比的数组
+					let contrastArr = [];
+					_.forEach(data, item => {
+						contrastArr.push(item.id);
+					})
+					// 筛选哪些产品失效了
+					let removedGoods = this.getRemovedGoods(goodsId, contrastArr);
+					let goodsList = [];
+					// 组建购物车产品列表
+					_.forEach(cartData, item => {
+						// 判断当前产品是否失效
+						let removedIndex = this.getIndex(item.goodsId, removedGoods, "");
+						// 获取购物车中当前产品在详情数组中的下标
+						let currentIndex = this.getIndex(item.goodsId, data, "id");
+						// 查询是否有相应的规格
+						let standardIndex = this.getIndex(item.standardId , data[currentIndex].standard, "id");
+						goodsList.push({
+							scrollLeft: 0,
+							// 是否被选中
+							isChecked: false,
+							// 商品是否不能选中
+							isDisabled: removedIndex > -1 ? true : (standardIndex > -1 ? false : true),
+							// 数据id，删除时有用
+							id: item.id,
+							// 商品id
+							goodsId: item.goodsId,
+							// 商品数量
+							num: item.num,
+							// 规格id
+							standardId: item.standardId,
+							// 价格  下架展示为空，未下架优先展示规格里面的单价
+							price: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].price : data[currentIndex].price),
+							// 商品标题
+							title: removedIndex > -1 ? "亲，所选商品已经下架了哦" : data[currentIndex].title,
+							// 规格描述
+							standardText: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].title : ""),
+							// 商品是否失效, 实时查询的产品无此规格，则表示商品失效
+							isInvalid: standardIndex > -1 ? false : true,
+							imageUrl: removedIndex > -1 ? "/static/img/logo@0.5x.png" : util.setImageUrl({
+								type: "goods",
+								goodId: item.goodsId,
+								imageName: standardIndex > -1 ? (data[currentIndex].standard[standardIndex].imageUrl || data[currentIndex].imageUrl) : data[currentIndex].imageUrl
+							}),
+						})
+					})
+					// 同步购物车数据;
+					this.INIT_GOODS(goodsList);
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg || err.data.data,
+					})
+				})
+			},
+			// 根据id查询对应下标
+			getIndex(id, arr, key){
+				return key ? _.findIndex(arr, item => id === item[key]) : _.findIndex(arr, item => id === item);
+			},
+			// 筛选哪些产品失效了
+			getRemovedGoods(arr, arr2){
+				return _.difference(arr, arr2)
 			},
 			// 获取收货地址数据
 			getAddress(userId){
