@@ -3,7 +3,7 @@
 		<!-- 收货地址 -->
 		<view class="address-wrap uni-flex uni-row" @tap="toAddress">
 			<view class="icon-left uni-inline-item common-mr-20">
-				<view class="iconfont iconicon_position_fill "></view>
+				<view class="iconfont iconicon_position_fill"></view>
 			</view>
 			<view class="default-address uni-inline-item">
 				<!-- 有地址 -->
@@ -148,8 +148,8 @@
 </template>
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
+	import { mapState, mapMutations, mapGetters} from 'vuex';
 	import service from '../../common/service.js';
-	import { mapMutations, mapGetters, mapActions, mapState } from 'vuex';
 	// import rainColor from "../../components/common/rain-color.vue"
 	export default {
 		components: {
@@ -234,6 +234,7 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					console.log(data);
+					let orderId = data;
 					// 去支付
 					// this.toPay(data);
 				}).catch(err=>{
@@ -379,7 +380,7 @@
 		.address-wrap{
 			width: 100%;
 			height: 180upx;
-			padding: 30upx 10upx; 
+			padding: 30upx 20upx; 
 			box-sizing: border-box;
 			background-color: #fff;
 			margin-bottom: 30upx;

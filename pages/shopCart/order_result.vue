@@ -180,7 +180,6 @@
 			}
 		},
 		computed: {
-			...mapGetters(["getOrderList"]),
 			isJfPayAvailable() {
 				return this.jBalance >= this.total; 
 			},

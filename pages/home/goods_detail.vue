@@ -69,7 +69,7 @@
 		</view>
 		<view class="goods-footer uni-flex">
 			<view class="cart uni-flex-item">
-				<uni-icon type="star" @tap="toCart"></uni-icon>
+				<view class="iconfont iconicon_shoppingcart_nor" @tap="toCart"></view>
 				<uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge>
 			</view>
 			<view class="btn add-to-cart uni-flex-item uni-center" @tap="selectSpecAction('toCart')">
