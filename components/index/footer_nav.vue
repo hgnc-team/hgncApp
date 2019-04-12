@@ -4,7 +4,7 @@
 			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
 				<!-- <uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon> -->
 				<image :src="index==now_index?item.select_icon:item.icon" mode=""></image>
-				<view style="margin-top: 4upx;">{{item.name}}</view>
+				<view class="name">{{item.name}}</view>
 			</view>
 		</view>
 	</view>
@@ -60,7 +60,7 @@
 
 <style lang="scss">
 .footerNav{
-	height: 120upx;
+	height: 100upx;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -71,20 +71,22 @@
 	z-index: 10000;
 	.footer_item{
 		float: left;
-		width: 33.3%;
 		text-align: center;
-		font-size: 28upx;
-		height: 120upx;
+		height: 100upx;
 		margin-top: 8upx;
+		image{
+			width: 36upx;
+			height: 36upx;
+			top: 8upx;
+		}
+		.name{
+			font-size: 22upx;
+		}
 	}
 	.select_text{
 		color: #000;
 	}
-	.footer_item image{
-		width: 40upx;
-		height: 40upx;
-		top: 8upx;
-	}
+
 }
 
 </style>

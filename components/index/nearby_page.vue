@@ -284,7 +284,7 @@
 			/*  #ifdef  APP-PLUS  */
 			margin-top: calc(var(--status-bar-height) + 200upx);
 			/*  #endif  */
-			padding-bottom: 120upx;
+			padding-bottom: 100upx;
 
 			.hot-shop {
 				background-color: #fff;

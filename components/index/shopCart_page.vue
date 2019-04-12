@@ -487,7 +487,7 @@
 		background-color: #f0f0f0;
 		padding-bottom: 98upx;
 		.content{
-			margin-bottom: 150upx;
+			margin-bottom: 100upx;
 			background-color: #fff;
 			.no-data{
 				width: 100%;
@@ -617,7 +617,7 @@
 			height: 98upx;
 			box-sizing: border-box;
 			position: fixed;
-			bottom: 120upx;
+			bottom: 100upx;
 			display: flex;
 			z-index: 1000;
 			box-shadow: 0px 0px 4upx 0px rgba(0, 0, 0, 0.1);

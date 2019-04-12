@@ -355,7 +355,7 @@
 			}
 
 			.swiper-box {
-				height: calc(100% - 120upx);
+				height: calc(100% - 100upx);
 				padding-top: 88upx;
 				box-sizing: border-box;
 			}

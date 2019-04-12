@@ -191,7 +191,7 @@
 			color: #666;
 		}
 		.address-list{
-			margin-bottom: 120upx;
+			margin-bottom: 100upx;
 			.address-item{
 				width: 100%;
 				margin-bottom: 20upx;

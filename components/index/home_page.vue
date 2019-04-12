@@ -610,7 +610,7 @@
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
-			padding-bottom: 120upx;
+			padding-bottom: 100upx;
 			box-sizing: border-box;
 			.custom-tabs{	
 // 				.subCategory{
@@ -674,7 +674,7 @@
 			}
 			
 			.swiper-box{
-				height: calc(100% - 120upx);
+				height: calc(100% - 100upx);
 				padding-top: 88upx;
 				box-sizing: border-box;
 			}
