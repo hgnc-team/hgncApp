@@ -133,6 +133,12 @@
 		height: 30upx;
 		background-color: #f0f0f0;
 	}
+		// 占位条
+	.place-bar-20 {
+		width: 100%;
+		height: 20upx;
+		background-color: #f0f0f0;
+	}
 
 	.text-color-gray {
 		color: #666 !important;
