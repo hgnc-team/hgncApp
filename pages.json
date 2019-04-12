@@ -206,7 +206,7 @@
 		},{
 			"path": "setup_store",
 			"style": {
-				"navigationBarTitleText": "我要开店"
+				"navigationBarTitleText": "实名认证"
 			}
 		},{
 			"path": "bank_card",
