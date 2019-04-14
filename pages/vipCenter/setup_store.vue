@@ -82,7 +82,7 @@
 				<view class="title uni-inline-item text-color-gray">邮箱:</view>
 				<input class="uni-input uni-flex-item" v-model="address" name="address" />
 			</view>
-			<view class="uni-btn-v">
+			<view class="uni-btn-v" v-bind:style="{top: positionTop + 'px'}">
 				<button formType="submit" class="btn">确认提交</button>
 			</view>
 		</form>
@@ -120,6 +120,7 @@
 					name: "保密"
 				}],
 				current: 0,
+				positionTop: 0,
 				/**
                  * 图片上传配置项
                  * 
@@ -171,6 +172,18 @@
 			init() {
 				
 			},
+			initPosition() {
+			    /**
+			     * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
+			     * 反向使用 top 进行定位，可以避免此问题。
+			     */
+				// #ifdef H5
+				this.positionTop = uni.getSystemInfoSync().windowHeight - 30;
+				// #endif
+				// #ifdef APP-PLUS
+				this.positionTop = uni.getSystemInfoSync().windowHeight - 80;
+				// #endif
+			},
 			// 选择性别
 			radioChange(evt){
 				for (let i = 0; i < this.genderList.length; i++) {
@@ -206,6 +219,10 @@
                 }
             },
 		},
+		onLoad() {
+			this.init();
+			this.initPosition();
+		}
 	}
 </script>
 
@@ -232,9 +249,9 @@
 				padding: 0;
 			}
 			.uni-input{
-				height: 40upx;
-				padding: 10upx 20upx;
-				box-sizing: border-box;
+				// height: 40upx;
+				// padding: 10upx 20upx;
+				// box-sizing: border-box;
 			}
 			// 性别
 			&.gender{
@@ -262,18 +279,22 @@
 						background-color: #fff;
 						margin: 0 0 15upx 0;
 						height: 220upx;
-						.sunsin_picture_item{
-							width: inherit;
-							height: inherit;
-							.sunsin-add-image{
+						sunsin_picture_list{
+							box-sizing: border-box;
+							.sunsin_picture_item{
 								width: inherit;
 								height: inherit;
-								image{
+								.sunsin-add-image{
 									width: inherit;
 									height: inherit;
+									image{
+										width: inherit;
+										height: inherit;
+									}
 								}
 							}
 						}
+						
 					}
 				}
 				
@@ -305,10 +326,11 @@
 			}
 		}
 		.uni-btn-v{
-			width: calc(100% - 60upx);
+			width: calc(100% - 62upx);
 			position: fixed;
-			bottom: 30upx;
+			top: 0upx;
 			left: 30upx;
+			z-index: 1000;
 			.btn{
 				background: #242424;
 				color: #fff;

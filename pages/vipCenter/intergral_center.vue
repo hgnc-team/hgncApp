@@ -20,7 +20,7 @@
 						今日释放积分
 					</view>
 					<view class="bottom uni-text-small text-color-gray">
-						{{jfValue}}
+						{{jfValue}}枚
 					</view>
 				</view>
 			</view>
@@ -28,17 +28,17 @@
 				<view class="icon"></view>
 				<view class="text">
 					<view class="top uni-bold">
-						M币钱包(枚)
+						M币钱包>
 					</view>
 					<view class="bottom uni-text-small text-color-gray">
-						{{mbValue}}
+						{{mbValue}}枚
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="place-bar-20" style="height: 16upx;"></view>
 		<!-- 时间picker -->
-		<mx-date-picker :show="showPicker" :type="'date'" :value="value" :show-tips="true" :show-seconds="true" @confirm="onSelected"
+		<mx-date-picker :show="showPicker" :type="'date'" :value="timeValue" :show-tips="true" :show-seconds="true" @confirm="onSelected"
 		 @cancel="onSelected" />
 		<!-- 时间段查询 -->
 		<view class="search">
@@ -67,18 +67,61 @@
 				</view>
 			</view>
 			<view class="searchBtn">
-				<button class="btn">查询</button>
+				<button class="btn" @tap="search">查询</button>
 			</view>
 		</view>
 		<view class="place-bar-20" style="height: 16upx;"></view>
 		<!-- 数据列表 -->
 		<view class="list">
-			<view class="tab uni-flex">
-				<view class="uni-flex-item flex-center-center">
+			<view class="tabs uni-flex">
+				<view class="uni-flex-item flex-center-center" :class="currentTab=='jf'?'active':''" @tap="changeTab('jf')">
 					积分
+					<view class="bottom-line"></view>
 				</view>
-				<view class="uni-flex-item flex-center-center">
+				<view class="uni-flex-item flex-center-center" :class="currentTab=='mb'?'active':''" @tap="changeTab('mb')">
 					M币
+					<view class="bottom-line"></view>
+				</view>
+			</view>
+			<view class="table">
+				<!-- 表头 -->
+				<view class="table-header table-body  uni-flex uni-row">
+					<view class="time">
+						操作时间
+					</view>
+					<view class="changed">
+						变更
+						<!-- 三角 -->
+						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+					</view>
+					<view class="balance">
+						余额
+						<!-- 三角 -->
+						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+					</view>
+					<view class="remark">
+						备住
+						<!-- 三角 -->
+						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+					</view>
+				</view>
+				<!-- 内容 -->
+				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" >
+					<view class="time">
+						{{item.time}}
+					</view>
+					<view class="changed">
+						+{{item.changed}}
+					</view>
+					<view class="balance">
+						{{item.balance}}
+					</view>
+					<view class="remark">
+						{{item.remark}}
+					</view>
 				</view>
 			</view>
 		</view>
@@ -89,6 +132,7 @@
 	import {
 		uniIcon
 	} from '@dcloudio/uni-ui';
+	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	export default {
 		components: {
@@ -99,13 +143,59 @@
 			return {
 				// 我的积分
 				jfValue: 0,
+				// 今日释放积分
+				releaseValue: 0,
 				// M币钱包
 				mbValue: 0,
 				showPicker: false,
-				startDate: '2019/01/01',
-				endDate: '2019/04/01',
+				// 开始时间
+				startDate: '2019年/01月/01日',
+				// 结束时间
+				endDate: '2019年/04月/01日',
+				// 
 				type: 'start',
-				value: ''
+				// picker的返回值
+				timeValue: "",
+				// 积分|M币
+				currentTab: "jf",
+				// 数据列表
+				dataList: [{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				}, {
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				}, {
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				}]
+				
 			}
 		},
 		computed: {
@@ -118,6 +208,15 @@
 				this.jfValue = 1029;
 				this.mbValue = 10299.99;
 			},
+			// 初始化时间
+			initTime(){
+				//获取当前时间
+				let now = moment();
+				// 结束时间为当前
+				this.endDate = now.format("YYYY年MM月DD日");
+				// 开始时间为7天前
+				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
+			},
 			onShowDatePicker(type) { //显示
 				this.showPicker = true;
 				this.type = type;
@@ -125,16 +224,37 @@
 			onSelected(e) { //选择
 				this.showPicker = false;
 				if (e) {
-					this[`${this.type}Date`] = e.value;
+					this[`${this.type}Date`] = moment(e.value).format("YYYY年MM月DD日");
 					//选择的值
 					console.log('value => ' + e.value);
 					//原始的Date对象
 					console.log('date => ' + e.date);
 				}
+			},
+			// 
+			changeTab(tab){
+				this.currentTab = tab;
+			},
+			// 查询
+			search(){
+				// 结束时间不早于开始时间
+				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				if(moment(end).isBefore(start)) {
+					uni.showToast({
+						icon: "none",
+						title: "结束时间不能早于开始时间"
+					})
+				}
+				
+				// 执行查询操作
+				
 			}
 		},
 		onLoad() {
 			this.init();
+			// 
+			this.initTime();
 		}
 	}
 </script>
@@ -228,6 +348,102 @@
 					background: #1359ef;
 					color: #fff;
 					border-radius: 2upx;
+				}
+			}
+		}
+		.list{
+			.tabs{
+				width: 100%;
+				height: 80upx;
+				.uni-flex-item {
+					color:#666;
+					position: relative;
+					.bottom-line{
+						display: none; 
+					}
+				}
+				.active{
+					color:#242424;
+					.bottom-line{
+						display: block;
+						width: 20upx;
+						height: 6upx;
+						position: absolute;
+						bottom: 4upx;
+						left: 50%;
+						transform: translateX(-50%);
+						background-color: #242424;
+					}
+				}
+			}
+			.table{
+				.table-body{
+					width: 100%;
+					height: 80upx;
+					background-color: #fff;
+					color: #666;
+				}
+				.table-header{
+					width: 100%;
+					height: 80upx;
+					background-color: #242424;
+					color: #fff;
+					// 边框
+					.time, .changed, .balance{
+						border-right: 1upx solid #fff;
+					}
+					// 箭头
+					.changed, .balance, .remark{
+						position: relative;
+						/*向上*/
+						.triangle_border_up{
+							width:0;
+							height:0;
+							border-width:0 10upx 10upx;
+							border-style:solid;
+							border-color:transparent transparent #999;/*透明 透明  灰*/
+							position:absolute;
+							top: 30upx;
+							left: 80upx;
+							&.up{
+								border-color:transparent transparent #333;/*透明 透明  灰*/
+							}
+						}
+						/*向下*/
+						.triangle_border_down{
+							width:0;
+							height:0;
+							border-width:10upx 10upx 0;
+							border-style:solid;
+							border-color:#999 transparent transparent;/*灰 透明 透明 */
+							position:absolute;
+							top: 44upx;
+							left: 80upx;
+							&.down{
+								border-color:#333 transparent transparent;/*灰 透明 透明 */
+							}
+						}
+					}
+				}
+				.time, .changed, .balance, .remark{
+					display: flex;
+					align-items: center;
+					box-sizing: border-box;
+				}
+				.time, .changed, .balance{
+					border-right: 1upx solid #f0f0f0;
+				}
+				.time{
+					flex: 0 0 43%;
+					padding-left: 30upx; 
+				}
+				.changed, .balance{
+					flex: 0 0 16.7%;
+					padding-left: 15upx;
+				}
+				.remark{
+					flex: 0 0 23.6%;
+					padding-left: 15upx;
 				}
 			}
 		}

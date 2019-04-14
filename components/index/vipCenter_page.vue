@@ -211,12 +211,7 @@
 		},
 		methods: {
 			init() {
-				//用户信息
-				this.userinfo = {
-					face: '../../static/HM-PersonalCenter/face.jpeg',
-					username: 'VIP会员10240',
-					telPhone: '1435*****2132'
-				};
+				
 			},
 			// 复制id
 			copyId(){
@@ -224,6 +219,7 @@
 					data: this.userinfo.id,
 					success:  () => {
 						uni.showToast({
+							icon: "none",
 							title:"成功复制内容到剪切板"
 						});
 					}
@@ -286,6 +282,21 @@
 					
 				}
 			}	
+		},
+		created() {
+			// #ifdef APP-PLUS
+			// 关闭下拉刷新
+			const pages = getCurrentPages();  
+			const page = pages[pages.length - 1];  
+			var currentWebview = page.$getAppWebview();		
+			currentWebview.setStyle({  
+			  pullToRefresh: {  
+				support: false,  
+				"style": "circle",
+				"color": "#4c9bfa"
+			  }  
+			});  
+			// #endif
 		}
 	};
 </script>
@@ -295,6 +306,10 @@
 	.header {
 		background-color: #242424;
 		width: 100%;
+		margin-top: 0;
+		/*  #ifdef  APP-PLUS  */
+		margin-top: var(--status-bar-height);
+		/*  #endif  */
 		.title{
 			text-align: center;
 			color: #fff;
@@ -363,6 +378,7 @@
 				box-sizing: border-box;
 				display: flex;
 				align-items: center;
+				justify-content: center;
 				.id{
 					width: 20upx;
 					height: 20upx;
@@ -375,6 +391,7 @@
 					font-weight: 700;
 					padding: 10upx;
 					color: #242424;
+					box-sizing: border-box;
 				}
 				.icon{
 					width: 18upx;
