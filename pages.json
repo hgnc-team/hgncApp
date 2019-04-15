@@ -211,7 +211,26 @@
 		},{
 			"path": "bank_card",
 			"style": {
-				"navigationBarTitleText": "银行卡管理"
+				"navigationBarTitleText": "我的银行卡",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"app-plus": {
+                    "bounce": "none", //关闭窗口回弹效果
+                    "titleNView": {
+                        "buttons": [ 
+                            {
+                                "text": "\u002B"
+                            }
+                        ]
+                    }
+                }
+			}
+		},{
+			"path": "add_card",
+			"style": {
+				"navigationBarTitleText": "添加银行卡",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "commissions_management",
