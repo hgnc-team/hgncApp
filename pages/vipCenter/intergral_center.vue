@@ -5,10 +5,10 @@
 			<view class="left uni-flex-item uni-column flex-center-center">
 				<view class="icon"></view>
 				<view class="text">
-					<view class="top uni-bold">
+					<view class="top">
 						我的积分
 					</view>
-					<view class="bottom uni-text-small text-color-gray">
+					<view class="bottom uni-text-small">
 						{{jfValue}}
 					</view>
 				</view>
@@ -16,10 +16,10 @@
 			<view class="middle uni-flex-item uni-column flex-center-center">
 				<view class="icon"></view>
 				<view class="text">
-					<view class="top uni-bold">
+					<view class="top">
 						今日释放积分
 					</view>
-					<view class="bottom uni-text-small text-color-gray">
+					<view class="bottom uni-text-small">
 						{{jfValue}}枚
 					</view>
 				</view>
@@ -27,10 +27,10 @@
 			<view class="right uni-flex-item uni-column flex-center-center">
 				<view class="icon"></view>
 				<view class="text">
-					<view class="top uni-bold">
+					<view class="top">
 						M币钱包>
 					</view>
-					<view class="bottom uni-text-small text-color-gray">
+					<view class="bottom uni-text-small">
 						{{mbValue}}枚
 					</view>
 				</view>
@@ -89,27 +89,27 @@
 					<view class="time">
 						操作时间
 					</view>
-					<view class="changed">
+					<view class="changed" @tap="filterFn('changed')">
 						变更
 						<!-- 三角 -->
-						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
-						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+						<view class="triangle_border_up" :class="currentFilter=='changed'&&isDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentFilter=='changed'&&!isDesc?'down':''"></view>
 					</view>
-					<view class="balance">
+					<view class="balance" @tap="filterFn('balance')">
 						余额
 						<!-- 三角 -->
-						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
-						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+						<view class="triangle_border_up" :class="currentFilter=='balance'&&isDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentFilter=='balance'&&!isDesc?'down':''"></view>
 					</view>
-					<view class="remark">
+					<view class="remark" @tap="filterFn('remark')">
 						备住
 						<!-- 三角 -->
-						<view class="triangle_border_up" :class="currentTab=='price'&&isPriceDesc?'up':''"></view>
-						<view class="triangle_border_down" :class="currentTab=='price'&&!isPriceDesc?'down':''"></view>
+						<view class="triangle_border_up" :class="currentFilter=='remark'&&isDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentFilter=='remark'&&!isDesc?'down':''"></view>
 					</view>
 				</view>
 				<!-- 内容 -->
-				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" >
+				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
 					<view class="time">
 						{{item.time}}
 					</view>
@@ -158,6 +158,10 @@
 				timeValue: "",
 				// 积分|M币
 				currentTab: "jf",
+				// 当前排序
+				currentFilter: "",
+				// 是否降序
+				isDesc: false,
 				// 数据列表
 				dataList: [{
 					time: "2019/04/07 23:23:19",
@@ -247,7 +251,19 @@
 					})
 				}
 				
-				// 执行查询操作
+				//todo 执行查询操作
+				
+			},
+			// 变更排序
+			filterFn(type){
+				if(this.currentFilter !== type) {
+					this.isDesc = false;
+					this.currentFilter = type;
+				} else {
+					this.isDesc = !this.isDesc;
+				}
+				
+				//todo 执行排序操作
 				
 			}
 		},
@@ -273,6 +289,7 @@
 
 				.text {
 					.bottom {
+						color: #aaa;
 						text-align: center;
 					}
 				}
@@ -364,6 +381,7 @@
 				}
 				.active{
 					color:#242424;
+					font-weight: 600;
 					.bottom-line{
 						display: block;
 						width: 20upx;
@@ -382,6 +400,9 @@
 					height: 80upx;
 					background-color: #fff;
 					color: #666;
+					&.active{
+						background-color: #f5f5f5;
+					}
 				}
 				.table-header{
 					width: 100%;
@@ -406,7 +427,7 @@
 							top: 30upx;
 							left: 80upx;
 							&.up{
-								border-color:transparent transparent #333;/*透明 透明  灰*/
+								border-color:transparent transparent #fff;/*透明 透明  灰*/
 							}
 						}
 						/*向下*/
@@ -420,7 +441,7 @@
 							top: 44upx;
 							left: 80upx;
 							&.down{
-								border-color:#333 transparent transparent;/*灰 透明 透明 */
+								border-color:#fff transparent transparent;/*灰 透明 透明 */
 							}
 						}
 					}
