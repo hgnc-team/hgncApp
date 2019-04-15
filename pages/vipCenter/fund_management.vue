@@ -66,7 +66,7 @@
 					},
 					{
 						index: 1,
-						title:'佣金体现',
+						title:'佣金提现',
 						thumbUrl: '/static/img/vipcenter/yjtx.png'
 					},
 					{
