@@ -228,6 +228,11 @@
 			"style": {
 				"navigationBarTitleText": "提现记录详情"
 			}
+		},{
+			"path": "manager_achievement",
+			"style": {
+				"navigationBarTitleText": "经理业绩查询"
+			}
 		}]
 	}, {
 		// 购物车
