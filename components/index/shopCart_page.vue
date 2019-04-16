@@ -448,7 +448,8 @@
 			// 去登录
 			navToLogin(){
 				uni.navigateTo({
-					url: `/pages/login/login?pageCode=shopCart`
+					url: `/pages/login/login?pageCode=shopCart`,
+					animationType: "slide-in-bottom"
 				})
 			}
 		},

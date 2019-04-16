@@ -1,3 +1,4 @@
+<!-- 三级联动 -->
 <template>
   <div class="mpvue-picker">
     <div :class="{'pickerMask':showPicker}" @click="maskClick" catchtouchmove="true"></div>
