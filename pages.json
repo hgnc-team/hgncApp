@@ -253,11 +253,6 @@
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black"
 			}
-		},{
-			"path": "manager_achievement",
-			"style": {
-				"navigationBarTitleText": "经理业绩查询"
-			}
 		}]
 	}, {
 		// 购物车

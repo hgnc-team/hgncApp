@@ -248,7 +248,7 @@
 			toManagerAchievement(){
 				if(this.currentTab === "manager") {
 					uni.navigateTo({
-						url: "/pages/vipCenter/manager_achievement"
+						url: "/pages/vipCenter/performance_management?role=manager"
 					})
 				}
 			}
