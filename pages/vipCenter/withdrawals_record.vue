@@ -1,4 +1,5 @@
 <template>
+	<!-- 提现记录 -->
 	<view class="withdrawalsRecordPage">
 		<view class="list">
 			<view class="row-item uni-flex common-pa-30" v-for="(item, index) in dataList" :key="index" @tap="toDetail">

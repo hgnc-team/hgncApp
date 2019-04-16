@@ -1,4 +1,5 @@
 <template>
+	<!-- 提现记录详情 -->
 	<view class="withdrawalsRecordDetailPage">
 		<view class="item">
 			<view class="title text-color-gray">

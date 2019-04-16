@@ -1,4 +1,5 @@
 <template>
+	<!-- 实名认证 -->
 	<view class="setupStorePage">
 		<form @submit="formSubmit">
 			<view class="uni-h5 uni-bold">

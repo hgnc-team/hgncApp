@@ -235,12 +235,16 @@
 		},{
 			"path": "commissions_management",
 			"style": {
-				"navigationBarTitleText": "佣金管理"
+				"navigationBarTitleText": "佣金管理",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "withdrawals_record",
 			"style": {
-				"navigationBarTitleText": "提现记录"
+				"navigationBarTitleText": "提现记录",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "withdrawals_record_detail",

@@ -1,4 +1,5 @@
 <template>
+	<!-- 积分中心 -->
 	<view class="intergralCenterPage">
 		<!-- 头部 -->
 		<view class="header uni-flex">

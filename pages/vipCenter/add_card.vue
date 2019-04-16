@@ -1,4 +1,5 @@
 <template>
+	<!-- 添加银行卡 -->
 	<view class="addCardPage">
 		<view class="title">
 			请添加<text class="name">{{name}}</text>的银行卡

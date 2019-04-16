@@ -1,4 +1,5 @@
 <template>
+	<!-- 积分转让 -->
 	<view class="intergralTransferPage">
 		<!-- 头部 -->
 		<view class="header uni-flex">

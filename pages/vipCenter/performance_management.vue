@@ -1,4 +1,5 @@
 <template>
+	<!-- 业绩管理 -->
 	<view class="performanceManagementPage">
 		业绩管理
 	</view>

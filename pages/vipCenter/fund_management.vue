@@ -1,4 +1,5 @@
 <template>
+	<!-- 资金管理 -->
 	<view class="fundManagementPage">
 		<view class="header">
 			<view class="balance uni-flex flex-center-center uni-column">

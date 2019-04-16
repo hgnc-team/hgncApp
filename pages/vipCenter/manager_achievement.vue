@@ -1,4 +1,5 @@
 <template>
+	<!-- 经理业绩查询 -->
 	<view class="managerAchievementPage">
 		<!-- 头部 -->
 		<view class="header uni-flex">
@@ -205,9 +206,9 @@
 					})
 				}
 				
-				this.totalTurnoverInPeriod = 3230,
-				this.invitNumInPeriod = 240,
-				this.addedScore = 435340
+				this.totalTurnoverInPeriod = 3230;
+				this.invitNumInPeriod = 240;
+				this.addedScore = 435340;
 			},
 			
 		},
@@ -230,9 +231,6 @@
 			background-color: #fff;
 			.uni-flex-item {
 				border-right: 1upx solid #f0f0f0;
-				&:nth-last-child(){
-					border-right: none;
-				}
 				.text {
 					.top,.bottom {
 						color: #aaa;

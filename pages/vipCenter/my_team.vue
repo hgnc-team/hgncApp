@@ -1,4 +1,5 @@
 <template>
+	<!-- 我的团队 -->
 	<view class="myTeamPage">
 		<view class="header">
 			<view class="search-box uni-inline-item">
@@ -44,7 +45,7 @@
 						</block>
 						<!-- 销售经理 -->
 						<block v-if="currentTab==='manager' || currentTab==='majordomo'">
-							<view class="manager uni-flex-item uni-flex uni-column" :style="{'margin-right': currentTab==='majordomo'?'30upx':'0upx'}">
+							<view class="manager uni-flex-item uni-flex uni-column" :class="{'margin-right-30': currentTab==='majordomo'}">
 								<view class="uni-text-small text-color-gray" style="text-align: right;">
 									业绩：<text class="achievement">￥{{item.achievement}}</text>
 								</view>
@@ -271,10 +272,11 @@
 			background-color: #f0f0f0;
 			z-index: 1000;
 			position: fixed;
+			/* #ifdef H5 */
 			top: 80upx;
+			/* #endif */
 			/* #ifdef APP-PLUS */
-			top: calc(var(--status-bar-height) + 88upx);
-
+			top: 0;
 			/* #endif */
 			.search-box {
 				width: 100%;
@@ -308,7 +310,7 @@
 				.active {
 					color: #242424;
 					font-weight: 600;
-
+					
 					.bottom-line {
 						display: block;
 						width: 20upx;
@@ -326,10 +328,6 @@
 		.list-wrap {
 			width: 100%;
 			padding-top: 188upx;
-			/* #ifdef APP-PLUS */
-			padding-top: calc(var(--status-bar-height) + 188upx);
-
-			/* #endif */
 			.totalNum {
 				width: 100%;
 				height: 68upx;
@@ -403,10 +401,12 @@
 
 						.manager {
 							justify-content: center;
+							&.margin-right-30{
+								margin-right: 30upx;
+							}
 							.achievement {
 								color: #ffa41f;
 							}
-
 							.num {
 								color: #333;
 							}

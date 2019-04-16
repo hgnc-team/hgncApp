@@ -1,4 +1,5 @@
 <template>
+	<!-- 银行卡管理 -->
 	<view class="bankCardPage common-pa-30">
 		<view class="card common-pa-30 uni-flex" v-for="(item, index) in datalist" :key="index">
 			<view class="image uni-inline-item">
