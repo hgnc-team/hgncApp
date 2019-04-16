@@ -90,6 +90,15 @@
 			}
 		}
 	}
+	.uni-list .uni-list-item .uni-list-item__icon .uni-list-item__icon-img{
+		width: 36upx;
+		height: 36upx;
+		margin-right: 20upx;
+		image{
+			width: 100%;
+			height: 100%;
+		}
+	}
 
 	// 全局的button样式
 	.btn-primary {
@@ -100,7 +109,7 @@
 			width: 100%;
 			line-height: 100upx;
 			color: #ffffff;
-			font-size: 32upx;
+			font-size: 30upx;
 			outline: 0;
 			display: block;
 			margin: 0;
@@ -110,19 +119,19 @@
 			border-radius: 2upx;
 		}
 	}
-
+	// 全局 蓝色价格字体样式
 	.text-price {
 		color: #59a0fa !important;
 		font-size: 28upx;
 	}
-
+	// 水平垂直居中
 	.flex-center-center {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 
 	}
-
+	// 右对齐
 	.flex-right {
 		justify-content: flex-end;
 	}
@@ -133,17 +142,17 @@
 		height: 30upx;
 		background-color: #f0f0f0;
 	}
-		// 占位条
+	// 占位条-20upx
 	.place-bar-20 {
 		width: 100%;
 		height: 20upx;
 		background-color: #f0f0f0;
 	}
-
+	// 灰色字体
 	.text-color-gray {
 		color: #666 !important;
 	}
-
+	// 白色字体
 	.text-color-white {
 		color: #fff !important;
 	}
