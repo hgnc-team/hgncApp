@@ -126,6 +126,8 @@
 				</view>
 			</view>
 		</view>
+		<!-- 返回顶部 -->
+		<scrollToTop :isShowBtn="isShowBtn"></scrollToTop>
 	</view>
 </template>
 
@@ -135,36 +137,43 @@
 	} from '@dcloudio/uni-ui';
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
-	export default {
-		components: {
-			uniIcon,
-			MxDatePicker
-		},
-		data() {
-			return {
-				// 我的积分
-				jfValue: 0,
-				// 今日释放积分
-				releaseValue: 0,
-				// M币钱包
-				mbValue: 0,
-				showPicker: false,
-				// 开始时间
-				startDate: '2019年/01月/01日',
-				// 结束时间
-				endDate: '2019年/04月/01日',
-				// 
-				type: 'start',
-				// picker的返回值
-				timeValue: "",
-				// 积分|M币
-				currentTab: "jf",
-				// 当前排序
-				currentFilter: "",
-				// 是否降序
-				isDesc: false,
-				// 数据列表
-				dataList: [{
+	import scrollToTop from "../../components/common/scroll-to-top.vue";
+	const dataList = [{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				}, {
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				}, {
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
+					time: "2019/04/07 23:23:19",
+					changed: 14,
+					balance: 7878,
+					remark: "积分转让"
+				},{
 					time: "2019/04/07 23:23:19",
 					changed: 14,
 					balance: 7878,
@@ -200,8 +209,43 @@
 					balance: 7878,
 					remark: "积分转让"
 				}]
-				
+	export default {
+		components: {
+			uniIcon,
+			MxDatePicker,
+			scrollToTop
+		},
+		data() {
+			return {
+				// 我的积分
+				jfValue: 0,
+				// 今日释放积分
+				releaseValue: 0,
+				// M币钱包
+				mbValue: 0,
+				showPicker: false,
+				// 开始时间
+				startDate: '2019年/01月/01日',
+				// 结束时间
+				endDate: '2019年/04月/01日',
+				// 
+				type: 'start',
+				// picker的返回值
+				timeValue: "",
+				// 积分|M币
+				currentTab: "jf",
+				// 当前排序
+				currentFilter: "",
+				// 是否降序
+				isDesc: false,
+				// 是否显示回到顶部按钮
+				isShowBtn: false,
+				// 数据列表
+				dataList: []
 			}
+		},
+		onPageScroll(e) {
+			this.isShowBtn = e.scrollTop >= 298 ? true : false 
 		},
 		computed: {
 			isNumInvaild() {
@@ -212,6 +256,8 @@
 			init() {
 				this.jfValue = 1029;
 				this.mbValue = 10299.99;
+				
+				this.getDataList();
 			},
 			// 初始化时间
 			initTime(){
@@ -239,6 +285,7 @@
 			// 
 			changeTab(tab){
 				this.currentTab = tab;
+				this.getDataList();
 			},
 			// 查询
 			search(){
@@ -253,7 +300,16 @@
 				}
 				
 				//todo 执行查询操作
-				
+				this.getDataList();
+			},
+			// 获取数据
+			getDataList(){
+				uni.showLoading()
+				this.dataList = [];
+				setTimeout(()=>{
+					this.dataList = dataList;
+					uni.hideLoading();
+				}, 1000)
 			},
 			// 变更排序
 			filterFn(type){

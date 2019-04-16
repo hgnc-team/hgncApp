@@ -35,7 +35,7 @@
 		</view>
 		<!-- 交易量统计 -->
 		<view class="notice text-color-gray uni-text-small">
-			共<text class="blue">{{totalTransactions}}</text>，其中现金交易<text class="blue">{{cashTransactions}}</text>，M币交易<text
+			共<text class="blue">{{totalTransactions}}</text>笔，其中现金交易<text class="blue">{{cashTransactions}}</text>笔，M币交易<text
 			 class="blue">{{mbTransactions}}</text>笔
 		</view>
 		<!-- 选项卡 -->
@@ -114,7 +114,8 @@
 				</view>
 			</view>
 		</scroll-view>
-
+		<!-- 返回顶部 -->
+		<scrollToTop :isShowBtn="isShowBtn"></scrollToTop>
 	</view>
 </template>
 
@@ -126,6 +127,7 @@
 	} from '@dcloudio/uni-ui';
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
+	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	const dataList = [{
 					name: "张某",
 					time: "2019/04/07 23:23:19",
@@ -288,6 +290,11 @@
 					score: 88889
 				}]
 	export default {
+		components:{
+			uniIcon,
+			MxDatePicker,
+			scrollToTop
+		},
 		data() {
 			return {
 				// 总交易笔数
@@ -298,9 +305,9 @@
 				mbTransactions: "",
 				showPicker: false,
 				// 开始时间
-				startDate: '2019年/01月/01日',
+				startDate: '',
 				// 结束时间
-				endDate: '2019年/04月/01日',
+				endDate: '',
 				// 
 				type: 'start',
 				// picker的返回值
@@ -313,9 +320,14 @@
 				isDesc: false,
 				// 数据列表
 				dataList: [],
-				scrollLeft: 0
+				scrollLeft: 0,
+				// 是否显示回到顶部按钮
+				isShowBtn: false
 
 			}
+		},
+		onPageScroll(e) {
+			this.isShowBtn = e.scrollTop >= 216 ? true : false 
 		},
 		computed: {
 			disabled() {
