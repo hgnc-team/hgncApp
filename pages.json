@@ -245,7 +245,9 @@
 		},{
 			"path": "withdrawals_record_detail",
 			"style": {
-				"navigationBarTitleText": "提现记录详情"
+				"navigationBarTitleText": "提现记录详情",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "manager_achievement",

@@ -10,14 +10,6 @@
 		</view>
 		<view class="item">
 			<view class="title text-color-gray">
-				提现金额
-			</view>
-			<view class="value">
-				￥{{money}}
-			</view>
-		</view>
-		<view class="item">
-			<view class="title text-color-gray">
 				提现方式
 			</view>
 			<view class="value">
@@ -118,6 +110,22 @@
 		background-color: #fff;
 	}
 	.withdrawalsRecordDetailPage{
-		
+		width: 100%;
+		padding: 30upx;
+		box-sizing: border-box;
+		border-top: 1upx solid #f0f0f0;
+		.item{
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 30upx;
+			.title{
+				
+			}
+			.value{
+				
+			}
+		}
 	}
 </style>
