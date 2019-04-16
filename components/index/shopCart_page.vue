@@ -474,7 +474,14 @@
 			}
 		},
 		created() {
+			// #ifdef APP-PLUS
+			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+			const offset = uni.getSystemInfoSync().statusBarHeight + 120;
+			util.setRefreshMode(true, offset);
+			// #endif
+			// 是否展示编辑按钮（无数据时不展示）
 			this.rightText = this.showNoData ? "" : "编辑";
+			// 登陆后初始化页面
 			if(this.hasLogin) {
 				this.init();
 			}

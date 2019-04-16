@@ -298,7 +298,7 @@
 		},
 		created() {
 			// 关闭下拉刷新
-			util.closePullToRefresh();
+			util.setRefreshMode(false);
 		}
 	};
 </script>

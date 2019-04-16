@@ -116,7 +116,7 @@ const switchTab = function(type){
 }
 /**
   * @method  进入有权限的页面之前判断当前是否登录 
-  * @pram {String} code 目标页面的标识
+  * @param {String} code 目标页面的标识
   **/
 const guardToLogin = function(code) {
 	return new Promise((reslove, reject)=>{
@@ -172,10 +172,10 @@ const confirm = function(params) {
 
 /**     
   * @method 拼接图片路径
-  * @domain {String} 后台配置图片域名
-  * @type {String} 需要配置的模块 商品模块-goods
-  * @goodID {String} 
-  * @imageName {String} 图片名称 英文冒号分割 detail_1.jpg;detail_2.jpg;
+  * @param {String} domain 后台配置图片域名
+  * @param {String} type 需要配置的模块 商品模块-goods
+  * @param {String} goodID
+  * @param {String} imageName 图片名称 英文冒号分割 detail_1.jpg;detail_2.jpg;
   * return String | Array   https://images.maiyidesan.cn/goods/018fsmw30000100/title1.jpg
   **/
 const setImageUrl = function(params) {
@@ -201,11 +201,36 @@ const setImageUrl = function(params) {
 	}
 }
 
+/**     
+  * @method 设置下拉刷新模式
+  * @param {Boolean} isSupport 是否开启
+  * @param {String} offset下拉刷新的起始位置
+  **/
+const setRefreshMode = function(isSupport, offset){
+	// upx转化为px
+	let _offset = offset ? uni.upx2px(offset) + "px" : "0px";
+	// #ifdef APP-PLUS
+	const pages = getCurrentPages();
+	const page = pages[pages.length - 1];
+	var currentWebview = page.$getAppWebview();
+	currentWebview.setStyle({
+		pullToRefresh: {
+			support: isSupport,
+			offset: _offset, //仅对"circle"样式下拉刷新控件有效
+			"style": "circle",
+			"color": "#4c9bfa"
+		}
+	});
+	// #endif
+}
+
+
 export default {
 	graceChecker,
 	switchTab,
 	guardToLogin,
 	alert,
 	confirm,
-	setImageUrl
+	setImageUrl,
+	setRefreshMode
 }

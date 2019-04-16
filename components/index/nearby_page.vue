@@ -76,7 +76,7 @@
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	//高德SDK
 	import amap from '../../common/SDK/amap-wx.js';
-	
+	import util from "../../common/util.js";
 	var swiperList = [{
 			sid: 0,
 			src: '自定义src0',
@@ -123,6 +123,11 @@
 			};
 		},
 		created() {
+			// #ifdef APP-PLUS
+			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+			const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 126;
+			util.setRefreshMode(true, offset);
+			// #endif
 			this.swiperList = swiperList;
 			this.getPosition();
 		},

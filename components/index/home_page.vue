@@ -95,6 +95,7 @@
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	import cityData from "../../common/city.data.js";
 	import service from '../../common/service.js';
+	import util from "../../common/util.js";
 	//高德SDK
 	import amap from '../../common/SDK/amap-wx.js';
 	const tpl = {
@@ -247,24 +248,12 @@
 					// console.log("竖直滚动位置" + res.scrollTop);
 					// 滚动到顶部才开启
 					let isSupport = res.scrollTop === 0 ? true : false;
-					this.setRefresh(isSupport);
+					// #ifdef APP-PLUS
+					// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+					const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
+					util.setRefreshMode(isSupport, offset);
+					// #endif
 				}).exec()
-			},
-			// 设置开启关闭刷新
-			setRefresh(isSupport){
-				// #ifdef APP-PLUS
-				const pages = getCurrentPages();  
-				const page = pages[pages.length - 1];  
-				var currentWebview = page.$getAppWebview();		
-				currentWebview.setStyle({  
-				  pullToRefresh: {  
-					support: isSupport,  
-					// style: plus.os.name === 'Android' ? 'circle' : 'default'  
-					"style": "circle",
-					"color": "#4c9bfa"
-				  }  
-				});  
-				// #endif
 			},
 			// 初始化navBar
 			async initBar(){
@@ -498,6 +487,11 @@
 		},
 		created() {
 			this.init();
+			// #ifdef APP-PLUS
+			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+			const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
+			util.setRefreshMode(true, offset);
+			// #endif
 		}
 	}
 </script>
