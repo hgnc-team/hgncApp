@@ -22,7 +22,7 @@
 			<view class="list">
 				<view class="list-item uni-flex flex-center-center" v-for="(item, index) in dataList" :key="index">
 					<view class="image uni-inline-item">
-						<image src="item.imageUrl" mode="widthFix"></image>
+						<image :src="item.imageUrl" mode="widthFix"></image>
 					</view>
 					<view class="info uni-flex-item uni-flex" @tap="toManagerAchievement">
 						<view class="uni-flex-item uni-flex uni-column" style="justify-content: center;">
@@ -359,6 +359,7 @@
 						image {
 							width: 100%;
 							height: 100%;
+							border-radius: 50%;
 						}
 					}
 
