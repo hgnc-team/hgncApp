@@ -25,6 +25,8 @@ const store = new Vuex.Store({
 		userInviteCode: '',
 		// 商品积分率
 		gobalPointRate: 0,
+		// 客服电话
+		customerTelephone: "",
 		// 图片地址域名
 		imageDomain: "",
 		// 是否校验用户密码
@@ -50,6 +52,7 @@ const store = new Vuex.Store({
 		SET_CONFIGS(state, data){
 			state.gobalPointRate = data.DEFAULT_GOODS_POINTRATE;
 			state.imageDomain = data.DEFAULT_IMAGE_DOMAIN;
+			state.customerTelephone = data.customer_Telephone || "400334233"
 		},
 		// 退出登录
 		LOGOUT(state) {  

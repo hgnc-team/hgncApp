@@ -19,7 +19,7 @@
 				</view>
 				<view class="info2 uni-text-small" @tap="copyId">
 					<text class="id"></text>
-					<text class="text">{{userinfo.id}}</text>
+					<text class="text">{{userInviteCode}}</text>
 					<view class="icon">
 						<uni-icon type=""></uni-icon>
 					</view>
@@ -143,6 +143,12 @@
 				 :badge-text="'需实名认证'"></uni-list-item>
 			</uni-list>
 		</view>
+		<!-- 客服电话 -->
+		<view class="telphone flex-center-center uni-row uni-text-small text-color-gray">
+			<view class="iconfont iconicon_telephone"></view>
+			<text>客服电话：</text>
+			<text>{{customerTelephone}}</text>
+		</view>
 	</view>
 </template>
 
@@ -157,6 +163,7 @@
 		mapMutations,
 		mapActions
 	} from 'vuex';
+	import util from "../../common/util.js";
 	export default {
 		components: {
 			uniIcon,
@@ -193,7 +200,7 @@
 			};
 		},
 		computed: {
-			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode']),
+			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode', 'customerTelephone']),
 			title() {
 				let title = "业务总监，你好！";
 				switch (this.userLevel) {
@@ -290,19 +297,8 @@
 			}
 		},
 		created() {
-			// #ifdef APP-PLUS
 			// 关闭下拉刷新
-			const pages = getCurrentPages();
-			const page = pages[pages.length - 1];
-			var currentWebview = page.$getAppWebview();
-			currentWebview.setStyle({
-				pullToRefresh: {
-					support: false,
-					"style": "circle",
-					"color": "#4c9bfa"
-				}
-			});
-			// #endif
+			util.closePullToRefresh();
 		}
 	};
 </script>
@@ -539,7 +535,7 @@
 		}
 
 		.list {
-			margin-bottom: 100upx;
+			
 			.uni-list{
 				&::before, &::after{
 					display: none;
@@ -561,6 +557,9 @@
 					display: none;
 				}
 			}
+		}
+		.telphone{
+			margin-bottom: 100upx;
 		}
 	}
 </style>

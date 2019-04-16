@@ -150,7 +150,7 @@
 	}
 	// 灰色字体
 	.text-color-gray {
-		color: #666 !important;
+		color: #888 !important;
 	}
 	// 白色字体
 	.text-color-white {
