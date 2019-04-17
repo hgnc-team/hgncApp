@@ -14,9 +14,11 @@
 					<text class="extra uni-flex-item uni-flex uni-text-small" :style="{'color': item.extra.color}" v-if="item.isShowExtra">{{item.extra.text}}</text>
 				</block>
 				<!-- 箭头 -->
-				<view class="icon uni-inline-item text-color-gray">
-					<uni-icon type="arrowright" size="20"></uni-icon>
-				</view>
+				<block v-if="item.isShowArrow">
+					<view class="icon uni-inline-item text-color-gray">
+						<uni-icon type="arrowright" size="20"></uni-icon>
+					</view>
+				</block>
 			</view>
 		</view>
 	</view>
@@ -43,7 +45,7 @@
 						},
 						// 是否展示扩展内容
 						isShowExtra: false,
-						ifShowArrow: true
+						isShowArrow: true
 					}]
 				}
 			},
@@ -70,6 +72,7 @@
 </script>
 
 <style lang="scss">
+	
 	.list {
 		background-color: #fff;
 		.list-item{
