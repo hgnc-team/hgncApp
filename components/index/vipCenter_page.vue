@@ -3,6 +3,7 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<view class="header">
+			<!-- 销售经理以上才展示 -->
 			<view class="title" v-if="title">
 				{{title}}
 			</view>
@@ -80,7 +81,7 @@
 						<text class="img jfzx"></text>
 					</view>
 					<view class="top">
-						积分中心
+						{{userLevel > 1?"积分中心":"数据中心"}}
 					</view>
 					<view class="bottom">
 						数据详情
@@ -91,15 +92,15 @@
 						<text class="img wdtd"></text>
 					</view>
 					<view class="top">
-						我的团队
+						{{userLevel > 1?"我的团队":"客户管理"}}
 					</view>
 					<view class="bottom">
-						团队数据
+						{{userLevel > 1?"团队数据":"团队数据"}}
 					</view>
 				</view>
 			</view>
-
-			<view class="row uni-flex">
+			<!-- 销售经理以上才展示 -->
+			<view class="row uni-flex" v-if="userLevel > 1">
 				<view class="row-item uni-flex-item uni-center" @tap="toFundManagement">
 					<view class="icon flex-center-center">
 						<text class="img zjgl"></text>
@@ -171,7 +172,6 @@
 			uniListItem
 		},
 		data() {
-
 			return {
 				userinfo: {
 					face: '/static/HM-PersonalCenter/face_default.png',
@@ -202,7 +202,7 @@
 		computed: {
 			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode', 'customerTelephone']),
 			title() {
-				let title = "业务总监，你好！";
+				let title = "";
 				switch (this.userLevel) {
 					case 4:
 						title = "大区经理，你好！"
@@ -559,6 +559,7 @@
 			}
 		}
 		.telphone{
+			height: 150upx;
 			margin-bottom: 100upx;
 		}
 	}
