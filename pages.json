@@ -204,7 +204,7 @@
 				"navigationBarTitleText": "销售管理"
 			}
 		},{
-			"path": "setup_store",
+			"path": "authentication",
 			"style": {
 				"navigationBarTitleText": "实名认证"
 			}
@@ -252,6 +252,11 @@
 				"navigationBarTitleText": "提现记录详情",
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "store_management",
+			"style": {
+				"navigationBarTitleText": "店铺管理"
 			}
 		}]
 	}, {
