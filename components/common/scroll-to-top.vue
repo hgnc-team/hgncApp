@@ -1,6 +1,6 @@
 <template>
 	<view class="scrollToTop flex-center-center" @tap="scrollToTop" v-if="isShowBtn">
-		<uni-icon type="arrowthinup" size="36"></uni-icon>
+		<view class="iconfont iconicon_stick"></view>
 	</view>
 </template>
 
@@ -46,5 +46,10 @@
 		right: 30upx;
 		box-shadow: 6upx 6upx 20upx 3upx #c2c2c2;
 		z-index: 1000;
+		.iconicon_stick{
+			font-size: 40upx;
+			margin-right: 0;
+			color: #999;
+		}
 	}
 </style>

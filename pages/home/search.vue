@@ -114,24 +114,23 @@
 			</view>	
 		</view>
 		
-		<view class="scrollToTop flex-center-center" @tap="scrollToTop" v-if="isShowScrollToTopBtn">
-			<uni-icon type="arrowthinup" size="36"></uni-icon>
-		</view>
+		<!-- 返回顶部 -->
+		<scrollToTop :isShowBtn="isShowBtn"></scrollToTop>
 	</view>
 </template>
 
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
-	//引用mSearch组件，如不需要删除即可
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
 	import recommendGoods from '../../components/common/recommend-goods.vue';
+	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	export default {
 		components: {
 			uniIcon,
-			//引用mSearch组件，如不需要删除即可
 			mSearch,
-			recommendGoods
+			recommendGoods,
+			scrollToTop
 		},
 		data() {
 			return {
@@ -168,7 +167,7 @@
 				// 设备屏幕高度
 				windowHeight: 0,
 				// 是否暂时返回顶部按钮
-				isShowScrollToTopBtn: false
+				isShowBtn: false
 			}
 		},
 		onLoad() {
@@ -407,7 +406,7 @@
 				uni.createSelectorQuery().select('.product-list').boundingClientRect(data => {
 					if(data) {
 						// 内容超过一屏
-						this.isShowScrollToTopBtn = data.top <= 0 ? true : false;
+						this.isShowBtn = data.top <= 0 ? true : false;
 					}
 				}).exec()
 			},
@@ -709,7 +708,6 @@
 						.placeholder {
 							opacity: 0.1;
 							transition: opacity 0.1s linear;
-							background-image: url()
 						}
 						
 						.placeholder.loaded {
