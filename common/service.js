@@ -310,7 +310,7 @@ const createOrder = function(params) {
 
 /**     
   * @method 支付成功后的回调  
-  * @param {String} userId  用户id 
+  * @param {String} orderId  订单id 
   * @param {String} payment  支付方式
   * @return {promise} 返回一个promise对象     
   **/
@@ -322,6 +322,31 @@ const callbackAfterPay = function(params) {
 	return vm.$http.post('/v1/api/order/paySuccess', data)
 }
 
+/**     
+  * @method 查询今日释放积分  
+  * @param {String} userId  用户id 
+  **/
+const getReleaseGold = function() {
+	let data = {
+		userId: vm.$store.state.userId
+	}
+	return vm.$http.post('/v1/api/user/releaseGold', data)
+}
+
+/**     
+  * @method 转移专用积分  
+  * @param {String} from  用户邀请码
+  * @param {String} to  目标用户邀请码
+  * @param {String} count 转移数量     
+  **/
+const transferGold = function(params) {
+	let data = {
+		from: pvm.$store.state.userInviteCode,
+		to: params.to,
+		count: params.count,
+	}
+	return vm.$http.post('/v1/api/user/transferGold', data)
+}
 
 const LOGIN_MODULE = {
 	getConfigs,
@@ -343,7 +368,8 @@ const NEARBY_MODULE = {
 	
 }
 const VIPCENTER_MODULE = {
-	
+	getReleaseGold,
+	transferGold
 }
 const SHOPCART_MODULE = {
 	getCartList,
