@@ -127,18 +127,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="list">
-			<view class="list-item uni-flex" v-for="(item, index) in pageList" :key="index" @tap="handleClick(index, item)">
-				<view class="iconfont uni-inline-item flex-center-center" :class="item.iconfont"></view>
-				<view class="title-wrap uni-flex-item uni-flex">
-					<text class="title uni-flex-item uni-flex">{{item.title}}</text>
-					<text class="extra uni-flex-item uni-flex uni-text-small" :style="{'color': item.extra.color}" v-if="item.isShowExtra">{{item.extra.text}}</text>
-					<view class="icon uni-inline-item text-color-gray">
-						<uni-icon type="arrowright" size="20"></uni-icon>
-					</view>
-				</view>
-			</view>
-		</view>
+		<myList :pageList="pageList" @handleClick="handleClick"></myList>
 		<!-- 客服电话 -->
 		<view class="telphone flex-center-center uni-row uni-text-small text-color-gray">
 			<view class="iconfont iconicon_telephone"></view>
@@ -151,8 +140,6 @@
 <script>
 	import {
 		uniIcon,
-		uniList,
-		uniListItem
 	} from '@dcloudio/uni-ui';
 	import {
 		mapState,
@@ -160,11 +147,11 @@
 		mapActions
 	} from 'vuex';
 	import util from "../../common/util.js";
+	import myList from "../../components/common/my-list";
 	export default {
 		components: {
 			uniIcon,
-			uniList,
-			uniListItem
+			myList
 		},
 		data() {
 			return {
@@ -179,13 +166,15 @@
 						title: '邀请会员',
 						iconfont: 'iconinvite',
 						extra:{},
-						isShowExtra: false
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
 						title: '积分转让',
 						iconfont: 'icontransfer',
 						extra:{},
-						isShowExtra: false
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
 						title: '实体加盟',
@@ -194,7 +183,8 @@
 							text: '需实名认证',
 							color: "#ff8c4f"
 						},
-						isShowExtra: true
+						isShowExtra: true,
+						isShowArrow: true,
 					}
 				]
 			};
@@ -286,21 +276,22 @@
 				})
 			},
 			// 点击跳转
-			handleClick(index, item) {
+			handleClick(data) {
+				console.log(data)
 				// 邀请会员
-				if (index === 0) {
+				if (data.index === 0) {
 					uni.navigateTo({
 						url: "/pages/mine/change_telphone"
 					})
 					// 积分转让
-				} else if (index === 1) {
+				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: "/pages/vipCenter/intergral_transfer"
 					})
 					// 实体加盟（我要开店）
-				} else if (index === 2) {
+				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
-					let url = item.isAuthentication ? "/pages/vipCenter/store_management" : "/pages/vipCenter/authentication";
+					let url = data.item.isShowExtra ? "/pages/vipCenter/store_management" : "/pages/vipCenter/authentication";
 					uni.navigateTo({
 						url: url
 					})
@@ -491,54 +482,6 @@
 			}
 		}
 
-		.list {
-			background-color: #fff;
-			.list-item{
-				width: 100%;
-				height: 110upx;
-				padding-right:  30upx;
-				box-sizing: border-box;
-				.iconfont{
-					width: 100upx;
-				}
-				.title-wrap{
-					border-bottom: 1upx solid #f0f0f0;
-					.title{
-						align-items: center;
-					}
-					.extra{
-						align-items: center;
-						justify-content: flex-end;
-					}
-				}
-				&:nth-last-child(1) {
-					.title-wrap{
-						border-bottom: none;
-					}
-				}
-			}
-			.uni-list{
-				&::before, &::after{
-					display: none;
-				}
-			}
-			.uni-list-item {
-				.uni-list-item__container {
-					.uni-list-item__extra {
-						width: 50%;
-						.uni-badge-success {
-							color: #fd9c67 !important;
-							background-color: #fff !important;
-						}
-					}
-				}
-			}
-			.uni-list-item:nth-last-child(1){
-				.uni-list-item__container::after {
-					display: none;
-				}
-			}
-		}
 		.telphone{
 			height: 150upx;
 			margin-bottom: 100upx;

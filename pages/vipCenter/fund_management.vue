@@ -30,25 +30,15 @@
 			</view>
 		</view>
 	
-		<view class="list">
-			<uni-list>
-				<uni-list-item  :title="pageList[0].title"  @click="handleClick(0)"  :thumb="pageList[0].thumbUrl"></uni-list-item>
-				<uni-list-item  :title="pageList[1].title"  @click="handleClick(1)"  :thumb="pageList[1].thumbUrl"></uni-list-item>
-				<uni-list-item  :title="pageList[2].title"  @click="handleClick(2)"  :thumb="pageList[2].thumbUrl"></uni-list-item>
-			</uni-list>
-		</view>
+		<myList :pageList="pageList" @handleClick="handleClick"></myList>
 	</view>
 </template>
 
 <script>
-	import {
-		uniList,
-		uniListItem
-	} from '@dcloudio/uni-ui';
+	import myList from "../../components/common/my-list"
 	export default {
 		components: {
-			uniList,
-			uniListItem
+			myList
 		},
 		data() {
 			return {
@@ -59,21 +49,26 @@
 				// 已赚取
 				earnings: 0,
 				// 跳转其他功能页面列表
-				pageList:[
-					{
-						index: 0,
-						title:'银行卡管理',
-						thumbUrl: '/static/img/vipcenter/cards.png'
+				pageList: [{
+						title: '银行卡管理',
+						iconfont: 'iconbankcard',
+						extra:{},
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
-						index: 1,
-						title:'佣金提现',
-						thumbUrl: '/static/img/vipcenter/yjtx.png'
+						title: '佣金提现',
+						iconfont: 'iconcashwithdrawal',
+						extra:{},
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
-						index: 2,
-						title:'提现记录',
-						thumbUrl: '/static/img/vipcenter/txjl.png'
+						title: '提现记录',
+						iconfont: 'iconwithdrawalsrecord1',
+						extra:{},
+						isShowExtra: false,
+						isShowArrow: true,
 					}
 				]
 			}
@@ -85,19 +80,19 @@
 				this.earnings = 12349.23;
 			},
 			// 点击跳转
-			handleClick(index) {
+			handleClick(data) {
 				// 银行卡管理
-				if(index === 0) {
+				if(data.index === 0) {
 					uni.navigateTo({
 						url: "/pages/vipCenter/bank_card"
 					})
 				// 佣金管理
-				} else if (index === 1) {
+				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: '/pages/vipCenter/commissions_management'
 					})
 				// 提现记录
-				} else if (index === 2) {
+				} else if (data.index === 2) {
 					uni.navigateTo({
 						url: '/pages/vipCenter/withdrawals_record'
 					})
