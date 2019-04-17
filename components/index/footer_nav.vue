@@ -2,8 +2,7 @@
 	<view>
 		<view class="footerNav">
 			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
-				<!-- <uni-icon :type="index==now_index?item.select_icon:item.icon" size="24"></uni-icon> -->
-				<image :src="index==now_index?item.select_icon:item.icon" mode=""></image>
+				<view class="iconfont" :class="index==now_index?item.select_icon:item.icon"></view>
 				<view class="name">{{item.name}}</view>
 			</view>
 		</view>
@@ -73,14 +72,13 @@
 		float: left;
 		text-align: center;
 		height: 100upx;
-		margin-top: 8upx;
-		image{
-			width: 36upx;
-			height: 36upx;
-			top: 8upx;
-		}
 		.name{
 			font-size: 22upx;
+		}
+		.iconfont{
+			font-size: 50upx;
+			margin-right: 0;
+			line-height: 1.2;
 		}
 	}
 	.select_text{

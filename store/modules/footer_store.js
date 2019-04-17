@@ -5,37 +5,32 @@ export default {
 			{
 				name:'首页',
 				name_code:'home',
-				icon:'/static/img/index/icon_home_nor@2x.png',
-				select_icon:'/static/img/index/icon_home_sel@2x.png',
-				size:'small'
+				icon:'iconicon_home_nor',
+				select_icon:'iconicon_home_sel'
 			},
 			{
 				name:'附近',
 				name_code:'nearby',
-				icon:'/static/img/index/icon_nearby_nor@2x.png',
-				select_icon:'/static/img/index/icon_nearby_sel@2x.png',
-				size:'small'
+				icon:'iconicon_nearby_nor',
+				select_icon:'iconicon_nearby_sel'
 			},
 			{
 				name:'会员中心',
 				name_code:'vipCenter',
-				icon:'/static/img/index/icon_member-center_nor@2x.png',
-				select_icon:'/static/img/index/icon_member-center_sel@2x.png',
-				size:'small'
+				icon:'iconicon_member_nor',
+				select_icon:'iconicon_member_sel'
 			},
 			{
 				name:'购物车',
 				name_code:'shopCart',
-				icon:'/static/img/index/icon_shopping-cart_nor@2x.png',
-				select_icon:'/static/img/index/icon_shopping-cart_sel@2x.png',
-				size:'small'
+				icon:'iconicon_shoppingcart_nor',
+				select_icon:'iconicon_shoppingcart_sel'
 			},
 			{
 				name:'我的',
 				name_code:'mine',
-				icon:'/static/img/index/icon_mine_nor@2x.png',
-				select_icon:'/static/img/index/icon_mine_sel@2x.png',
-				size:'small'
+				icon:'iconicon_mine_nor',
+				select_icon:'iconicon_mine_sel'
 			}
 		],
 		now_page_index:0,
@@ -59,30 +54,26 @@ export default {
 				{
 					name:'首页',
 					name_code:'home',
-					icon:'/static/img/index/icon_home_nor@2x.png',
-					select_icon:'/static/img/index/icon_home_sel@2x.png',
-					size:'small'
+					icon:'iconicon_home_nor',
+					select_icon:'iconicon_home_sel'
 				},
 				{
 					name:'附近',
 					name_code:'nearby',
-					icon:'/static/img/index/icon_nearby_nor@2x.png',
-					select_icon:'/static/img/index/icon_nearby_sel@2x.png',
-					size:'small'
+					icon:'iconicon_nearby_nor',
+					select_icon:'iconicon_nearby_sel'
 				},
 				{
 					name:'购物车',
 					name_code:'shopCart',
-					icon:'/static/img/index/icon_shopping-cart_nor@2x.png',
-					select_icon:'/static/img/index/icon_shopping-cart_sel@2x.png',
-					size:'small'
+					icon:'iconicon_shoppingcart_nor',
+					select_icon:'iconicon_shoppingcart_sel'
 				},
 				{
 					name:'我的',
 					name_code:'mine',
-					icon:'/static/img/index/icon_mine_nor@2x.png',
-					select_icon:'/static/img/index/icon_mine_sel@2x.png',
-					size:'small'
+					icon:'iconicon_mine_nor',
+					select_icon:'iconicon_mine_sel'
 				}
 			]
 			
@@ -93,38 +84,33 @@ export default {
 				{
 					name:'首页',
 					name_code:'home',
-					icon:'/static/img/index/icon_home_nor@2x.png',
-					select_icon:'/static/img/index/icon_home_sel@2x.png',
-					size:'small'
+					icon:'iconicon_home_nor',
+					select_icon:'iconicon_home_sel'
 				},
 				{
 					name:'附近',
 					name_code:'nearby',
-					icon:'/static/img/index/icon_nearby_nor@2x.png',
-					select_icon:'/static/img/index/icon_nearby_sel@2x.png',
-					size:'small'
+					icon:'iconicon_nearby_nor',
+					select_icon:'iconicon_nearby_sel'
 				},
 				{
 					name:'会员中心',
 					name_code:'vipCenter',
-					icon:'/static/img/index/icon_member-center_nor@2x.png',
-					select_icon:'/static/img/index/icon_member-center_sel@2x.png',
-					size:'small'
+					icon:'iconicon_member_nor',
+					select_icon:'iconicon_member_sel'
 				},
 				{
 					name:'购物车',
 					name_code:'shopCart',
-					icon:'/static/img/index/icon_shopping-cart_nor@2x.png',
-					select_icon:'/static/img/index/icon_shopping-cart_sel@2x.png',
-					size:'small'
+					icon:'iconicon_shoppingcart_nor',
+					select_icon:'iconicon_shoppingcart_sel'
 				},
 				{
 					name:'我的',
 					name_code:'mine',
-					icon:'/static/img/index/icon_mine_nor@2x.png',
-					select_icon:'/static/img/index/icon_mine_sel@2x.png',
-					size:'small'
-				},
+					icon:'iconicon_mine_nor',
+					select_icon:'iconicon_mine_sel'
+				}
 			]
 			
 			ctx.commit("CHANGE_NAV_LIST",menu_list)
