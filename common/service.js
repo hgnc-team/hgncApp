@@ -309,6 +309,48 @@ const createOrder = function(params) {
 }
 
 /**     
+  * @method 获取订单列表  
+  * @param {String} userId  用户id 
+  * @param {String} status 不传时查询所有订单，
+  * 				"0"为待付款，
+					"1"为已付款待发货，
+					"2"为已发货待收货，
+					"d"为确认收货已完成(done)交易成功状态
+					"c"为未付款订单已取消(cancel)状态,
+					"n"为已付款订单取消未退款状态
+					"a"为已付款订单取消已退款状态
+					其中流程已结束的订单状态为 d,c,a
+  * @param {Number} page 
+  * @param {Number} pageSize 
+  **/
+const getOrderList = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		// userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
+		status: params.status,
+		page: params.page,
+		pageSize: params.pageSize
+	}
+	return vm.$http.post('/v1/api/order/list', data)
+}
+
+/**     
+  * @method 删除订单  
+  * @param {String} userId  用户id 
+  * @param {Array} goodsId  商品id【选填】  当一个订单下有多个商品时，传goodsId用来区分不同商品
+  * @param {String} detail  商品型号 【选填】 当同一商品有不同型号时，用detail字段来区分不同型号
+  * @return {promise} 返回一个promise对象     
+  **/
+const deleteOrder = function(params) {
+	let data = {
+		id: params.orderId,
+		goodsId: params.goodsId,
+		detail: params.detail
+	}
+	return vm.$http.post('/v1/api/order/delete', data)
+}
+
+/**     
   * @method 支付成功后的回调  
   * @param {String} orderId  订单id 
   * @param {String} payment  支付方式
@@ -320,6 +362,90 @@ const callbackAfterPay = function(params) {
 		payment: params.payment
 	}
 	return vm.$http.post('/v1/api/order/paySuccess', data)
+}
+
+/**     
+  * @method 用户确认收货  
+  * @param {Array} orderId  订单id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const receivedOrder = function(params) {
+	let data = {
+		orderId: params.orderId
+	}
+	return vm.$http.post('/v1/api/order/received', data)
+}
+
+/**     
+  * @method 根据订单id查询订单详情（批量）  
+  * @param {String} orderId  订单id数组 
+  * @return {promise} 返回一个promise对象     
+  **/
+const getOrderDetail = function(params) {
+	let data = {
+		ids: params.ids
+	}
+	return vm.$http.post('/v1/api/order/ids', data)
+}
+
+/**     
+  * @method 设置二级密码  
+  * @param {String} userId  用户id 
+  * @param {String} pwd  二级密码
+  * @return {promise} 返回一个promise对象     
+  **/
+const setSecondaryPwd = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		pwd: params.pwd
+	}
+	return vm.$http.post('/v1/api/user/setSecondaryPwd', data)
+}
+
+/**     
+  * @method 修改二级密码  
+  * @param {String} userId  手机号 
+  * @param {String} oldPwd  原始密码
+  * @param {String} newPwd  新密码 
+  * @return {promise} 返回一个promise对象     
+  **/
+const changeSecondaryPwd = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		oldPwd: params.oldPwd,
+		newPwd: params.newPwd
+	}
+	return vm.$http.post('/v1/api/user/changeSecondaryPwd', data)
+}
+
+/**     
+  * @method 忘记二级密码  
+  * @param {String} phoneNum  手机号 
+  * @param {String} authCode  手机验证码
+  * @param {String} newPwd  新密码
+  * @return {promise} 返回一个promise对象     
+  **/
+const forgetSecondaryPwd = function(params) {
+	let data = {
+		phoneNum: params.phoneNum,
+		authCode: params.authCode,
+		newPwd: params.newPwd
+	}
+	return vm.$http.post('/v1/api/user/forgetSecondaryPwd', data)
+}
+
+/**     
+  * @method 校验二级密码  
+  * @param {String} userId  用户id 
+  * @param {String} pwd  二级密码
+  * @return {promise} 返回一个promise对象     
+  **/
+const validSecondaryPwd = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		pwd: params.pwd,
+	}
+	return vm.$http.post('/v1/api/user/validSecondaryPwd', data)
 }
 
 /**     
@@ -382,7 +508,15 @@ const MINE_MODULE = {
 	getAddressList,
 	editAddress,
 	addAddress,
-	deleteAddress
+	deleteAddress,
+	getOrderList,
+	deleteOrder,
+	receivedOrder,
+	getOrderDetail,
+	setSecondaryPwd,
+	changeSecondaryPwd,
+	forgetSecondaryPwd,
+	validSecondaryPwd
 }
 export default {
 	...LOGIN_MODULE,

@@ -150,6 +150,18 @@
 				}
 			}
 		},{
+			"path": "order_list",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+				
+			}
+		},{
+			"path": "order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+				
+			}
+		},{
 			"path": "goods_detail",
 			"style": {
 				"navigationBarTitleText": "商品详情",
