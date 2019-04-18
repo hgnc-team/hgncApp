@@ -29,8 +29,10 @@ const store = new Vuex.Store({
 		customerTelephone: "",
 		// 图片地址域名
 		imageDomain: "",
-		// 是否校验用户密码
+		// 是否校验用户二级密码
 		isCheckPassword: false,
+		// 用户二级密码
+		secondaryPwd: null,
 		// 全局的自定义标题栏的样式
 		titleNView: Object.freeze({
 			bg: '#242424',
@@ -46,6 +48,7 @@ const store = new Vuex.Store({
 			state.userFace = data.face || '/static/HM-PersonalCenter/face_default.png';
 			state.userPhone = data.phone;
 			state.userInviteCode = data.inviteCode;
+			state.secondaryPwd = data.secondaryPwd;
 		    state.hasLogin = true;
 		},
 		// 后台相关配置
@@ -63,6 +66,10 @@ const store = new Vuex.Store({
 		// 设置密码校验状态
 		SET_PASSWORD_CHECKSTATUS(state, status) {
 			state.isCheckPassword = status;
+		},
+		// 存储用户二级密码
+		SET_SECONDARYPWD(state, pwd) {
+			state.secondaryPwd = pwd;
 		}
 	},
 	actions: {
