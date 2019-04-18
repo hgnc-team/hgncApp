@@ -385,6 +385,7 @@
 					id: this.specList[index].id,
 					title: this.specList[index].title,
 					price: this.specList[index].price,
+					standardText: this.specList[index].standardText,
 					inventory: this.specList[index].inventory,
 					// 配置规格展示图片
 					imageUrl: util.setImageUrl({
@@ -447,38 +448,19 @@
 			// 创建订单；
 			creatOrder(){
 				// 同步vuex  
-				// todo  等购物车完成直接copy过来
-// 				let data = {
-// 					id = 
-// 				}
-				// this.INIT_ORDER_lIST(data)
+				let data = {
+					goodsId: this.id,
+					title: this.title,
+					imageUrl: this.specSelected.imageUrl,
+					standardId: this.specSelected.id,
+					standardText: this.specSelected.title,
+					num: this.numberValue,
+					price: this.specSelected.price
+				}
+				this.INIT_ORDER_lIST([data]);
 				uni.navigateTo({
 					url: `/pages/shopCart/pay`
 				});
-// 				let params = {
-// 					userId: this.userId,
-// 					goods: [{
-// 						goodsId: this.id,
-// 						num: this.numberValue,
-// 						price: this.price,
-// 						detail: this.specSelected.title,
-// 						imageUrl: ""
-// 					}]
-// 				}
-// 				uni.showLoading();
-// 				service.createOrder(params).then(res=>{
-// 					uni.hideLoading();
-// 					let data = res.data.data;
-// 					uni.navigateTo({
-// 						url: `/pages/shopCart/pay?orderId=${data.id}`
-// 					});
-// 				}).catch(err=>{
-// 					uni.hideLoading();
-// 					uni.showToast({
-// 						icon:"none",
-// 						title: (err.data && err.data.data) || err.errMsg
-// 					})
-// 				})
 			},
 			// 规格选定后
 			specSeleted(){
@@ -510,6 +492,7 @@
 		},
 		onLoad(e) {
 			this.init(e.id);
+			this.INIT_ORDER_lIST([]);
 		},
 	}
 </script>
