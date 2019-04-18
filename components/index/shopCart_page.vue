@@ -563,7 +563,7 @@
 									.numInput{
 										position: absolute;
 										right: 0upx;
-										top: -10upx;
+										top: 0upx;
 										text {
 											float: left;
 											color: #999;
