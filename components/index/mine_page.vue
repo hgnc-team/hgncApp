@@ -1,23 +1,18 @@
 <template>
 	<view class="minePage">
 		<!-- 状态栏 -->
-		<!-- <statusBar></statusBar> -->
-		<view class="header">
-			<view class="userinfo">
-				<view class="face">
-					<image :src="userinfo.face"></image>
-				</view>
-				<view class="info" v-if="hasLogin">
-					<view class="username">{{userinfo.userName}}</view>
-					<view class="integral">ID: {{userinfo.inviteCode}}</view>
-				</view>
-				<view class="info" v-if="!hasLogin" @tap="login">
-					<view class="username">登录/注册</view>
-				</view>
+		<statusBar></statusBar>
+		<view class="header uni-flex" @tap="toAccountInfo">
+			<view class="face uni-inline-item">
+				<image :src="userinfo.face"></image>
 			</view>
-			<!-- <view class="setting" @tap="toAccountInfo">
-				<image src="../../static/HM-PersonalCenter/setting.png"></image>
-			</view> -->
+			<view class="info uni-flex-item uni-flex uni-column" v-if="hasLogin">
+				<view class="username">{{userinfo.userName}}</view>
+				<view class="integral">ID: {{userinfo.inviteCode}}</view>
+			</view>
+			<view class="setting uni-inline-item">
+				<uni-icon type="arrowright" size="20"></uni-icon>
+			</view>
 		</view>
 		<view class="orders">
 			<view class="title uni-flex">
@@ -41,11 +36,8 @@
 			</view>
 			<view class="bg-bar"></view>
 		</view>
-		<uni-list>
-			<uni-list-item  :title="pageList[0].title"  @click="handleClick(0)"  :thumb="pageList[0].thumbUrl"></uni-list-item>
-			<uni-list-item  :title="pageList[1].title"  @click="handleClick(1)"  :thumb="pageList[1].thumbUrl"></uni-list-item>
-			<uni-list-item  :title="pageList[2].title"  @click="handleClick(2)"  :thumb="pageList[2].thumbUrl"></uni-list-item>
-		</uni-list>
+		<!-- 跳转列表 -->
+		<myList :pageList="pageList" @handleClick="handleClick"></myList>
 		<view class="version">
 			当前版本号: {{version}}
 		</view>
@@ -53,14 +45,17 @@
 </template>
 <script>
 	import {
-		uniList,
-		uniListItem
+		uniIcon
 	} from '@dcloudio/uni-ui';
-	import { mapMutations, mapState } from 'vuex';
+	import {
+		mapMutations,
+		mapState
+	} from 'vuex';
+	import myList from "../../components/common/my-list";
 	export default {
 		components: {
-			uniList,
-			uniListItem
+			uniIcon,
+			myList
 		},
 		data() {
 			return {
@@ -90,27 +85,31 @@
 					}
 				],
 				// 跳转其他功能页面列表
-				pageList:[
-					{
-						index: 0,
-						title:'换绑手机',
-						thumbUrl: '/static/HM-PersonalCenter/cellphone.png'
+				pageList: [{
+						title: '换绑手机',
+						iconfont: 'iconshouji',
+						extra: {},
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
-						index: 1,
-						title:'收货地址',
-						thumbUrl: '/static/HM-PersonalCenter/dizhi.png'
+						title: '收货地址',
+						iconfont: 'iconaddress',
+						extra: {},
+						isShowExtra: false,
+						isShowArrow: true,
 					},
 					{
-						index: 2,
-						title:'密码管理',
-						thumbUrl: '/static/HM-PersonalCenter/pwd.png'
+						title: '密码管理',
+						iconfont: 'iconpssword_management',
+						extra: {},
+						isShowExtra: true,
+						isShowArrow: true,
 					}
-				
 				]
 			};
 		},
-		computed:{
+		computed: {
 			...mapState(["hasLogin"])
 		},
 		mounted() {
@@ -132,14 +131,14 @@
 					inviteCode: this.$store.state.userInviteCode
 				}
 			},
-			login(){
+			login() {
 				uni.navigateTo({
 					url: "/pages/login/login",
 					animationType: "slide-in-bottom"
 				})
 			},
 			// 修改账户信息
-			toAccountInfo(){
+			toAccountInfo() {
 				uni.navigateTo({
 					url: `/pages/mine/account_info`
 				})
@@ -150,27 +149,27 @@
 					url: `/pages/mine/order_list?index=${index}`
 				})
 			},
-			
+
 			// 点击跳转
-			handleClick(index) {
+			handleClick(data) {
 				// 换绑手机
-				if(index === 0) {
+				if (data.index === 0) {
 					uni.navigateTo({
 						url: "/pages/mine/change_telphone"
 					})
-				// 收货地址
-				} else if (index === 1) {
+					// 收货地址
+				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: "/pages/mine/address_management"
 					})
-				// 管理密码
-				} else if (index === 2) {
+					// 管理密码
+				} else if (data.index === 2) {
 					uni.navigateTo({
 						url: "/pages/mine/gesture_lock?mode=set"
 					})
-					
+
 				}
-			}	
+			}
 		}
 	}
 </script>
@@ -179,63 +178,51 @@
 	page {
 		background-color: #fff
 	}
-	.minePage{
-		
+
+	.minePage {
+
 		.header {
-			background-color:#000;
-			// 线性渐变
+			background-color: #000;
 			background: linear-gradient(135deg, #242424, #343434);
-			width:100%;
-			height:320upx;
-			// padding:0 4%;
-			padding:0;
-			display:flex;
-			// align-items:center;
-
-			.userinfo {
-				display: flex;
-				.face {
-					width: 200upx;
-					text-align:center;
-					image {
-						display:inline-block;
-						border:4px solid #fff;
-						box-sizing: border-box;
-						margin-top:136upx;
-						width: 130upx;
-						height: 130upx;
-						border-radius: 100%
-					}
-				}
-
-				.info {
-					color: #fff;
-					.username {
-						margin-top:162upx;
-						width:100%;
-						height:40upx;
-						line-height:40upx;
-						font-size: 32upx
-					}
-
-					.integral {
-						width:100%;
-						padding:0;
-						height: 40upx;
-						font-size: 24upx
-					}
+			width: 100%;
+			height: 220upx;
+			padding: 0 30upx;
+			box-sizing: border-box;
+			align-items: center;
+			.face {
+				width: 130upx;
+				height: 130upx;
+				border-radius: 50%;
+				margin-right: 30upx;
+				image {
+					display: inline-block;
+					border: 4px solid #fff;
+					box-sizing: border-box;
+					width: 130upx;
+					height: 130upx;
+					border-radius: 50%;
 				}
 			}
 
-			.setting {
-				flex-shrink: 0;
-				width: 6vw;
-				height: 6vw;
-
-				image {
+			.info {
+				color: #fff;
+				.username {
 					width: 100%;
-					height: 100%
+					height: 40upx;
+					line-height: 40upx;
+					font-size: 32upx
 				}
+				.integral {
+					width: 100%;
+					padding: 0;
+					height: 40upx;
+					font-size: 24upx;
+					color: #999;
+				}
+			}
+			
+			.setting {
+				color: #fff;
 			}
 		}
 
@@ -246,17 +233,20 @@
 		.orders {
 			background-color: #fff;
 			width: 100%;
-			.title{
+
+			.title {
 				width: 100%;
 				padding: 15upx 30upx;
-				border-bottom: 1upx solid #eee; 
-				box-sizing: border-box; 
-				.to-all-orders{
+				border-bottom: 1upx solid #eee;
+				box-sizing: border-box;
+
+				.to-all-orders {
 					text-align: right;
 					line-height: 2;
-					color:#aaaaaa;
+					color: #aaaaaa;
 				}
 			}
+
 			.box {
 				width: 100%;
 				display: flex;
@@ -273,10 +263,12 @@
 					align-items: center;
 					justify-content: center;
 					flex-direction: column;
+
 					.icon {
 						position: relative;
 						width: 40upx;
 						height: 40upx;
+
 						.badge {
 							position: absolute;
 							width: 36upx;
@@ -299,12 +291,14 @@
 							z-index: 9;
 						}
 					}
-					.text{
-						margin-top:18upx;
+
+					.text {
+						margin-top: 18upx;
 					}
 				}
 			}
-			.bg-bar{
+
+			.bg-bar {
 				width: 100%;
 				height: 30upx;
 				background-color: #eee;
@@ -314,18 +308,19 @@
 		.list {
 			width: 100%;
 		}
-		.version{
+
+		.version {
 			width: 100%;
 			margin-top: 50upx;
 			text-align: center;
 		}
-		.uni-list-item /deep/ .uni-list-item__container:after{
+
+		.uni-list-item /deep/ .uni-list-item__container:after {
 			left: 50px;
 		}
-		.uni-list-item:last-child  /deep/ .uni-list-item__container:after {
-			display:none;
+
+		.uni-list-item:last-child /deep/ .uni-list-item__container:after {
+			display: none;
 		}
 	}
 </style>
-
-

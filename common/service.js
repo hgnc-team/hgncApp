@@ -85,6 +85,21 @@ const reSetPwd = function(params) {
 	}
 	return vm.$http.post('/v1/api/user/changePwd', data)
 }
+/**     
+  * @method 修改用户绑定的手机号（重新设置密码）   
+  * @param {String} userId  用户id  
+  * @param {String} phoneNum  新手机号
+  * @param {String} authCode  验证码
+  * @return {promise} 返回一个promise对象     
+  **/
+const changeBindPhone = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		phoneNum: params.phone,
+		authCode: params.code,
+	}
+	return vm.$http.post('/v1/api/user/changeBindPhone', data)
+}
 
 /**     
   * @method 获取商品顶级分类列表   
@@ -479,7 +494,8 @@ const LOGIN_MODULE = {
 	login,
 	register,
 	getSms,
-	reSetPwd
+	reSetPwd,
+	changeBindPhone
 }
 const HOME_MODULE = {
 	getGoodTopClass,

@@ -59,9 +59,13 @@ const store = new Vuex.Store({
 		},
 		// 退出登录
 		LOGOUT(state) {  
-            state.hasLogin = false;   
-            state.userName = '';  
-			state.userLevel = 0;  
+            state.userName = "";
+            state.userLevel = 0;
+            state.userId = "";
+            state.userFace = "";
+            state.userPhone = "";
+            state.userInviteCode = "";
+            state.hasLogin = false; 
         },
 		// 设置密码校验状态
 		SET_PASSWORD_CHECKSTATUS(state, status) {
