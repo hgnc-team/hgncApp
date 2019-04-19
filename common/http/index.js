@@ -63,7 +63,11 @@ export default {
 				if (statusCode === 200) { //成功
 					resolve(response);
 				} else {
-					reject(response)
+					// 统一处理错误信息
+					let err = {
+						errMsg: (response.data && response.data.data) || response.errMsg
+					}
+					reject(err);
 				}
 			}
 
