@@ -194,7 +194,7 @@
 		methods: {
 			init(){
 				this.jBalance = 450;
-				this.mBalance = 650;
+				this.mBalance = 9999;
 			},
 			// 去地址管理页面
 			toAddress(){
@@ -214,6 +214,11 @@
 			},
 			// 创建订单
 			creatOrder(){
+				// 支付宝支付不用检验二级密码
+				if(this.payType !== "alipay" && !this.$store.state.isCheckPassword) {
+					this.toSecond();
+					return 
+				} 
 				let goods = [];
 				_.forEach(this.getOrderList, item => {
 					goods.push({
@@ -298,29 +303,17 @@
 			},
 			// 积分支付
 			jfPay(){
-				// 是否检验二级密码
-				if(this.$store.state.isCheckPassword) {
-					// 调用支付流程
+				// 调用支付流程
 					
-					
-					this.toResult();
-				} else {
-					// 
-					this.toSecond();
-				}
+				// 去结果页
+				this.toResult();
 			},
 			// M币支付
 			mbPay(){
-				// 是否检验二级密码
-				if(this.$store.state.isCheckPassword) {
-					// 调用支付流程
+				// 调用支付流程
 					
-					
-					this.toResult();
-				} else {
-					// 
-					this.toSecond();
-				}
+				// 去结果页
+				this.toResult();
 			},
 			// 支付成功了回调
 			callbackAfterPay(){
