@@ -262,7 +262,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
-						title: (err.data && err.data.data) || err.errMsg,
+						title: err.errMsg,
 					});
 					return;
                 })
@@ -382,7 +382,7 @@
                     // 请求失败
 					uni.showToast({
 						icon: 'none',
-						title: (err.data && err.data.data) || err.errMsg,
+						title: err.errMsg,
 					});
 					return;
                 })
@@ -450,7 +450,7 @@
 						// 请求失败
 						uni.showToast({
 							icon: 'none',
-							title: (err.data && err.data.data) || err.errMsg,
+							title: err.errMsg,
 						});
 						return;
 					});
@@ -474,7 +474,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
-						title: err.errMsg || err.data.data,
+						title: err.errMsg,
 					});
 				})
 			},
@@ -542,7 +542,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title:  err.errMsg || err.data.data,
+						title:  err.errMsg,
 					})
 				})
 			},
@@ -576,7 +576,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: (err.data && err.data.data) || err.errMsg,
+						title: err.errMsg,
 					})
 				})
 			},
