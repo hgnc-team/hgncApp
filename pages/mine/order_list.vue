@@ -4,15 +4,19 @@
 			<uni-segmented-control :current="tabs.current" :values="tabs.items" v-on:clickItem="changeTabs" :styleType="tabs.styleType" :activeColor="tabs.activeColor"></uni-segmented-control>
 		</view>
 		<!-- 列表内容 -->
-		<view class="content">
-			<view class="order-item" v-for="(item, index) in orderList" :key="index" >
+		<view class="order-list">
+			<view class="order-list-item" v-for="(item, index) in orderList" :key="index" >
 				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
+					<view class="iconfont icondianpu uni-inline-item">
+						
+					</view>
 					<view class="title uni-h5 uni-flex-item">
-						<image style="width: 40upx; height: 40upx;margin-top:17upx;display:inline-block;float:left;margin-right:20upx;" src="/static/HM-PersonalCenter/shop_icon.png"
-                        @error="imageError"></image>{{item.name}} <text style="color:#bdbdbd;margin-left:16upx;"> > </text>
+						<view class="">
+							{{item.detail}}
+						</view>
 					</view>
 					<view class="status uni-inline-item">
-						{{item.status}}
+						{{item.status | traslateStatus}}
 					</view>
 				</view>
 				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
@@ -33,7 +37,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.id)">
+				<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.goodsId)">
 					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 				</view>
 			</view>
@@ -48,7 +52,9 @@
 		uniNavBar,
 		uniSegmentedControl
 	} from '@dcloudio/uni-ui';
+	import _ from "lodash";
 	import service from '../../common/service.js';
+	import util from "../../common/util.js";
 	export default {
 		components: {
 			uniTag,
@@ -63,63 +69,105 @@
 					styleType: "text",
 					activeColor: '#242424'
 				},
-				orderList: [{
-					name: "大藏小玩",
-					title: "仿宋代明月石",
-					id: 102212,
-					status: "已完成",
-					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
-					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12:10",
-					address: "湖北省武汉市常青花园1栋1单元312室70928号",
-					price: "500.00"
-				},{
-					name: "大藏小玩",
-					title: "仿宋代明月石",
-					id: 102213,
-					status: "待发货",
-					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
-					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12:11",
-					address: "湖北省武汉市常青花园1栋1单元312室70928号",
-					price: "500.00"
-				},{
-					name: "大藏小玩",
-					title: "仿宋代明月石",
-					id: 102214,
-					status: "待付款",
-					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
-					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12:13",
-					address: "湖北省武汉市常青花园1栋1单元312室70928号",
-					price: "500.00"
-				},{
-					name: "大藏小玩",
-					title: "仿宋代明月石",
-					id: 102215,
-					status: "待收货",
-					url: '/static/HM-PersonalCenter/order_prod_thumb_pic.png',
-					orderNum: "201856464646644",
-					orderTime: "2018-12-04 12:16",
-					address: "湖北省武汉市常青花园1栋1单元312室70928号",
-					price: "500.00"
-				}]
+				orderList: [],
+				page: 1
+			}
+		},
+		computed:{
+			noData(){
+				return this.orderList.length === 0;
+			}
+		},
+		onReachBottom() {
+			console.log(11111)
+			uni.showToast({title: '触发上拉加载'});
+		},
+		filters:{
+			traslateStatus(value){
+				let status = "";
+				switch (value){
+					case "0":
+						// 全部
+						status = "待付款";
+						break;
+					case "1":
+						// 待付款
+						status = "待发货";
+						break;
+					case "2":
+						// 待发货
+						status = "待收货";
+						break;
+					case "d":
+						// 待收货
+						status = "已完成";
+						break;
+					case "c":
+						// 已完成
+						status = "已取消";
+						break;
+					case "n":
+						// 已完成
+						status = "退款中";
+						break;
+					case "a":
+						// 已完成
+						status = "已退款";
+						break;
+					default:
+						break;
+				}
+				return status;
 			}
 		},
 		methods: {
 			initData(id){
 				service.getGoodsDetail().then();
-			},		
+			},
+			// 获取订单列表
+			getOrderList(status){
+				let params = {
+					status: status,
+					page: this.page,
+					pageSize: 10,
+				}
+				uni.showLoading();
+				service.getOrderList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data.data;
+					console.log(data);
+					if(data.length > 0) {
+						// 拼接图片链接
+						_.forEach(data, item => {
+							item.imageUrl = util.setImageUrl({
+								type: "goods",
+								goodId: item.goodsId,
+								imageName: item.imageUrl
+							})
+						})
+						this.orderList = this.orderList.concat(data);
+					}
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: (err.data && err.data.data) || err.errMsg
+					})
+				})
+			},
 			// 切换选项卡
 			changeTabs(index) {
 				if (this.tabs.current !== index) {
 					this.tabs.current = index;
+					this.page = 1;
+					let status = this.switchStatus(this.tabs.current);
+					this.getOrderList(status);
 				}
 			},
 			// 订单详情
-			toOrderDetail(){
+			toOrderDetail(id){
 				uni.navigateTo({
-					url: "/pages/mine/order_detail"
+					url: `/pages/mine/order_detail?id=${id}`
 				})
 			},
 			// 商品详情
@@ -127,6 +175,45 @@
 				uni.navigateTo({
 					url: "/pages/home/goods_detail"
 				})
+			},
+			// 转化status
+			switchStatus(index){
+// 				status订单状态  后台枚举范围 ：
+				// 不传时查询所有订单
+// 				"0"为待付款，
+// 				"1"为已付款待发货，
+// 				"2"为已发货待收货，
+// 				"d"为确认收货已完成(done)交易成功状态
+// 				"c"为未付款订单已取消(cancel)状态,
+// 				"n"为已付款订单取消未退款状态
+// 				"a"为已付款订单取消已退款状态
+// 				其中流程已结束的订单状态为 d,c,a
+				let status = "";
+				switch (index){
+					case 0:
+						// 全部
+						status = "";
+						break;
+					case 1:
+						// 待付款
+						status = "0";
+						break;
+					case 2:
+						// 待发货
+						status = "1";
+						break;
+					case 3:
+						// 待收货
+						status = "2";
+						break;
+					case 4:
+						// 已完成
+						status = "d";
+						break;
+					default:
+						break;
+				}
+				return status;
 			}
 			
 		},
@@ -134,6 +221,9 @@
 			console.log(e)
 			// this.initData(e.id);
 			this.tabs.current = e.index - 0;
+			// 初始化页面数据
+			let status = this.switchStatus(this.tabs.current);
+			this.getOrderList(status);
 		},
 		
 	}
@@ -189,14 +279,14 @@
 				z-index:10000;
 			}
 		}
-		.content{
+		.order-list{
 			/* #ifdef H5 */
 			padding-top: 80upx;
 			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
 			padding-top: calc(var(--status-bar-height) + 80upx); 
 			/* #endif */	
-			.order-item{
+			.order-list-item{
 				background-color:#fff;
 				width: 100%;
 				border: 1px solid #eee;
