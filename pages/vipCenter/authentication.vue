@@ -81,7 +81,7 @@
 			<!-- 邮箱 -->
 			<view class="uni-form-item uni-row uni-flex email">
 				<view class="title uni-inline-item text-color-gray">邮箱:</view>
-				<input class="uni-input uni-flex-item" v-model="address" name="address" />
+				<input class="uni-input uni-flex-item" v-model="email" name="email" />
 			</view>
 			<view class="uni-btn-v" v-bind:style="{top: positionTop + 'px'}">
 				<button formType="submit" class="btn">确认提交</button>
@@ -327,13 +327,21 @@
 			}
 		}
 		.uni-btn-v{
-			width: calc(100% - 62upx);
+			width: 100%;
+			height: 140upx;
+			margin: 0 -30upx;
 			position: fixed;
-			top: 0upx;
+			bottom: 0upx;
 			left: 30upx;
 			z-index: 1000;
+			padding: 0 30upx;
+			box-sizing: border-box;
+			display: flex;
+			align-items: flex-start;
+			background-color: #fff;
 			.btn{
 				background: #242424;
+				width: 100%;
 				color: #fff;
 				border-radius: 2upx;
 			}

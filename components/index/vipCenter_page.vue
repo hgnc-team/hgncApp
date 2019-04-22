@@ -225,7 +225,8 @@
 		},
 		methods: {
 			init() {
-
+				// 判断当前用户是否，已经进行实名认证了
+				
 			},
 			// 复制id
 			copyId() {
@@ -292,7 +293,7 @@
 					// 实体加盟（我要开店）
 				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
-					let url = data.item.isShowExtra ? "/pages/vipCenter/store_management" : "/pages/vipCenter/authentication";
+					let url = data.item.isShowExtra ? "/pages/vipCenter/authentication" : "/pages/vipCenter/store_management";
 					uni.navigateTo({
 						url: url
 					})
