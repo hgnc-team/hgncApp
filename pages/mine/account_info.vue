@@ -120,10 +120,21 @@
 			},
 			// 退出当前账号
 			logout(){
-				this.$store.commit('logout');
-				uni.reLaunch({
-					url: "/pages/login/login"
-				})
+				uni.showModal({
+					// title: '提示',
+					content: '是否确定退出登录？',
+					success:  (res) => {
+						if (res.confirm) {
+							this.$store.commit('LOGOUT');
+							uni.reLaunch({
+								url: "/pages/login/login"
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
 			}
 			
 		}

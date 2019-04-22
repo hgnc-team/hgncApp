@@ -592,13 +592,24 @@
 				// 触发设置导航
 				this.$store.dispatch(barType);
 				// 切换导航下标
-				this.$store.dispatch("change_page",this.pageCode);
+				this.$store.dispatch("change_page", this.pageCode);
 			},
 			// 返回登录前一页
 			goBack() {
-				uni.navigateBack({
-					animationType: 'slide-out-bottom',
-				});		
+				// 获取页面栈数组
+				const pages = getCurrentPages();
+				if(pages.length > 1) {
+					uni.navigateBack({
+						animationType: 'slide-out-bottom',
+					});	
+				} else {
+					// 跳转到首页
+					this.$store.dispatch("change_page", "home");
+					uni.reLaunch({
+						url:"/pages/index"
+					})
+				}
+					
 			}
 		},
 		onLoad(option) {
