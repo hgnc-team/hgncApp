@@ -181,7 +181,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon:"none",
-						title: (err.data && err.data.data) || err.errMsg
+						title: err.errMsg
 					})
 				})
 			},
