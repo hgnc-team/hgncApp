@@ -32,7 +32,7 @@
 		    </view>
 		</neil-modal>
 		
-		<view class="more" @tap="showMore">
+		<view class="more" @tap="showMore" v-if="$store.state.secondaryPwd">
 			更多
 		</view>
 	</view>
@@ -157,9 +157,22 @@
 							
 						} 
 					} else if(this.setStatus === "forget") {
-							
+						// 重置状态，需要输入两次
+						if (this.step === 1) {
+							this.text = '请确认手势设定';
+							this.password = data;
+							// 进入下一步设置
+							this.step++;
+						} else {
+							if (this.password.join('') === data.join('')) {
+								// 请求设定接口
+								this.reSetPassword(this.password.join(''));
+							} else {
+								this.error = '两次手势设定不一致';
+							}
+						}
+						return
 					}
-					
 				} else if(this.mode === "check"){
 					// 校验模式，只需输入一次，直接校验
 					this.password = this.$store.state.secondaryPwd.split("");
@@ -286,8 +299,36 @@
 				})
 			},
 			// 忘记密码，重新设置密码
-			reSetPassword(){
-				
+			reSetPassword(newPwd){
+				let params = {
+					phoneNum: this.phone,
+					authCode: this.code,
+					newPwd: newPwd
+				}
+				uni.showLoading();
+				service.forgetSecondaryPwd(params).then(res=>{
+					uni.hideLoading();
+					this.text = '手势设定完成';
+					// 清空密码值
+					this.password = [];
+					// 重置步骤
+					this.step = 1;
+					// 同步密码
+					this.SET_SECONDARYPWD(password);
+					uni.showToast({
+						icon: "none",
+						title:  "二级密码重置成功"
+					})
+				}).catch(err => {
+					uni.hideLoading();
+					// 重置步骤
+					this.step = 1;
+					this.text = '请设定手势';
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg,
+					})
+				})
 			},
 			// 获取用户设定的二级密码
 			getSetedPassword(){
@@ -440,6 +481,7 @@
 			bottom: 100upx;
 		}
 		.input-wrap{
+			padding-bottom: 40upx;
 			.input-item{
 				width: calc(100% - 30upx);
 				height: 80upx;
