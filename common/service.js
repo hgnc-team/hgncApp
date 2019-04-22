@@ -442,6 +442,7 @@ const changeSecondaryPwd = function(params) {
   **/
 const forgetSecondaryPwd = function(params) {
 	let data = {
+		userId: vm.$store.state.userId,
 		phoneNum: params.phoneNum,
 		authCode: params.authCode,
 		newPwd: params.newPwd
@@ -482,7 +483,7 @@ const getReleaseGold = function() {
   **/
 const transferGold = function(params) {
 	let data = {
-		from: pvm.$store.state.userInviteCode,
+		from: vm.$store.state.userInviteCode,
 		to: params.to,
 		count: params.count,
 	}

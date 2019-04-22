@@ -79,6 +79,7 @@
 
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
+	import service from '../../common/service.js';
 	export default {
 		components:{
 			uniIcon
@@ -136,7 +137,27 @@
 				 	return
 				 }
 				 // 转让
-				 
+				 this.transferGold();
+			},
+			// 积分转让
+			transferGold(){
+				let params = {
+					to: this.id,
+					count: this.num
+				}
+				uni.showLoading();
+				service.transferGold(params).then(res=>{
+					uni.hideLoading();
+					uni.showToast({
+						title:  "转让成功",
+					})
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg,
+					})
+				})
 			}
 		},
 		onLoad() {
