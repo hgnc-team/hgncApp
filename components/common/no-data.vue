@@ -1,5 +1,5 @@
 <template>
-	<view class="no-data" :style="{'background-color': bgColor}">
+	<view class="no-data-component" :style="{'background-color': bgColor}">
 		<view class="image flex-center-center" >
 			<image :src="icon" mode="scaleToFill"></image>
 		</view>
@@ -50,7 +50,7 @@
 </script>
 
 <style lang="scss">
-	.no-data {
+	.no-data-component {
 		width: 100%;
 		height: 264upx;
 		text-align: center;
