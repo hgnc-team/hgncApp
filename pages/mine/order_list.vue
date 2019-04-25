@@ -4,43 +4,49 @@
 			<uni-segmented-control :current="tabs.current" :values="tabs.items" v-on:clickItem="changeTabs" :styleType="tabs.styleType" :activeColor="tabs.activeColor"></uni-segmented-control>
 		</view>
 		<!-- 列表内容 -->
-		<view class="order-list">
-			<view class="order-list-item" v-for="(item, index) in orderList" :key="index" >
-				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
-					<view class="iconfont icondianpu uni-inline-item">
-						
-					</view>
-					<view class="title uni-h5 uni-flex-item">
-						<view class="">
-							{{item.detail}}
+		<view class="order-list" >
+			<block v-if="!hasNoData">
+				<view class="order-list-item" v-for="(item, index) in orderList" :key="index" >
+					<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
+						<view class="iconfont icondianpu uni-inline-item">
+							
 						</view>
-					</view>
-					<view class="status uni-inline-item">
-						{{item.status | traslateStatus}}
-					</view>
-				</view>
-				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
-					<view class="image uni-inline-item" >
-						<image :src="item.url" mode="aspectFit"></image>
-					</view>
-					<view class="info uni-flex-item">
-						<view class="name uni-h5">
-							<text style="color:#242424;font-weight:bold;">{{item.title}}</text><text style="color:#aaa;font-size:20upx;margin-left:10upx;">X1</text>
-							<view class="total-price">
-								￥<text>{{item.price}}</text>
+						<view class="title uni-h5 uni-flex-item">
+							<view class="">
+								{{item.detail}}
 							</view>
 						</view>
-						<view class="code uni-text-small text-color-gray uni-column uni-flex">
-							<text>订单编号: {{item.orderNum}}</text>
-							<text>订单时间: {{item.orderTime}}</text>
-							<text style="line-height:1.4">送货地址: {{item.address}}</text>
+						<view class="status uni-inline-item">
+							{{item.status | traslateStatus}}
 						</view>
 					</view>
+					<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
+						<view class="image uni-inline-item" >
+							<image :src="item.url" mode="aspectFit"></image>
+						</view>
+						<view class="info uni-flex-item">
+							<view class="name uni-h5">
+								<text style="color:#242424;font-weight:bold;">{{item.title}}</text><text style="color:#aaa;font-size:20upx;margin-left:10upx;">X1</text>
+								<view class="total-price">
+									￥<text>{{item.price}}</text>
+								</view>
+							</view>
+							<view class="code uni-text-small text-color-gray uni-column uni-flex">
+								<text>订单编号: {{item.orderNum}}</text>
+								<text>订单时间: {{item.orderTime}}</text>
+								<text style="line-height:1.4">送货地址: {{item.address}}</text>
+							</view>
+						</view>
+					</view>
+					<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.goodsId)">
+						<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
+					</view>
 				</view>
-				<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.goodsId)">
-					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
-				</view>
-			</view>
+			</block>
+			<!-- 暂无数据 -->
+			<block v-if="hasNoData">
+				<noData :text="noDataText"></noData>
+			</block>
 		</view>
 	</view>
 </template>
@@ -55,10 +61,12 @@
 	import _ from "lodash";
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
+	import noData from "../../components/common/no-data.vue";
 	export default {
 		components: {
 			uniTag,
-			uniSegmentedControl		
+			uniSegmentedControl,
+			noData
 		},
 		data() {
 			return {	
@@ -70,11 +78,12 @@
 					activeColor: '#242424'
 				},
 				orderList: [],
-				page: 1
+				page: 1,
+				noDataText: "暂无订单相关数据"
 			}
 		},
 		computed:{
-			noData(){
+			hasNoData(){
 				return this.orderList.length === 0;
 			}
 		},
@@ -244,6 +253,7 @@
 			/* #endif */
 			z-index: 1000;
 			background-color: #fff;
+			border-bottom: 1upx solid #f0f0f0;
 			.segmented-control{
 				width: 100%;
 				height: 100%;

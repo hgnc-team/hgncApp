@@ -99,14 +99,7 @@
 					</view>
 				</view>
 				<view class="hasNoData"  v-if="!hasData">
-					<view class="notice">
-						<view class="image flex-center-center" >
-							<image src="/static/img/common/search-no-data.png" mode="scaleToFill"></image>
-						</view>
-						<view class="uni-text-small">
-							抱歉,未找到“{{keyword}}”相关产品
-						</view>
-					</view>
+					<noData :text="noDataText"></noData>
 					<view class="place-bar"></view>
 					<!-- 推荐商品列表 -->
 					<recommendGoods :title="'推荐商品'" :num="4"></recommendGoods>
@@ -125,10 +118,12 @@
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
 	import recommendGoods from '../../components/common/recommend-goods.vue';
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
+	import noData from "../../components/common/no-data.vue";
 	export default {
 		components: {
 			uniIcon,
 			mSearch,
+			noData,
 			recommendGoods,
 			scrollToTop
 		},
@@ -179,6 +174,9 @@
 			this.pageScroll();
 		},
 		computed:{
+			noDataText(){
+				return `抱歉,未找到“${this.keyword}”相关产品`;
+			}
 // 			totalNum(){
 // 				return this.goodsList.length;
 // 			}
@@ -671,22 +669,7 @@
 					}	
 				}
 				.hasNoData{
-					.notice{
-						width: 100%;
-						height: 264upx;
-						text-align: center;
-						color: #999;
-						padding-top: 30upx;
-						box-sizing: border-box;
-						.image{
-							width: 100%;
-							height: 160upx;
-							image{
-								width: 164upx;
-								height: 148upx;
-							}
-						}
-					}
+
 					.Recommend-goods-list{
 						.title{
 							padding: 20upx 30upx;
