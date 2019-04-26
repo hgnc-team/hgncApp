@@ -27,7 +27,7 @@
 				<view class="label" v-for="(row,index) in orderTypeLise" :key="row.name" hover-class="hover" @tap="toOrderType(index+1)">
 					<view class="icon">
 						<view class="badge" v-if="row.badge>0">{{row.badge}}</view>
-						<image :src="'/static/HM-PersonalCenter/'+row.icon"></image>
+						<text class="iconfont" :class="row.icon"></text>
 					</view>
 					<view class="text">
 						{{row.name}}
@@ -65,23 +65,23 @@
 					//name-标题 icon-图标 badge-角标
 					{
 						name: '待付款',
-						icon: 'icon01.png',
+						icon: 'iconxingzhuang',
 						badge: 1
 					},
 					{
 						name: '待发货',
-						icon: 'icon02.png',
-						badge: 0
+						icon: 'iconxingzhuang1',
+						badge: 10
 					},
 					{
 						name: '待收货',
-						icon: 'icon03.png',
-						badge: 0
+						icon: 'iconxingzhuang2',
+						badge: 40
 					},
 					{
 						name: '已完成',
-						icon: 'icon04.png',
-						badge: 0
+						icon: 'iconxingzhuang3',
+						badge: 2
 					}
 				],
 				// 跳转其他功能页面列表
@@ -266,16 +266,16 @@
 
 					.icon {
 						position: relative;
-						width: 40upx;
-						height: 40upx;
+						width: 60upx;
+						height: 60upx;
 
 						.badge {
 							position: absolute;
 							width: 36upx;
 							height: 36upx;
 							background-color: #1358ef;
-							top: -18upx;
-							left: 40upx;
+							top: -14upx;
+							left: 46upx;
 							border-radius: 100%;
 							font-size: 18upx;
 							color: #fff;
@@ -284,11 +284,14 @@
 							justify-content: center;
 							z-index: 10;
 						}
-
-						image {
-							width: 7vw;
-							height: 7vw;
-							z-index: 9;
+						.iconfont{
+							display: block;
+							width: 60upx;
+							height: 60upx;
+							text-align: center;
+							line-height: 60upx;
+							font-size: 60upx;
+							color: #242424;
 						}
 					}
 
