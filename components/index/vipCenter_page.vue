@@ -15,7 +15,7 @@
 					<view class="username">{{ userName }}</view>
 					<view class="integral uni-flex">
 						<text class="icon iconfont iconshouji"></text>
-						{{ userPhone | toTel}}
+						{{ encryptPhone }}
 					</view>
 				</view>
 				<view class="info2 uni-text-small" @tap="copyId">
@@ -212,14 +212,13 @@
 						break;
 				}
 				return title;
-			}
-		},
-		filters:{
-			toTel(value){
-				if(value){
-					let start = value.slice(0, 3);
-					let end = value.slice(-4);
-					return `${start}****${end}`
+			},
+			// 处理手机号加密
+			encryptPhone(){
+				if(this.userPhone){
+					let start = this.userPhone.slice(0, 3);
+					let end = this.userPhone.slice(-4);
+					return `${start}****${end}`;
 				}
 			}
 		},
