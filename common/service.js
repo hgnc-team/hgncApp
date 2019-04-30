@@ -39,6 +39,19 @@ const login = function(userInfo) {
 }
 
 /**     
+  * @method 登录   
+  * @param {String} phoneNum  手机号  
+  * @param {String} pwd  密码
+  * @return {promise} 返回一个promise对象   
+  */
+const logout = function(userInfo) {
+	let data = {
+		userId: vm.$store.state.userId
+	}
+	return vm.$http.post('/v1/api/user/logout', data)
+}
+
+/**     
   * @method 注册   
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
@@ -481,7 +494,7 @@ const getReleaseGold = function() {
   * @param {String} to  目标用户邀请码
   * @param {String} count 转移数量     
   **/
-const transferGold = function(params) {
+const transferScore = function(params) {
 	let data = {
 		from: vm.$store.state.userInviteCode,
 		to: params.to,
@@ -490,9 +503,33 @@ const transferGold = function(params) {
 	return vm.$http.post('/v1/api/user/transferGold', data)
 }
 
+/**     
+  * @method 查询用户积分历史列表  
+  * @param {String} userId   用户id 必填
+  * @param {String} isCom   是否要查普通积分标识位，默认为true
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  * @param {Number} start  开始时间 必填 
+  * @param {Number} end  结束时间 必填 
+  * @param {Number} orderBy  排序规则 选填 默认时间倒序排序 
+  **/
+const getScoreHistory = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		isCom: params.isCom,
+		page: params.page,
+		pageSize: params.pageSize,
+		start: params.start,
+		end: params.end,
+		orderBy: params.orderBy,
+	}
+	return vm.$http.post('/v1/api/user/pointHistory', data)
+}
+
 const LOGIN_MODULE = {
 	getConfigs,
 	login,
+	logout,
 	register,
 	getSms,
 	reSetPwd,
@@ -512,7 +549,8 @@ const NEARBY_MODULE = {
 }
 const VIPCENTER_MODULE = {
 	getReleaseGold,
-	transferGold
+	transferScore,
+	getScoreHistory
 }
 const SHOPCART_MODULE = {
 	getCartList,

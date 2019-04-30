@@ -15,6 +15,7 @@
 <script>
 	import myList from "../../components/common/my-list";
 	import { mapMutations } from 'vuex';
+	import service from "../../common/service.js";
 	export default {
 		components: {
 			myList
@@ -125,10 +126,23 @@
 					content: '是否确定退出登录？',
 					success:  (res) => {
 						if (res.confirm) {
-							this.$store.commit('LOGOUT');
-							uni.reLaunch({
-								url: "/pages/login/login"
+							uni.showLoading({
+								title: "退出中..."
+							});
+							service.logout().then(res=>{
+								uni.hideLoading();
+								this.$store.commit('LOGOUT');
+								uni.reLaunch({
+									url: "/pages/login/login"
+								})
+							}).catch(err=>{
+								uni.hideLoading();
+								uni.showToast({
+									icon: "none",
+									title:  err.errMsg,
+								})
 							})
+							
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
