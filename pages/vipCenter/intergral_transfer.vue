@@ -137,16 +137,16 @@
 				 	return
 				 }
 				 // 转让
-				 this.transferGold();
+				 this.transferScore();
 			},
 			// 积分转让
-			transferGold(){
+			transferScore(){
 				let params = {
 					to: this.id,
 					count: this.num
 				}
 				uni.showLoading();
-				service.transferGold(params).then(res=>{
+				service.transferScore(params).then(res=>{
 					uni.hideLoading();
 					uni.showToast({
 						title:  "转让成功",
