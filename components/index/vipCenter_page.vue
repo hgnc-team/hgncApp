@@ -46,7 +46,7 @@
 						今日释放M币
 					</view>
 					<view class="bottom">
-						9.88枚
+						{{releasedToday}}枚
 					</view>
 				</view>
 				<view class="row-item uni-flex-item uni-center" @tap="toIntegralCenter(1)">
@@ -148,6 +148,7 @@
 		mapActions
 	} from 'vuex';
 	import util from "../../common/util.js";
+	import service from "../../common/service.js";
 	import myList from "../../components/common/my-list";
 	export default {
 		components: {
@@ -224,8 +225,23 @@
 		},
 		methods: {
 			init() {
+				// 查询今日释放积分
+				this.getReleaseGold();
 				// 判断当前用户是否，已经进行实名认证了
 				
+			},
+			getReleaseGold(){
+				uni.showLoading()
+				service.getReleaseGold().then(res=>{
+					uni.hideLoading();
+					this.releasedToday = res.data.data || "0.00";
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: "获取顶部导航数据失败"
+					})
+				})
 			},
 			// 复制id
 			copyId() {
@@ -303,6 +319,10 @@
 		created() {
 			// 关闭下拉刷新
 			util.setRefreshMode(false);
+			
+			// 初始化
+			this.init()
+			
 			// 判断当前用户是否有店铺
 			
 		}
