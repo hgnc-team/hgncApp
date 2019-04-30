@@ -71,7 +71,7 @@ export default {
 				}
 			}
 
-			_config = Object.assign({}, this.config, options)
+			_config = Object.assign({}, options)
 			_config.requestId = new Date().getTime()
 
 			if (this.interceptor.request) {

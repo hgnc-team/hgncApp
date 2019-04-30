@@ -241,10 +241,13 @@
 				service.login(parms).then(res => {
 					 // 请求成功
 					uni.hideLoading();
-					const data = res.data.data;
+					const token = res.data.data.token;
+					// 缓存用户token
+					uni.setStorageSync("USER_TOKEN", token);
+					
+					const data = res.data.data.user;
 					// 用户角色等级
 					const userLevel = data.role || 0;
-					// console.log(data);
 					// 获取购物车数据
 					this.getCartList(data.id);
 					// 获取收货地址
@@ -253,6 +256,7 @@
 					this.setfooterBar(userLevel);
 					// 同步store里面的用户名称，等级
 					this.LOGIN(data);
+					
 					// 返回上一页面
 					this.goBack();
 
@@ -580,6 +584,7 @@
 					})
 				})
 			},
+			// 忘记密码页面
 			toForgetPassword(){
 				uni.navigateTo({
 					url: "/pages/login/pwd"

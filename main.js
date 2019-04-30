@@ -24,9 +24,11 @@ http.config.baseUrl = "http://server.maiyidesan.cn/";
 
 //设置请求前拦截器
 http.interceptor.request = (config) => {
-    //添加通用参数
+    // 添加通用参数
+	const _token = uni.getStorageSync('USER_TOKEN') || 'undefined';
     config.header = {
-        'Content-Type':'application/json;charset=UTF-8'
+        'Content-Type':'application/json;charset=UTF-8',
+		'Authorization': _token
     }
 }
 //设置请求结束后拦截器
