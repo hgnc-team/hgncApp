@@ -1,20 +1,28 @@
 <template>
 	<view class="orderListPage">
-		<view class="tabs">
-			<uni-segmented-control :current="tabs.current" :values="tabs.items" v-on:clickItem="changeTabs" :styleType="tabs.styleType" :activeColor="tabs.activeColor"></uni-segmented-control>
+		<view class="tabs uni-flex">
+			<view class="tab uni-flex-item flex-center-center" :class="{active: index === currentTab}" v-for="(item, index) in tabs" :key="index" @tap="changeTabs(index)">
+				<view class="name">
+					{{item}}
+				</view>
+				<view class="line-bottom"></view>
+			</view>
 		</view>
 		<!-- 列表内容 -->
 		<view class="order-list">
 			<view class="order-list-item" v-for="(item, index) in orderList" :key="index" >
-				<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
+				<view class="title-wrap uni-flex" @tap="toShopIndex(item.id)">
 					<view class="iconfont icondianpu uni-inline-item"></view>
-					<view class="title uni-h5 uni-flex-item">
-						<view class="">
+					<view class="title uni-h5 uni-flex-item uni-flex">
+						<view class="name uni-inline-item">
 							{{item.name}}
 						</view>
+						<view class="icon uni-inline-item text-color-gray">
+							<uniIcon type="arrowright" size="18"></uniIcon>
+						</view>
 					</view>
-					<view class="status uni-inline-item">
-						{{item.status | traslateStatus}}
+					<view class="order-status uni-inline-item">
+						{{item.status}}
 					</view>
 				</view>
 				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
@@ -29,13 +37,13 @@
 							</view>
 						</view>
 						<view class="code uni-text-small text-color-gray uni-column uni-flex">
-							<text>订单编号: {{item.orderNum}}</text>
+							<text>订单编号: {{item.orderCode}}</text>
 							<text>订单时间: {{item.orderTime}}</text>
-							<text style="line-height:1.4">送货地址: {{item.address}}</text>
+							<text style="line-height:1.4">送货地址: {{item.orderAddress}}</text>
 						</view>
 					</view>
 				</view>
-				<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.goodsId)">
+				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;" @tap="toGoodsDetail(item.goodsId)">
 					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 				</view>
 			</view>
@@ -45,28 +53,19 @@
 
 <script>
 	import {
-		uniTag,
-		uniIcon,
-		uniNavBar,
-		uniSegmentedControl
+		uniIcon
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	export default {
 		components: {
-			uniTag,
-			uniSegmentedControl		
+			uniIcon		
 		},
 		data() {
 			return {	
-				tabs: {
-					// 选项卡
-					items: ['全部', '待付款', '待发货', '待收货', '已完成'],
-					current: 0,
-					styleType: "text",
-					activeColor: '#242424'
-				},
+				tabs: ["全部", "到店消费", "待付款"],
+				currentTab: 0,
 				orderList: [{
 					name: "大藏小玩",
 					status: 0,
@@ -74,7 +73,8 @@
 					num: 1,
 					price: 555.55,
 					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09"
+					orderTime: "2019-01-01 12:05:09",
+					orderAddress: "奥斯卡的很深刻的经费和思考的家伙水电费你说，都没你份"
 				},{
 					name: "大藏小玩",
 					status: 1,
@@ -82,7 +82,8 @@
 					num: 16,
 					price: 555.55,
 					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09"
+					orderTime: "2019-01-01 12:05:09",
+					orderAddress: "奥斯卡的很深刻的经费和思考的家伙水电费你说，都没你份奥术大师"
 				},{
 					name: "大藏小玩",
 					status: 2,
@@ -111,44 +112,6 @@
 		onReachBottom() {
 			console.log(11111)
 			uni.showToast({title: '触发上拉加载'});
-		},
-		filters:{
-			traslateStatus(value){
-				let status = "";
-				switch (value){
-					case "0":
-						// 全部
-						status = "待付款";
-						break;
-					case "1":
-						// 待付款
-						status = "待发货";
-						break;
-					case "2":
-						// 待发货
-						status = "待收货";
-						break;
-					case "d":
-						// 待收货
-						status = "已完成";
-						break;
-					case "c":
-						// 已完成
-						status = "已取消";
-						break;
-					case "n":
-						// 已完成
-						status = "退款中";
-						break;
-					case "a":
-						// 已完成
-						status = "已退款";
-						break;
-					default:
-						break;
-				}
-				return status;
-			}
 		},
 		methods: {
 			initData(id){
@@ -187,12 +150,18 @@
 			},
 			// 切换选项卡
 			changeTabs(index) {
-				if (this.tabs.current !== index) {
-					this.tabs.current = index;
+				if (this.currentTab !== index) {
+					this.currentTab = index;
 					this.page = 1;
 					let status = this.switchStatus(this.tabs.current);
 					this.getOrderList(status);
 				}
+			},
+			// 店铺首页
+			toShopIndex(id){
+				uni.navigateTo({
+					url: `/pages/nearby/shop_index?id=${id}`
+				})
 			},
 			// 订单详情
 			toOrderDetail(id){
@@ -209,36 +178,19 @@
 			// 转化status
 			switchStatus(index){
 // 				status订单状态  后台枚举范围 ：
-				// 不传时查询所有订单
-// 				"0"为待付款，
-// 				"1"为已付款待发货，
-// 				"2"为已发货待收货，
-// 				"d"为确认收货已完成(done)交易成功状态
-// 				"c"为未付款订单已取消(cancel)状态,
-// 				"n"为已付款订单取消未退款状态
-// 				"a"为已付款订单取消已退款状态
-// 				其中流程已结束的订单状态为 d,c,a
 				let status = "";
 				switch (index){
 					case 0:
 						// 全部
-						status = "";
+						status = "已完成";
 						break;
 					case 1:
 						// 待付款
-						status = "0";
+						status = "待付款";
 						break;
 					case 2:
 						// 待发货
-						status = "1";
-						break;
-					case 3:
-						// 待收货
-						status = "2";
-						break;
-					case 4:
-						// 已完成
-						status = "d";
+						status = "待收获";
 						break;
 					default:
 						break;
@@ -269,78 +221,64 @@
 			/* #ifdef H5 */
 			top: 80upx;
 			/* #endif */	
-			/*  #ifdef  APP-PLUS  */
-			top: calc(var(--status-bar-height) + 80upx);
-			/* #endif */
 			z-index: 1000;
 			background-color: #fff;
-			.segmented-control{
-				width: 100%;
-				height: 100%;
-			}
-			
-			.segmented-control /deep/ .segmented-control-item.text{
-				line-height:80upx;
-				text-align:center;
-				position:relative;
-			}
-			
-			.segmented-control /deep/ .segmented-control-item.text:after{
-				content: ' ';
-				display:inline-block;
-				height:6upx;
-				width:40%;
-				background-color:#fff;
-				position:absolute;
-				bottom:-6upx;
-				left:0;
-				z-index:10000;
-			}
-			
-			.segmented-control /deep/ .segmented-control-item.text:before{
-				content: ' ';
-				display:inline-block;
-				height:6upx;
-				width:40%;
-				background-color:#fff;
-				position:absolute;
-				bottom:-6upx;
-				right:0;
-				z-index:10000;
+			color: #999;
+			border-bottom: 1upx solid #f0f0f0;
+			.tab{
+				position: relative;
+				&.active{
+					color: #242424;
+					.line-bottom{
+						width: 20upx;
+						height: 6upx;
+						background-color: #242424;
+						position: absolute;
+						bottom: 1upx;
+						left: 50%;
+						transform: translateX(-10upx);
+					}
+				}
 			}
 		}
-		.content{
+		.order-list{
 			/* #ifdef H5 */
 			padding-top: 80upx;
 			/* #endif */	
 			/*  #ifdef  APP-PLUS  */
-			padding-top: calc(var(--status-bar-height) + 80upx); 
+			padding-top: 80upx; 
 			/* #endif */	
-			.order-item{
+			.order-list-item{
 				background-color:#fff;
 				width: 100%;
 				border: 1px solid #eee;
-				padding: 0 30upx;
-				box-sizing: border-box;
 				margin-top:16upx;
 				.title-wrap{
 					width: 100%;
 					height: 74upx;
-					border-bottom: 1upx solid #f0f0f0;		
+					border-bottom: 1upx solid #f0f0f0;	
+					padding: 0 30upx;
+					box-sizing: border-box;
 					.title{
-						line-height: 74upx;
+						.name{
+							margin: 0 10upx 0 20upx ;
+						}
+						.icon{
+							
+						}
 					}
-					.status{
+					.order-status{
 						width: 100upx;
 					}
 				}
 				.order-info{
+					padding: 0 30upx;
+					box-sizing: border-box;
 					.image{
 						width: 184upx;
 						height: 184upx;
 						margin-top:30upx;
 						margin-right: 20upx;
-						
 						image{
 							width: 100%;
 							height: 100%;
@@ -356,6 +294,13 @@
 								font-weight:bold;
 								color:#1c5ef0;
 							}
+						}
+					}
+				}
+				.btn{
+					button{
+						&::after{
+							border-radius: 0;
 						}
 					}
 				}

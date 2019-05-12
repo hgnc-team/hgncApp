@@ -14,7 +14,8 @@
 				<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
 				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
-			<view class="right">
+			<!-- 订单 -->
+			<view class="right" @tap="toOrderList">
 				<view class="iconfont iconicon_order">
 					
 				</view>
@@ -202,6 +203,12 @@
 			},
 			onCancel(e) {
 				console.log(e);
+			},
+			// 订单列表跳转
+			toOrderList(){
+				uni.navigateTo({
+					url: '/pages/nearby/order_list'
+				})
 			},
 			//搜索跳转
 			toSearch() {
