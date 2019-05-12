@@ -26,8 +26,8 @@
 				<view class="icon uni-inline-item flex-center-center">
 					<uni-icon type="search" size="20"></uni-icon>
 				</view>
-				<view class="input uni-flex-item">
-					名称,类型
+				<view class="input uni-flex-item uni-text-small">
+					输入商品名称,类型
 				</view>
 			</view>
 		</view>
@@ -41,7 +41,7 @@
 				<view class="uni-h4">
 					附近热店
 				</view>
-				<view class="shop-list flex-center-center" v-for="(item, index) in shopList" :key="index" @tap="toShopIndex">
+				<view class="shop-list flex-center-center" v-for="(item, index) in shopList" :key="index" @tap="toShopIndex(item.id)">
 					<view class="img">
 						<image :src="item.img" mode="aspectFit" style="opacity: 0.1;"></image>
 					</view>
@@ -180,12 +180,7 @@
 			},
 			//轮播图预览
 			toSwiper(e) {
-// 				uni.previewImage({
-// 					urls: [e.img]
-// 				});
-				uni.showToast({
-					title: "跳转店铺详情"
-				})
+				this.toShopIndex(e.id);
 			},
 			// 二级联动
 			showPicker() {
@@ -212,6 +207,12 @@
 			toSearch() {
 				uni.navigateTo({
 					url: '/pages/home/search'
+				})
+			},
+			// 店铺首页
+			toShopIndex(id){
+				uni.navigateTo({
+					url: `/pages/nearby/shop_index?id=${id}`
 				})
 			},
 			// 跳转地图
