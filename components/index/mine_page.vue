@@ -1,7 +1,7 @@
 <template>
 	<view class="minePage">
 		<!-- 状态栏 -->
-		<statusBar></statusBar>
+		<statusBar id="bar"></statusBar>
 		<view class="header uni-flex" @tap="toAccountInfo">
 			<view class="face uni-inline-item">
 				<image :src="userinfo.face"></image>
@@ -52,6 +52,7 @@
 		mapState
 	} from 'vuex';
 	import myList from "../../components/common/my-list";
+	import util from "../../common/util.js";
 	export default {
 		components: {
 			uniIcon,
@@ -117,6 +118,8 @@
 			this.refreshMemberInfo();
 		},
 		onLoad() {
+			// 关闭刷新
+			util.setRefreshMode(false);
 			//加载
 			this.refreshMemberInfo();
 			// #ifdef APP-PLUS
@@ -180,13 +183,17 @@
 	}
 
 	.minePage {
-
+		/* #ifdef APP-PLUS */
+		padding-top: var(--status-bar-height);
+		/* #endif */
+		#bar{
+			background: linear-gradient(135deg, #242424, #343434);
+		}
 		.header {
-			background-color: #000;
 			background: linear-gradient(135deg, #242424, #343434);
 			width: 100%;
 			height: 220upx;
-			padding: 0 30upx;
+			padding: 20upx 30upx;
 			box-sizing: border-box;
 			align-items: center;
 			.face {
