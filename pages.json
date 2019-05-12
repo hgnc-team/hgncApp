@@ -136,7 +136,16 @@
 		{
 			"path": "shop_index",
 			"style": {
-				"navigationBarTitleText": "店铺首页"
+				"navigationBarTitleText": "店铺首页",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
+				}
 				
 			}
 		},{

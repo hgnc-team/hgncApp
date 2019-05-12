@@ -1,11 +1,7 @@
 <template>
 	<view class="goodsDetailPage">
-		<!-- 状态栏 -->
-		<!-- <statusBar></statusBar> -->
-		<!-- 导航栏 -->
-		<!-- <uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor" left-icon="back" @click-left="onClickLeft"
-		 @click-right="onClickRight" right-icon="redo" title="商品详情"></uni-nav-bar> -->
 		
+		<!-- 分享内容 -->
 		<share :shareObj="shareObj" ref="shareChild"></share>
 		
 		<view class="content">
