@@ -15,7 +15,9 @@
 				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
 			<view class="right">
-				<uni-icon type="list" size="22"></uni-icon>
+				<view class="iconfont iconicon_order">
+					
+				</view>
 			</view>
 		</view>
 		<!-- 搜索框 -->
