@@ -185,10 +185,16 @@
 				}
 			}
 		},{
-			"path": "pay",
+			"path": "order_pay",
 			"style": {
-				"navigationBarTitleText": "提交订单"
-				
+				"navigationBarTitleText": "提交订单",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "order_result",
+			"style": {
+				"navigationBarTitleText": "交易详情"
 			}
 		}]
 	}, {
@@ -298,9 +304,11 @@
 // 			}
 // 		},
 		{
-			"path": "pay",
+			"path": "order_pay",
 			"style": {
-				"navigationBarTitleText": "提交订单"
+				"navigationBarTitleText": "提交订单",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
 			}
 		},{
 			"path": "order_result",

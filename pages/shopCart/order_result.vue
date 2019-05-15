@@ -286,6 +286,7 @@
 			},
 		},
 		onLoad(option) {
+			this.payStatus = option.payStatus;
 			this.title = this.payStatus === "success" ? "付款成功" : "付款失败";
 			this.icon = this.payStatus === "success" ? "checkmarkempty" : "closeempty";
 			this.init();
