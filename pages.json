@@ -175,13 +175,20 @@
 			"style": {
 				"navigationBarTitleText": "商品详情",
 				"app-plus": {
-					"titleNView": false
-				},
-				"usingComponents": {
-					"van-goods-action": "/wxcomponents/vant/goods-action/index",
-					"van-goods-action-icon": "/wxcomponents/vant/goods-action-icon/index",
-					"van-goods-action-button": "/wxcomponents/vant/goods-action-button/index"
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
 				}
+			}
+		},{
+			"path": "pay",
+			"style": {
+				"navigationBarTitleText": "提交订单"
+				
 			}
 		}]
 	}, {

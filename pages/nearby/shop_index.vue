@@ -45,7 +45,7 @@
 					店铺商品
 				</view>
 				<view class="goodsList">
-					<view class="good" v-for="(item, index) in goodsList" :key="index">
+					<view class="good" v-for="(item, index) in goodsList" :key="index" @tap="toGoodsDetail(item.id)">
 						<view class="uni-media-list-logo">
 							<image class="image" lazy-load :src="item.img" />
 						</view>
@@ -202,6 +202,12 @@
 				let longitude = arr[0] || 114.424647;
 				uni.navigateTo({
 					url: `/pages/nearby/map?latitude=${latitude}&longitude=${longitude}`
+				})
+			},
+			// 商品详情
+			toGoodsDetail(id){
+				uni.navigateTo({
+					url: `/pages/nearby/goods_detail?id=${id}`
 				})
 			},
 			// 
