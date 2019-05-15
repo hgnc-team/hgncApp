@@ -123,7 +123,7 @@
 				// m币余额
 				mBalance: 0,
 				// 订单id
-				orderId: ""
+				orderId: null
 			}
 		},
 		computed: {
@@ -185,7 +185,7 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					console.log(data);
-					this.orderId = data;
+					this.orderId = data || undefined;
 					// 去支付
 					// this.toPay(data);
 				}).catch(err=>{
@@ -277,13 +277,14 @@
 			// 支付结果
 			toResult(isSuccess) {
 				let payStatus = isSuccess ? "success" : "fail";
+				let orderId = this.orderId;
 				uni.showToast({
 					title: isSuccess ? "支付成功" : "支付失败",
 					icon: isSuccess ? "success" : "",
 					duration: 2000,
 					complete: () => {
 						uni.reLaunch({
-							url: `/pages/shopCart/order_result?payStatus=${payStatus}&orderId=${this.orderId}&payType=nearby`
+							url: `/pages/nearby/order_result?payStatus=${payStatus}&orderId=${orderId}`
 						});
 					}
 				});
@@ -409,6 +410,7 @@
 			height: 100upx;
 			position: fixed;
 			bottom: 0;
+			border-top: 1upx solid #f0f0f0;
 			.total{
 				background-color: #fff;
 			}

@@ -455,7 +455,7 @@
 				}
 				this.INIT_ORDER_lIST([data]);
 				uni.navigateTo({
-					url: `/pages/shopCart/pay`
+					url: `/pages/shopCart/order_pay`
 				});
 			},
 			// 规格选定后

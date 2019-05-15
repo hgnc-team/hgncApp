@@ -270,7 +270,7 @@
 				this.INIT_ORDER_lIST([data]);
 				// 跳转到支付页面
 				uni.navigateTo({
-					url: `/pages/nearby/pay`
+					url: `/pages/nearby/order_pay`
 				});
 			},
 		},
