@@ -20,7 +20,7 @@
 			</view>
 			<view class="info">
 				<!-- 二维码 -->
-				<view class="QR-code flex-center-center uni-column">
+				<view class="QR-code flex-center-center uni-column" v-if="payStatus ==='success'">
 					<view class="image">
 						<image :src="img" mode="widthFix"></image>
 					</view>
@@ -44,7 +44,7 @@
 					<view class="title uni-inline-item">
 						优惠减免
 					</view>
-					<text class="text-price uni-flex uni-flex-item flex-right">-￥400</text>
+					<text class="text-price uni-flex uni-flex-item flex-right">-￥100</text>
 				</view>
 			</view>
 		</view>

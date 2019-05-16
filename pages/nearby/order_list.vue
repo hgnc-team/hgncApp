@@ -39,7 +39,7 @@
 						<view class="code uni-text-small text-color-gray uni-column uni-flex">
 							<text>订单编号: {{item.orderCode}}</text>
 							<text>订单时间: {{item.orderTime}}</text>
-							<text style="line-height:1.4">送货地址: {{item.orderAddress}}</text>
+							<!-- <text style="line-height:1.4">送货地址: {{item.orderAddress}}</text> -->
 						</view>
 					</view>
 				</view>
@@ -166,7 +166,7 @@
 			// 订单详情
 			toOrderDetail(id){
 				uni.navigateTo({
-					url: `/pages/mine/order_detail?id=${id}`
+					url: `/pages/nearby/order_detail?id=${id}`
 				})
 			},
 			// 商品详情
