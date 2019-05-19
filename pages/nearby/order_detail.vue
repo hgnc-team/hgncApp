@@ -258,7 +258,7 @@
 					width: 100%;
 					padding: 24upx 0;
 					border-bottom: 1upx solid #f0f0f0;
-					&::nth-last-child(0){
+					&:nth-last-child(0){
 						border-bottom: none;
 					}
 				}
