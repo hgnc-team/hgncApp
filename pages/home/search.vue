@@ -23,7 +23,9 @@
 				<!-- 原样式 end -->
 			</view>
 			<view class="cart uni-inline-item"  :class="isShowIcon?'active':''" @tap="toCart">
-				<uni-icon type="star"></uni-icon>
+				<view class="iconfont iconicon_shoppingcart_nor">
+					
+				</view>
 			</view>
 		</view>
 		
