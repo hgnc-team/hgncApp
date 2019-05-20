@@ -33,7 +33,27 @@ http.interceptor.request = (config) => {
 }
 //设置请求结束后拦截器
 http.interceptor.response = (response) => {
-    //判断返回状态 执行相应操作
+    //判断token是否合法
+	const msg = response.data.data;
+	if(msg === "token invalid") {
+		// 表示使用了过期token或者伪造token
+		uni.navigateTo({
+			url: "/pages/login/login"
+		})
+		
+	} else if (msg === "token timeout"){
+		// 需要重定向到登录页面
+		uni.navigateTo({
+			url: "/pages/login/login"
+		})
+		return
+	} else if(msg === "not latest token") {
+		response.data.data = "此账户已在别处登录";
+		uni.navigateTo({
+			url: "/pages/login/login"
+		})
+	}
+	// console.log(response);
     return response;
 }
 
