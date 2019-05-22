@@ -4,8 +4,8 @@
 		<view class="header">
 			<view class="search-box uni-inline-item">
 				<!-- mSearch组件 如果使用原样式，删除组件元素-->
-				<mSearch :mode="2" button="inside" :placeholder="'搜索用户ID'" @search="doSearch(false)" @confirm="doSearch(false)"
-				 v-model="keyword" radius="0" @input="clear"></mSearch>
+				<mSearch :mode="2" button="inside" :placeholder="'搜索用户ID'" @search="doSearch()" @confirm="doSearch()" v-model="keyword"
+				 radius="0" @input="clear"></mSearch>
 			</view>
 			<view class="tabs uni-flex" v-if="tabs.length >0">
 				<view class="uni-flex-item flex-center-center" v-for="(item, index) in tabs" :key="index" :class="currentTab==item.type?'active':''"
@@ -22,15 +22,15 @@
 			<view class="list">
 				<view class="list-item uni-flex flex-center-center" v-for="(item, index) in dataList" :key="index">
 					<view class="image uni-inline-item">
-						<image :src="item.imageUrl" mode="widthFix"></image>
+						<image :src="item.imageUrl || '/static/HM-PersonalCenter/face_default.png'" mode="widthFix"></image>
 					</view>
 					<view class="info uni-flex-item uni-flex" @tap="toManagerAchievement">
 						<view class="uni-flex-item uni-flex uni-column" style="justify-content: center;">
 							<view class="uni-flex uni-row" style="align-items: center;">
 								<text class="">{{item.name}}</text>
-								<view class="tag" :class="{'yellow': item.userLevel >= 1}" v-if="currentTab==='member'">
+								<view class="tag" :class="{'yellow': item.role >= 1}" v-if="currentTab==='member'">
 									<view class="iconfont iconicon_member_nor"></view>
-									<text>{{item.userLevel >= 1 ? "Vip" : "注册会员"}}</text>
+									<text>{{item.role >= 1 ? "Vip" : "注册会员"}}</text>
 								</view>
 							</view>
 							<view class="uni-text-small text-color-gray">
@@ -40,7 +40,7 @@
 						<!-- 团队会员 -->
 						<block v-if="currentTab==='member'">
 							<view class="member uni-flex-item uni-flex uni-row uni-text-small text-color-gray">
-								邀请日期： <text class="time">{{item.time}}</text>
+								邀请日期： <text class="time">{{item.createTime}}</text>
 							</view>
 						</block>
 						<!-- 销售经理 -->
@@ -60,6 +60,9 @@
 					</view>
 				</view>
 			</view>
+			<view class="hasNoData" v-if="this.dataList===0">
+				<noData :text="noDataText"></noData>
+			</view>
 		</view>
 	</view>
 </template>
@@ -68,7 +71,12 @@
 	import {
 		uniIcon
 	} from '@dcloudio/uni-ui';
+	import * as _ from 'lodash';
+	import moment from "moment";
+	import service from '../../common/service.js';
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
+	// 引入暂无数据组件
+	import noData from "../../components/common/no-data.vue";
 	import {
 		mapState,
 		mapMutations,
@@ -101,23 +109,65 @@
 	export default {
 		components: {
 			uniIcon,
-			mSearch
+			mSearch,
+			noData
 		},
 		data() {
 			return {
 				// 输入的关键词
 				keyword: "",
-				// 
 				tabs: [],
 				currentTab: "member",
-				// 共计人数
-				dataList: []
+				// 团队会员列表
+				memberList: [],
+				// 销售经理列表
+				managerList: [],
+				// 业务总监列表
+				majordomoList: [],
+				// 是否有数据
+				hasData: false,
 			}
 		},
 		computed: {
 			...mapState(["userLevel"]),
+			dataList() {
+				let list = [];
+				switch (this.currentTab) {
+					case "member":
+						list = this.memberList;
+						break;
+					case "manager":
+						list = this.managerList;
+						break;
+					case "majordomo":
+						list = this.majordomoList;
+						break;
+					default:
+						break;
+				}
+				return list
+			},
 			totalNum() {
 				return this.dataList.length;
+			},
+			noDataText() {
+				let text = "";
+				if (this.dataList.length === 0) {
+					switch (this.currentTab) {
+						case "member":
+							text = "您的团队中暂无会员"
+							break;
+						case "manager":
+							text = "您的团队中暂无销售经理"
+							break;
+						case "majordomo":
+							text = "您的团队中暂无业务总监"
+							break;
+						default:
+							break;
+					}
+				}
+				return text
 			}
 		},
 		methods: {
@@ -127,14 +177,16 @@
 				// 初始化tabs
 				this.initTabs();
 				// 获取初始化数据
-				this.getListByOrder();
+				this.initList();
 			},
+			// 初始化标题
 			initTitle() {
 				let title = this.userLevel === 1 ? "我的客户" : "我的团队";
 				uni.setNavigationBarTitle({
 					title: title
 				})
 			},
+			// 初始化tabs
 			initTabs() {
 				// 设置tabs
 				if (this.userLevel >= 3) {
@@ -146,116 +198,233 @@
 				}
 				this.tabs = TABS_FOR_MAJORDOMO;
 			},
-			// 切换tabs
-			changeTab(type) {
-				if (this.currentTab !== type) {
-					this.currentTab = type;
-					this.dataList = [];
-
-					this.getListByOrder();
-				}
-			},
-			//执行搜索
-			doSearch(key) {
-				this.keyword = key;
-				this.getListByOrder();
-			},
-			// 获取列表数据
-			getListByOrder() {
-				this.dataList = [{
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "辅导费",
-					id: 29472923,
-					time: "2019/04/15",
-					userLevel: 0,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "公公公",
-					id: 23455555,
-					time: "2019/04/18",
-					userLevel: 2,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2039/04/15",
-					userLevel: 3,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2079/04/15",
-					userLevel: 4,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2099/04/15",
-					userLevel: 5,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2119/04/15",
-					userLevel: 0,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2219/04/15",
-					userLevel: 3,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2099/04/15",
-					userLevel: 5,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2119/04/15",
-					userLevel: 3,
-					num: 302,
-					achievement: 4002.89
-				}, {
-					imageUrl: "/static/HM-PersonalCenter/face_default.png",
-					name: "热特瑞",
-					id: 757575,
-					time: "2219/04/15",
-					userLevel: 3,
-					num: 302,
-					achievement: 4002.89
-				}]
-			},
-			// 经理业绩查询
-			toManagerAchievement(){
-				if(this.currentTab === "manager") {
-					uni.navigateTo({
-						url: "/pages/vipCenter/performance_management?role=manager"
-					})
-				}
+			// 初始化list
+			initList() {
+				uni.showLoading();
+				service.getGroupMembers().then(res => {
+						uni.hideLoading();
+						let data = res.data.data;
+						console.log(data);
+						// if(data.length > 0) {
+						data = [{
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "辅导费",
+							id: 29472923,
+							createTime: 1554342330693,
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "公公公",
+							id: 23455555,
+							createTime: 1554342330693,
+							userLevel: 2,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 3,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 2,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 3,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: "2099/04/15",
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}, {
+							imageUrl: "/static/HM-PersonalCenter/face_default.png",
+							name: "热特瑞",
+							id: 757575,
+							createTime: 1554342330693,
+							userLevel: 1,
+							num: 302,
+							achievement: 4002.89
+						}]
+						_.forEach(data, item => {
+							// 转化时间格式
+							console.log(item.createTime);
+							item.createTime = moment(item.createTime).format("YYYY/MM/DD");
+							console.log(item.createTime);
+							if (item.userLevel === 1) {
+								this.memberList.push(item)
+							} else if (item.userLevel === 2) {
+								this.managerList.push(item)
+							} else if (item.userLevel === 3) {
+								this.majordomoList.push(item)
+							}
+						})
+					// }
+				}).catch(err => {
+				uni.hideLoading();
+				uni.showToast({
+					icon: "none",
+					title: err.errMsg,
+				})
+			})
+		},
+		// 切换tabs
+		changeTab(type) {
+			if (this.currentTab !== type) {
+				this.currentTab = type;
 			}
 		},
-		onLoad() {
-			this.init();
+		clear(keyword) {
+			if (!keyword) {
+				this.keyword = "";
+			}
+		},
+		//执行搜索
+		doSearch(key) {
+			// 不为空才查询
+			if (this.keyword) {
+				this.getListByOrder();
+			}
+			this.keyword = key;
+			this.getListByOrder();
+		},
+		// 获取列表数据
+		getListByOrder() {
+			this.dataList = [{
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "辅导费",
+				id: 29472923,
+				time: "2019/04/15",
+				userLevel: 0,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "公公公",
+				id: 23455555,
+				time: "2019/04/18",
+				userLevel: 2,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2039/04/15",
+				userLevel: 3,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2079/04/15",
+				userLevel: 4,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2099/04/15",
+				userLevel: 5,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2119/04/15",
+				userLevel: 0,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2219/04/15",
+				userLevel: 3,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2099/04/15",
+				userLevel: 5,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2119/04/15",
+				userLevel: 3,
+				num: 302,
+				achievement: 4002.89
+			}, {
+				imageUrl: "/static/HM-PersonalCenter/face_default.png",
+				name: "热特瑞",
+				id: 757575,
+				time: "2219/04/15",
+				userLevel: 3,
+				num: 302,
+				achievement: 4002.89
+			}]
+		},
+		// 经理业绩查询
+		toManagerAchievement() {
+			if (this.currentTab === "manager") {
+				uni.navigateTo({
+					url: "/pages/vipCenter/performance_management?role=manager"
+				})
+			}
 		}
+	},
+	onLoad() {
+		this.init();
+	}
 	}
 </script>
 
@@ -263,7 +432,7 @@
 	page {
 		width: 100%;
 		height: 100%;
-		background-color: #f0f0f0;
+		background-color: #fff;
 	}
 
 	.myTeamPage {
@@ -277,6 +446,7 @@
 			/* #endif */
 			/* #ifdef APP-PLUS */
 			top: 0;
+
 			/* #endif */
 			.search-box {
 				width: 100%;
@@ -310,7 +480,7 @@
 				.active {
 					color: #242424;
 					font-weight: 600;
-					
+
 					.bottom-line {
 						display: block;
 						width: 20upx;
@@ -328,6 +498,8 @@
 		.list-wrap {
 			width: 100%;
 			padding-top: 188upx;
+			background-color: #f0f0f0;
+
 			.totalNum {
 				width: 100%;
 				height: 68upx;
@@ -395,6 +567,7 @@
 							align-items: center;
 							justify-content: flex-end;
 							margin-right: 30upx;
+
 							.time {
 								color: #333;
 							}
@@ -402,17 +575,21 @@
 
 						.manager {
 							justify-content: center;
-							&.margin-right-30{
+
+							&.margin-right-30 {
 								margin-right: 30upx;
 							}
+
 							.achievement {
 								color: #ffa41f;
 							}
+
 							.num {
 								color: #333;
 							}
 						}
-						.icon{
+
+						.icon {
 							width: 60upx;
 						}
 					}
