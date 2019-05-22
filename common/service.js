@@ -529,18 +529,57 @@ const getScoreHistory = function(params) {
 /**     
   * @method 获取团队成员列表  
   * @param {String} userId   用户id 必填
-  * @param {String} isCom   是否要查普通积分标识位，默认为true
-  * @param {Number} page  第几页 默认第一页
-  * @param {Number} pageSize  每页条数 默认每页10条 
-  * @param {Number} start  开始时间 必填 
-  * @param {Number} end  结束时间 必填 
-  * @param {Number} orderBy  排序规则 选填 默认时间倒序排序 
   **/
 const getGroupMembers = function(params) {
 	let data = {
 		userId: vm.$store.state.userId
 	}
 	return vm.$http.post('/v1/api/user/groupMembers', data)
+}
+
+/**     
+  * @method 查找我的团队数量  
+  * @param {String} userId   用户id 必填
+  * @param {Number} start  开始时间 选填 
+  * @param {Number} end  结束时间 选填  
+  **/
+const getMyTeamNum = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		start: params.start,
+		end: params.end
+	}
+	return vm.$http.post('/v1/api/user/myTeamNum', data)
+}
+
+/**     
+  * @method 查找我的团队业绩  
+  * @param {String} userId   用户id 必填
+  * @param {Number} start  开始时间 选填 
+  * @param {Number} end  结束时间 选填  
+  **/
+const getMyTeamPerformancem = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		start: params.start,
+		end: params.end
+	}
+	return vm.$http.post('/v1/api/user/myTeamPerformancem', data)
+}
+
+/**     
+  * @method 查找我的团队积分新增情况  
+  * @param {String} userId   用户id 必填
+  * @param {Number} start  开始时间 选填 
+  * @param {Number} end  结束时间 选填  
+  **/
+const getMyTeamPoint = function(params) {
+	let data = {
+		userId: vm.$store.state.userId,
+		start: params.start,
+		end: params.end
+	}
+	return vm.$http.post('/v1/api/user/user/myTeamPoint', data)
 }
 
 const LOGIN_MODULE = {
@@ -568,7 +607,10 @@ const VIPCENTER_MODULE = {
 	getReleaseGold,
 	transferScore,
 	getScoreHistory,
-	getGroupMembers
+	getGroupMembers,
+	getMyTeamNum,
+	getMyTeamPerformancem,
+	getMyTeamPoint
 }
 const SHOPCART_MODULE = {
 	getCartList,
