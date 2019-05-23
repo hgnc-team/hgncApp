@@ -428,7 +428,7 @@
 					// 同步vuex数据
 					this.INIT_ORDER_lIST(selectedGoods);
 					uni.navigateTo({
-						url: '/pages/shopCart/pay'
+						url: '/pages/shopCart/order_pay'
 					});
 				}
 			},
