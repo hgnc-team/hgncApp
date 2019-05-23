@@ -12,7 +12,10 @@
 					我们将尽快给您准备好货物，感谢您的支持
 				</view>
 				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='fail'">
-					请在{{countDown}}内完成付款，否则订单将关闭
+					<block v-if="isShowCount">
+						请在<min-countdown :targetTime="countDown" @callback="countDownOver"></min-countdown>内完成付款，否则订单将关闭
+					</block>
+					<block v-if="!isShowCount">订单已关闭</block>
 				</view>
 			</view>
 			<view class="bg-bar">
@@ -103,11 +106,11 @@
 		</view>
 		
 		<!-- 交易成功展示 -->
-		<view class="footer flex-center-center" v-if="payStatus === 'success'" @tap="backToIndex">
+		<view class="footer flex-center-center" v-if="payStatus === 'success' || !isShowCount" @tap="backToIndex">
 			回到首页
 		</view>
 		<!-- 交易失败按钮 -->
-		<view class="footer uni-flex" v-if="payStatus === 'fail'">
+		<view class="footer uni-flex" v-if="payStatus === 'fail'&&isShowCount">
 			<view class="total uni-flex-item flex-center-center">
 				<text>共计：</text>
 				<text class="text-price">{{total}}M币</text>
@@ -124,10 +127,12 @@
 	import { mapMutations } from 'vuex';
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import util from "../../common/util.js";
+	import minCountdown from '../../components/common/min-countdown.vue'
 	import recommendGoods from '../../components/common/recommend-goods.vue';
 	export default {
 		components: {
 			uniIcon,
+			minCountdown,
 			recommendGoods
 		},
 		data(){
@@ -137,7 +142,9 @@
 				icon: "checkmarkempty",
 				title: "交易成功",
 				// 倒计时
-				countDown: "21:30",
+				countDown: new Date().getTime() + 30*60*1000,
+				// 是否显示倒计时
+				isShowCount: true,
 				// 付款方式
 				payType: "zfb",
 				// 积分余额
@@ -193,6 +200,11 @@
 				this.jBalance = 450;
 				this.mBalance = 650;
 				this.total = 505;
+			},
+			// 倒计时结束的回调
+			countDownOver(){
+				console.log('倒计时结束')
+				this.isShowCount = false;
 			},
 			// 选择付款方式
 			radioChange(evt) {
