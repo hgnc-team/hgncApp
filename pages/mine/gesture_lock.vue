@@ -79,7 +79,7 @@
 			}
 		},
 		computed:{
-			
+			// ...mapState(['secondaryPwd'])
 		},
 		methods: {
 			// 注入vuex的方法
@@ -176,7 +176,7 @@
 				} else if(this.mode === "check"){
 					// 校验模式，只需输入一次，直接校验
 					this.password = this.$store.state.secondaryPwd.split("");
-					if(this.password.join('') === password) {
+					if(this.password.join('') === data.join('')) {
 						// 请求校验接口
 						this.checkPassword(data.join(''))
 					} else {
