@@ -241,7 +241,7 @@
 					console.log(data);
 					let orderId = data;
 					// 去支付
-					// this.toPay(data);
+					this.toPay(data);
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -290,30 +290,30 @@
 					success: function(res) {
 						console.log('success:' + JSON.stringify(res));
 						this.callbackAfterPay(data);
-						this.toResult(true);
+						this.toResult(orderId, true);
 					},
 					fail: function(err) {
 // 						uni.showToast({
 // 							icon: "none",
 // 							title:  err.errMsg || err.data.data,
 // 						})
-						this.toResult(false);
+						this.toResult(data.orderId, false);
 					}
 				});	
 			},
 			// 积分支付
-			jfPay(){
+			jfPay(orderId){
 				// 调用支付流程
 					
 				// 去结果页
-				this.toResult();
+				this.toResult(orderId);
 			},
 			// M币支付
-			mbPay(){
+			mbPay(orderId){
 				// 调用支付流程
 					
 				// 去结果页
-				this.toResult();
+				this.toResult(orderId);
 			},
 			// 支付成功了回调
 			callbackAfterPay(){
@@ -342,7 +342,7 @@
 				})
 			},
 			// 支付结果
-			toResult(isSuccess) {
+			toResult(orderId, isSuccess) {
 				let payStatus = isSuccess ? "success" : "fail";
 				uni.showToast({
 					title: isSuccess ? "支付成功" : "支付失败",
