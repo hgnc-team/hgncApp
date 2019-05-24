@@ -24,13 +24,39 @@
 				</view>
 			</view>
 			<view class="box">
-				<view class="label" v-for="(row,index) in orderTypeLise" :key="row.name" hover-class="hover" @tap="toOrderType(index+1)">
+				<view class="label" hover-class="hover" @tap="toOrderType(1)">
 					<view class="icon">
-						<view class="badge" v-if="row.badge>0">{{row.badge}}</view>
-						<text class="iconfont" :class="row.icon"></text>
+						<view class="badge" v-if="dfk_num>0">{{dfk_num}}</view>
+						<text class="iconfont iconxingzhuang"></text>
 					</view>
 					<view class="text">
-						{{row.name}}
+						待付款
+					</view>
+				</view>
+				<view class="label" hover-class="hover" @tap="toOrderType(2)">
+					<view class="icon">
+						<view class="badge" v-if="dfh_num>0">{{dfh_num}}</view>
+						<text class="iconfont iconxingzhuang1"></text>
+					</view>
+					<view class="text">
+						待发货
+					</view>
+				</view>
+				<view class="label" hover-class="hover" @tap="toOrderType(3)">
+					<view class="icon">
+						<view class="badge" v-if="dsh_num>0">{{dsh_num}}</view>
+						<text class="iconfont iconxingzhuang2"></text>
+					</view>
+					<view class="text">
+						待收货
+					</view>
+				</view>
+				<view class="label" hover-class="hover" @tap="toOrderType(4)">
+					<view class="icon">
+						<text class="iconfont iconxingzhuang3"></text>
+					</view>
+					<view class="text">
+						已完成
 					</view>
 				</view>
 			</view>
@@ -49,7 +75,9 @@
 	} from '@dcloudio/uni-ui';
 	import {
 		mapMutations,
-		mapState
+		mapState,
+		mapGetters,
+		mapActions
 	} from 'vuex';
 	import myList from "../../components/common/my-list";
 	import util from "../../common/util.js";
@@ -62,29 +90,6 @@
 			return {
 				userinfo: {},
 				version: "",
-				orderTypeLise: [
-					//name-标题 icon-图标 badge-角标
-					{
-						name: '待付款',
-						icon: 'iconxingzhuang',
-						badge: 1
-					},
-					{
-						name: '待发货',
-						icon: 'iconxingzhuang1',
-						badge: 10
-					},
-					{
-						name: '待收货',
-						icon: 'iconxingzhuang2',
-						badge: 40
-					},
-					{
-						name: '已完成',
-						icon: 'iconxingzhuang3',
-						badge: 2
-					}
-				],
 				// 跳转其他功能页面列表
 				pageList: [{
 						title: '换绑手机',
@@ -111,11 +116,15 @@
 			};
 		},
 		computed: {
-			...mapState(["hasLogin"])
+			...mapState(["hasLogin"]),
+			...mapGetters(["dfk_num",, "dfh_num", "dsh_num"])
 		},
 		mounted() {
+			
 			// 刷新用户信息
 			this.refreshMemberInfo();
+			this.updataOrderList();
+			console.log(this.dfk_num)
 		},
 		onLoad() {
 			// 关闭刷新
@@ -127,6 +136,7 @@
 			// #endif
 		},
 		methods: {
+			...mapActions(["updataOrderList"]),
 			refreshMemberInfo() {
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',

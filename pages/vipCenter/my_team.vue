@@ -131,21 +131,7 @@
 		computed: {
 			...mapState(["userLevel"]),
 			dataList() {
-				let list = [];
-				switch (this.currentTab) {
-					case "member":
-						list = this.memberList;
-						break;
-					case "manager":
-						list = this.managerList;
-						break;
-					case "majordomo":
-						list = this.majordomoList;
-						break;
-					default:
-						break;
-				}
-				return list
+				return this.getListByOrder();
 			},
 			totalNum() {
 				return this.dataList.length;
@@ -309,6 +295,23 @@
 				})
 			})
 		},
+		getListByOrder(){
+			let list = [];
+			switch (this.currentTab) {
+				case "member":
+					list = this.memberList;
+					break;
+				case "manager":
+					list = this.managerList;
+					break;
+				case "majordomo":
+					list = this.majordomoList;
+					break;
+				default:
+					break;
+			}
+			return list
+		},
 		// 切换tabs
 		changeTab(type) {
 			if (this.currentTab !== type) {
@@ -318,100 +321,15 @@
 		clear(keyword) {
 			if (!keyword) {
 				this.keyword = "";
+				this.getListByOrder();
 			}
 		},
 		//执行搜索
-		doSearch(key) {
+		doSearch() {
 			// 不为空才查询
 			if (this.keyword) {
-				this.getListByOrder();
+				this.dataList = _.find(this.dataList, item => _.indexOf(item.id, this.keyword) > -1);
 			}
-			this.keyword = key;
-			this.getListByOrder();
-		},
-		// 获取列表数据
-		getListByOrder() {
-			this.dataList = [{
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "辅导费",
-				id: 29472923,
-				time: "2019/04/15",
-				userLevel: 0,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "公公公",
-				id: 23455555,
-				time: "2019/04/18",
-				userLevel: 2,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2039/04/15",
-				userLevel: 3,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2079/04/15",
-				userLevel: 4,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2099/04/15",
-				userLevel: 5,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2119/04/15",
-				userLevel: 0,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2219/04/15",
-				userLevel: 3,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2099/04/15",
-				userLevel: 5,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2119/04/15",
-				userLevel: 3,
-				num: 302,
-				achievement: 4002.89
-			}, {
-				imageUrl: "/static/HM-PersonalCenter/face_default.png",
-				name: "热特瑞",
-				id: 757575,
-				time: "2219/04/15",
-				userLevel: 3,
-				num: 302,
-				achievement: 4002.89
-			}]
 		},
 		// 经理业绩查询
 		toManagerAchievement() {

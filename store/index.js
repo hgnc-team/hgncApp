@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import footer_store from "./modules/footer_store.js";
 import shopCart_store from "./modules/shopCart_store.js";
 import address_store from "./modules/address_store.js";
+import orderList_store from "./modules/orderList_store.js";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -82,7 +83,8 @@ const store = new Vuex.Store({
 	modules:{
 		footer_store,
 		shopCart_store,
-		address_store
+		address_store,
+		orderList_store
 	}
 })
 

@@ -107,12 +107,10 @@
 					page: this.page,
 					pageSize: 10,
 				}
-				console.log(status)
 				uni.showLoading();
 				service.getOrderList(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data.data;
-					console.log(data)
 					if (data.length > 0) {
 						_.forEach(data, item => {
 							// // 拼接图片链接
@@ -127,7 +125,6 @@
 							item.hasReceiptBtn = status === 2 ? true : false;
 						})
 						this.orderList = this.orderList.concat(data);
-						console.log(this.orderList);
 					}
 				}).catch(err => {
 					uni.hideLoading();

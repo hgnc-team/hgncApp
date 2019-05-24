@@ -128,7 +128,7 @@
 		},
 		methods:{
 			// 注入vuex的方法
-			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS']), 
+			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST']), 
 			// 初始化第三方登录图标
 			initProvider() {
 			    // const filters = ['weixin', 'qq', 'sinaweibo'];
@@ -252,6 +252,8 @@
 					this.getCartList(data.id);
 					// 获取收货地址
 					this.getAddress(data.id);
+					// 获取订单列表数据
+					this.getOrderList(data.id);
 					// 设置底部导航栏
 					this.setfooterBar(userLevel);
 					// 同步store里面的用户名称，等级
@@ -575,6 +577,35 @@
 					let data = res.data.data;
 					if(data.length > 0) {
 						this.INIT_ADDRESS(data);
+					} 
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg,
+					})
+				})
+			},
+			// 获取订单列表
+			getOrderList(userId){
+				if(!userId) {
+					return
+				}
+				let params = {
+					userId: userId,
+					status: "", // 查询全部
+					page: 1,
+					pageSize: 1000
+				}
+				uni.showLoading({
+					title: "加载中"
+				})
+				// 获取用户收获地址列表
+				service.getOrderList(params).then(res=>{
+					uni.hideLoading();
+					let data = res.data.data.data;
+					if(data.length > 0) {
+						this.INIT_ORDERLIST(data);
 					} 
 				}).catch(err=>{
 					uni.hideLoading();
