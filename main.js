@@ -36,13 +36,13 @@ http.interceptor.response = (response) => {
     //判断token是否合法
 	const msg = response.data.data;
 	if(msg === "token invalid") {
-		// 表示使用了过期token或者伪造token
+		// 表示使用了伪造token
 		uni.navigateTo({
 			url: "/pages/login/login"
 		})
 		
-	} else if (msg === "token timeout"){
-		// 需要重定向到登录页面
+	} else if (msg === "token timeout" || msg === "not latest token;token timeout"){
+		// 过期token，需要重定向到登录页面
 		uni.navigateTo({
 			url: "/pages/login/login"
 		})
@@ -52,8 +52,7 @@ http.interceptor.response = (response) => {
 		uni.navigateTo({
 			url: "/pages/login/login"
 		})
-	}
-	// console.log(response);
+	} 
     return response;
 }
 

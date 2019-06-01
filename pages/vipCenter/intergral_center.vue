@@ -105,8 +105,8 @@
 					<view class="remark" @tap="filterFn('remark')">
 						备住
 						<!-- 三角 -->
-						<view class="triangle_border_up" :class="currentFilter=='remark'&&isDesc?'up':''"></view>
-						<view class="triangle_border_down" :class="currentFilter=='remark'&&!isDesc?'down':''"></view>
+						<!-- <view class="triangle_border_up" :class="currentFilter=='remark'&&isDesc?'up':''"></view>
+						<view class="triangle_border_down" :class="currentFilter=='remark'&&!isDesc?'down':''"></view> -->
 					</view>
 				</view>
 				<!-- 内容 -->
@@ -138,77 +138,8 @@
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
-	const dataList = [{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				}, {
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				}, {
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				}, {
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				}, {
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				},{
-					time: "2019/04/07 23:23:19",
-					changed: 14,
-					balance: 7878,
-					remark: "积分转让"
-				}]
+	import service from "../../common/service.js";
+
 	export default {
 		components: {
 			uniIcon,
@@ -241,11 +172,17 @@
 				// 是否显示回到顶部按钮
 				isShowBtn: false,
 				// 数据列表
-				dataList: []
+				dataList: [],
+				page: 1,
+				pageSize: 10
 			}
 		},
 		onPageScroll(e) {
 			this.isShowBtn = e.scrollTop >= 298 ? true : false 
+		},
+		onReachBottom() {
+			this.page++
+			this.getDataList();
 		},
 		computed: {
 			isNumInvaild() {
@@ -304,14 +241,32 @@
 			},
 			// 获取数据
 			getDataList(){
-				uni.showLoading()
-				this.dataList = [];
-				setTimeout(()=>{
-					this.dataList = dataList;
+				uni.showLoading();
+				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let param = {
+					userId: '6edb5990-5293-11e9-aa84-d307a0d28bbc',
+					isCom: this.currentTab=='jf' ? true: false,
+					page: this.page,
+					pageSize : this.pageSize,
+					start: moment(start).valueOf(),
+					end: moment(end).valueOf(),
+					orderBy: [['createTime','desc']]
+				}
+				service.getScoreHistory(param).then(res=>{
 					uni.hideLoading();
-				}, 1000)
+					let data = res.data.data;
+					console.log(data);
+								
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg,
+					})
+				})
 			},
-			// 变更排序
+			// 切換排序
 			filterFn(type){
 				if(this.currentFilter !== type) {
 					this.isDesc = false;
@@ -321,7 +276,7 @@
 				}
 				
 				//todo 执行排序操作
-				
+				// this.
 			}
 		},
 		onLoad() {

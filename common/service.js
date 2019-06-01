@@ -515,7 +515,7 @@ const transferScore = function(params) {
   **/
 const getScoreHistory = function(params) {
 	let data = {
-		userId: vm.$store.state.userId,
+		userId: vm.$store.state.userId || params.userId,
 		isCom: params.isCom,
 		page: params.page,
 		pageSize: params.pageSize,
