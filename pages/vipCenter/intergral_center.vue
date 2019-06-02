@@ -151,7 +151,7 @@
 				// 我的积分
 				jfValue: 0,
 				// 今日释放积分
-				releaseValue: 0,
+				releasedToday: 0,
 				// M币钱包
 				mbValue: 0,
 				showPicker: false,
@@ -191,8 +191,11 @@
 		},
 		methods: {
 			init() {
-				this.jfValue = 1029;
 				this.mbValue = 10299.99;
+				// 获取我的积分
+				// 获取今日释放积分
+				this.getReleaseGold();
+				// 获取M币钱包
 				
 				this.getDataList();
 			},
@@ -219,6 +222,19 @@
 					console.log('date => ' + e.date);
 				}
 			},
+			getReleaseGold(){
+				uni.showLoading()
+				service.getReleaseGold().then(res=>{
+					uni.hideLoading();
+					this.releasedToday = res.data.data || "0.00";
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: "获取顶部导航数据失败"
+					})
+				})
+			},
 			// 
 			changeTab(tab){
 				this.currentTab = tab;
@@ -239,7 +255,7 @@
 				//todo 执行查询操作
 				this.getDataList();
 			},
-			// 获取数据
+			// 获取积分，M币数据列表
 			getDataList(){
 				uni.showLoading();
 				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
