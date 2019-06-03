@@ -230,6 +230,7 @@
 				// 判断当前用户是否，已经进行实名认证了
 				
 			},
+			// 查询今日释放积分
 			getReleaseGold(){
 				uni.showLoading()
 				service.getReleaseGold().then(res=>{
@@ -239,7 +240,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon:"none",
-						title: "获取顶部导航数据失败"
+						title: err.errMsg
 					})
 				})
 			},
