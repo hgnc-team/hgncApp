@@ -44,9 +44,13 @@
 							</view>
 						</view>
 					</view>
-					<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;" @tap="toGoodsDetail(item.goodsId)">
-						<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
+					<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;">
+						<!-- 再来一单 -->
+						<button type="primary" v-if="item.status === 'd'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toGoodsDetail(item.goodsId)">再来一单</button>
+						<!-- 确认收货 -->
+						<button type="primary" v-if="item.status === '0'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item.goodsId)">确认收货</button>
 					</view>
+					
 				</view>
 			</block>
 			<!-- 暂无数据 -->
@@ -156,6 +160,16 @@
 			toGoodsDetail() {
 				uni.navigateTo({
 					url: "/pages/home/goods_detail"
+				})
+			},
+			// 确认收货
+			confirmHarvest(){
+				util.confirm({
+					title: '',
+					content: '是否确认收货',
+					success: () => {
+						console.log(123123123231)
+					}
 				})
 			},
 			// 转化status为对应的文字

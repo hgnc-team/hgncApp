@@ -231,7 +231,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon:"none",
-						title: "获取顶部导航数据失败"
+						title: err.errMsg
 					})
 				})
 			},
