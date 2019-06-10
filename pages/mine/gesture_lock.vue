@@ -59,6 +59,8 @@
 				password: [],
 				// 错误提示
 				error: "",
+				// 错误次数
+				errCount: 0,
 				// 页面模式，set-管理模式, check-校验模式
 				mode: "set",
 				// 管理模式下的操作状态，change-修改密码， forget-忘记密码 
@@ -180,8 +182,26 @@
 						// 请求校验接口
 						this.checkPassword(data.join(''))
 					} else {
+						this.errCount++
+						if(this.errCount === 5) {
+							uni.showLoading();
+							// 输入达到五次，登出设备
+							service.logout().then(res=>{
+								uni.hideLoading();
+								this.$store.commit('LOGOUT');
+								uni.reLaunch({
+									url: "/pages/login/login"
+								})
+							}).catch(err=>{
+								uni.hideLoading();
+								uni.showToast({
+									icon: "none",
+									title:  err.errMsg,
+								})
+							})
+						}
 						// 不通过
-						this.error = '手势密码校验不成功';
+						this.error = `手势密码校验不成功,还可以输入${5 - this.errCount}次`;
 					}
 				}
 				
@@ -347,6 +367,7 @@
 			},
 			// 更多操作
 			showMore(){
+				this.errCount = 0;
 				uni.showActionSheet({
 					itemList:["修改密码", "忘记密码"],
 					success: (res) => {
