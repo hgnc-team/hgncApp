@@ -224,6 +224,8 @@ const setRefreshMode = function(isSupport, offset){
 	// #endif
 }
 
+const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
+const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
 
 export default {
 	graceChecker,
@@ -232,5 +234,6 @@ export default {
 	alert,
 	confirm,
 	setImageUrl,
-	setRefreshMode
+	setRefreshMode,
+	BASE_IMAGE_URL
 }

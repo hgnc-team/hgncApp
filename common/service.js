@@ -123,7 +123,16 @@ const getGoodTopClass = function(params) {
 	let data = {
 		classScheme: params.classScheme,
 	}
-	return vm.$http.post('/v1/api/goods/topClass', data)
+	return new Promise((resolve,reject)=>{
+		vm.$http.post('/v1/api/goods/topClass', data)
+			.then(res => {
+				if (res.data.status === 200) {
+					resolve(res.data.data)
+				} 
+				// to do需要增加失败和异常分支
+			})
+	})
+	// return vm.$http.post('/v1/api/goods/topClass', data)
 }
 
 /**     
@@ -156,7 +165,31 @@ const getGoodListByType = function(params) {
 	}
 	return vm.$http.post('/v1/api/goods/goodsPageList', data)
 }
-
+/**
+ * @method 根据商品一级分类id，查询商品列表
+ * @param {String} type 分类类型
+ * @param {Number} page 页码 1
+ * @param {Number} pageSize 每页商品数 6
+ * @param {Array} orderBy 筛选条件
+ * @return {promise} 
+ * **/
+const getGoodListByTopClassType = function(params) {
+	let data = {
+		type: params.type,
+		page: params.page,
+		pageSize: params.pageSize,
+		orderBy: params.orderBy
+	}
+	return new Promise((resolve,reject) => {
+		vm.$http.post('/v1/api/goods/topClass/goodsPageList', data)
+			.then(res=>{
+				console.log(res)
+				if(res.data.status === 200) {
+					resolve(res.data.data)
+				}
+			})
+	})
+}
 /**     
   * @method 根据商品id获取商品详情   
   * @param {Array} ids   商品ID数组   
@@ -597,8 +630,9 @@ const HOME_MODULE = {
 	getGoodListByType,
 	getGoodListById,
 	getGoodListBySearch,
-	getRecommendGoodList
-	
+	getRecommendGoodList,
+	// 2019-06 16新增
+	getGoodListByTopClassType
 }
 const NEARBY_MODULE = {
 	

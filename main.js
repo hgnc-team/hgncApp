@@ -70,8 +70,7 @@ App.mpType = 'app'
 Vue.prototype.$store = store;
 Vue.prototype.$http = http;
 Vue.prototype.$guardToLogin = util.guardToLogin;
-const app = new Vue({
-    
+const app = new Vue({ 
 	store,
 	...App
 })

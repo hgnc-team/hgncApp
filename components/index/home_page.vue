@@ -58,7 +58,7 @@
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<view class="goods-list">
-								<view class="title">好物热卖</view>
+								<!-- <view class="title">好物热卖</view> -->
 								<!-- 商品列表 -->
 								<view class="product-list">
 									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
@@ -98,44 +98,7 @@
 	import util from "../../common/util.js";
 	//高德SDK
 	import amap from '../../common/SDK/amap-wx.js';
-	const tpl = {
-		data0: {
-			goods_id: 0,
-			img: '/static/img/common/good1.jpg',
-			name: '老街口-红糖麻花500g/袋',
-			price: '￥58',
-			slogan: '1096人付款'
-		},
-		data1: {
-			goods_id: 1,
-			img: '/static/img/common/good2.jpg',
-			name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-			price: '￥68',
-			slogan: '686人付款'
-		},
-		data2: {
-			goods_id: 2,
-			img: '/static/img/common/good3.jpg',
-			name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-			price: '￥368',
-			slogan: '1234人付款'
-		},
-		data3: {
-			goods_id: 3,
-			img: '/static/img/common/good4.jpg',
-			name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-			price: '￥668',
-			slogan: '678人付款'
-		},
-		data4: {
-			goods_id: 4,
-			img: '/static/img/common/good5.jpg',
-			name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-			price: '￥218',
-			slogan: '52244人付款'	
-		}
-	};
-	
+
 	export default {
 		components: {
 			topTabMenu,
@@ -260,25 +223,83 @@
 				let parms = {
 					"classScheme": "cat1"
 				}
-				uni.showLoading({
-					title: "加载中..."
-				})
-				service.getGoodTopClass(parms).then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					this.tabBars = data;
-					this.isShowSubCategoryNav = true;
-					this.dataList = this.randomfn();
-					let timer = setTimeout(()=>{
-						this.load();
-						timer = null;
-					},100)
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon:"none",
-						title: "获取顶部导航数据失败"
+				// bug 下面的toast用现在的写法不消失
+				// uni.showLoading({
+				// 	title: "加载中..."
+				// })
+				let cateList = await service.getGoodTopClass(parms)
+				// console.log(cateList)
+				// 获取到分类数据
+				if (cateList) {
+					// uni.hideLoading();
+					// 设置
+					cateList.forEach(tab=>{
+						let aryItem = {
+							loadingText: '加载更多...',
+							data: [],
+							swiperList: []
+						};
+						this.dataList.push(aryItem)
 					})
+					this.tabBars = cateList;
+					this.isShowSubCategoryNav = true;
+					let productList = await service.getGoodListByTopClassType({
+						type: this.tabBars[0].id,
+						page: 1,
+						pageSize: 4,
+					})
+					let tempArr = [];
+					productList.data.forEach(o=>{
+						tempArr.push({
+							goods_id: o.id,
+							img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
+							name: o.title,
+							price: '￥'+ o.price,
+							slogan: '1096人付款',
+							show: false,
+							loaded: false
+						})
+					});
+					// console.log(tempArr)
+					this.dataList[0].data = tempArr
+					this.dataList[0].swiperList = this.swiperList
+					let timer = setTimeout(()=>{
+							this.load();
+							timer = null;
+						},100)
+				}
+			// 	this.tabBars = cateList;
+			// 
+			// 	this.dataList = this.randomfn();
+				// .then(res=>{
+				// 	uni.hideLoading();
+				// 	let data = res.data.data;
+				// 	this.tabBars = data;
+				// 	this.isShowSubCategoryNav = true;
+				// 	this.dataList = this.randomfn();
+				// // 	// 加载第一个分类下的产品数据
+				// // 	// console.log(res)
+				// 	let timer = setTimeout(()=>{
+				// 		this.load();
+				// 		timer = null;
+				// 	},100)
+				// }).catch(err=>{
+				// 	uni.hideLoading();
+				// 	uni.showToast({
+				// 		icon:"none",
+				// 		title: "获取顶部导航数据失败"
+				// 	})
+				// })
+			},
+			getProdListByType(params) {
+				return new Promise((resolve,reject)=>{
+					service.getGoodListByType(params)
+						.then(res=>{
+							console.log(res)
+						})
+						.catch(err=>{
+							console.log(err)
+						})
 				})
 			},
 			// 获取推荐数据
@@ -328,7 +349,6 @@
 				})
 			},
 			loadMore(e) {
-				// console.log(123123)
 				// setTimeout(() => {
 					this.addData(e);
 				// }, 500);
@@ -337,14 +357,33 @@
 					timer = null;
 				},30)	
 			},
-			addData(e) {
-				if (this.dataList[e].data.length > 30) {
+			async addData(e) {
+				// 通过index,也就是e,获取类别id
+				let productList = await service.getGoodListByTopClassType({
+					type: this.tabBars[e].id,
+					// 下面写法还有更好的处理方法吗？
+					page: parseInt(this.dataList[e].data.length / 4) + 1,
+					pageSize: 4,
+				});
+				// console.log(productList)
+				if(productList.total <= this.dataList[e].data.length) {
 					this.dataList[e].loadingText = '没有更多了';
 					return;
 				}
-				for (let i = 1; i <= 10; i++) {
-					this.dataList[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
-				}
+	
+				let tempArr = [];
+				productList.data.forEach(o=>{
+					tempArr.push({
+						goods_id: o.id,
+						img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
+						name: o.title,
+						price: '￥'+ o.price,
+						slogan: '1096人付款',
+						show: false,
+						loaded: false
+					})
+				});
+				this.dataList[e].data = _.concat(this.dataList[e].data, tempArr);
 			},
 			//去二级分类页面
 			toSubCategoryNav(){
@@ -357,6 +396,7 @@
 				if(this.dataList[index].swiperList.length === 0) {
 					this.dataList[index].swiperList = this.swiperList;
 				}
+				// 第一次初始化才做此附加数据的操作
 				if(this.dataList[index].data.length === 0){
 					this.addData(index)
 				}
@@ -393,6 +433,7 @@
 				if(this.dataList[tabIndex].swiperList.length === 0) {
 					this.dataList[tabIndex].swiperList = this.swiperList;
 				}
+				// 第一次初始化才做此附加数据的操作
 				if(this.dataList[tabIndex].data.length === 0){
 					this.addData(tabIndex)
 				}
@@ -434,27 +475,29 @@
 					this.scrollLeft = width;
 				}
 			},
-			randomfn() {
-				let ary = [];
-				for (let i = 0, length = this.tabBars.length; i < length; i++) {
-					let aryItem = {
-						loadingText: '加载更多...',
-						data: [],
-						swiperList: []
-					};
-					if(i < 1){
-						for (let j = 1; j <= 10; j++) {
-							let item = tpl['data' + Math.floor(Math.random() * 5)];
-							item.show = false;
-							item.loaded = false;
-							aryItem.data.push(item);
-							aryItem.swiperList = this.swiperList;
-						}
-					}
-					ary.push(aryItem);
-				}
-				return ary;
-			},
+			// 生成假数据模块，引入真数据后没有使用了
+			// randomfn() {
+			// 	let ary = [];
+			// 	for (let i = 0, length = this.tabBars.length; i < length; i++) {
+			// 		let aryItem = {
+			// 			loadingText: '加载更多...',
+			// 			data: [],
+			// 			swiperList: []
+			// 		};
+			// 		if(i < 1){
+			// 			for (let j = 1; j <= 10; j++) {
+			// 				let item = tpl['data' + Math.floor(Math.random() * 5)];
+			// 				
+			// 				item.show = false;
+			// 				item.loaded = false;
+			// 				aryItem.data.push(item);
+			// 				aryItem.swiperList = this.swiperList;
+			// 			}
+			// 		}
+			// 		ary.push(aryItem);
+			// 	}
+			// 	return ary;
+			// },
 			// 图片懒加载
 			load() {
 				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
