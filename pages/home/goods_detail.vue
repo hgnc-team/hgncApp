@@ -241,6 +241,7 @@
 				ids.push(id)
 				uni.showLoading();
 				service.getGoodListById({ids: ids}).then(res=>{
+					console.log(res)
 					uni.hideLoading();
 					let data = res.data.data;
 					if(data.length > 0) {
@@ -253,7 +254,7 @@
 						this.flowImages = util.setImageUrl({
 							type: "goods",
 							goodId: data[0].id,
-							imageName: data[0].flowImages
+							imageName: data[0].imageUrl
 						});
 						// 配置图文详情图片
 						this.detailImages = util.setImageUrl({

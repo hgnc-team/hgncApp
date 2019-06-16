@@ -345,8 +345,8 @@
 			//商品跳转
 			toGoods(e) {
 				uni.navigateTo({
-					url: `/pages/home/goods_detail?id=${e.id}`
-				})
+					url: `/pages/home/goods_detail?id=${e.goods_id}`
+				});
 			},
 			loadMore(e) {
 				// setTimeout(() => {

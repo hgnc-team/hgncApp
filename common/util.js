@@ -1,3 +1,6 @@
+const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
+const BASE_IMAGE_URL_NO_SLASH = 'https://images.maiyidesan.cn'
+const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
 /**  
  * @Title: service.js    
  * @Description: 公共工具汇总   
@@ -180,8 +183,9 @@ const confirm = function(params) {
   **/
 const setImageUrl = function(params) {
 	if(params.imageName) {
-		let baseUrl = "https://";
-		let domain = store.state.imageDomain;
+		let baseUrl = "";
+		// let domain = store.state.imageDomain;
+		let domain = BASE_IMAGE_URL_NO_SLASH;
 		let type = params.type;
 		let goodId = params.goodId;
 		let imageName = params.imageName;
@@ -194,7 +198,8 @@ const setImageUrl = function(params) {
 			})
 			return arr
 		} else {
-			return `${baseUrl}${domain}/${type}/${goodId}/${imageName}`
+			// console.log(`${baseUrl}${domain}/${type}/${goodId}/${imageName}`)
+			return [{img: `${baseUrl}${domain}/${type}/${goodId}/${imageName}`}]
 		}
 	} else {
 		return []
@@ -223,9 +228,6 @@ const setRefreshMode = function(isSupport, offset){
 	});
 	// #endif
 }
-
-const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
-const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
 
 export default {
 	graceChecker,
