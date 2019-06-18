@@ -136,7 +136,7 @@
 								type: "goods",
 								goodId: item.goodsId,
 								imageName: item.imageUrl
-							})
+							})[0].img
 						})
 						this.orderList = this.orderList.concat(data);
 					}
