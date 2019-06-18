@@ -123,10 +123,12 @@
 		},
 		data() {
 			return {
-				rightText: '',
+				// 底部按钮文字（完成、删除）
+				rightText: '完成',
 				// 全选
 				isCheckAll: false,
-				allPrice: 0, //所有价格
+				// 总价
+				allPrice: 0, 
 			};
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
@@ -232,7 +234,7 @@
 								type: "goods",
 								goodId: item.goodsId,
 								imageName: standardIndex > -1 ? (data[currentIndex].standard[standardIndex].imageUrl || data[currentIndex].imageUrl) : data[currentIndex].imageUrl
-							}),
+							})[0].img,
 						})
 					})
 					// 同步购物车数据;

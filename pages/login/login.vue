@@ -241,11 +241,10 @@
 				service.login(parms).then(res => {
 					 // 请求成功
 					uni.hideLoading();
+					const data = res.data.data.user;
 					const token = res.data.data.token;
 					// 缓存用户token
 					uni.setStorageSync("USER_TOKEN", token);
-					
-					const data = res.data.data.user;
 					// 用户角色等级
 					const userLevel = data.role || 0;
 					// 获取购物车数据
@@ -256,12 +255,12 @@
 					this.getOrderList(data.id);
 					// 设置底部导航栏
 					this.setfooterBar(userLevel);
+					// 缓存用户信息
+					uni.setStorageSync('USERS_INFO', data);
 					// 同步store里面的用户名称，等级
-					this.LOGIN(data);
-					
+					this.LOGIN(data);	
 					// 返回上一页面
 					this.goBack();
-
 				}).catch((err)=>{
 					// 请求失败
 					console.log(err)
@@ -538,7 +537,7 @@
 								type: "goods",
 								goodId: item.goodsId,
 								imageName: standardIndex > -1 ? (data[currentIndex].standard[standardIndex].imageUrl || data[currentIndex].imageUrl) : data[currentIndex].imageUrl
-							}),
+							})[0].img,
 						})
 					})
 					// 同步购物车数据;
