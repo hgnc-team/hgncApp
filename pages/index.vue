@@ -16,7 +16,8 @@
 	import shopCartPage from "../components/index/shopCart_page.vue";
 	import minePage from "../components/index/mine_page.vue";
 	import footerNav from "../components/index/footer_nav.vue";
-		
+	
+	import { mapState } from 'vuex';
 	export default {
 		data() {
 			return {}

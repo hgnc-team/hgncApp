@@ -45,11 +45,13 @@ function checkTokenStatus(response) {
 	} else if (code === "FF" || code === "SF" || code === "ER" || code === "OE") {
 		if (code === "SF") {
 			response.data.data = "此账户已在别处登录"
+		} else{
+			response.data.data = "token已过期"
 		}
 		// 获取当前路由，已经处于登录页面，跳过此处判断
 		const pages = getCurrentPages();
-		const currentPage = pages[pages.length - 1].route;
-		if(currentPage !== "pages/login/login") {
+		const currentPage = pages.length > 0 && pages[pages.length - 1].route;
+		if(currentPage !== "pages/login/login" || !currentPage) {
 			// 清楚缓存的token信息
 			uni.removeStorageSync('USERS_INFO');
 			uni.removeStorageSync('USER_TOKEN');
