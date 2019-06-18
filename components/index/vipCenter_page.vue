@@ -251,7 +251,7 @@
 					success: () => {
 						uni.showToast({
 							icon: "none",
-							title: "成功复制id到剪切板"
+							title: "成功复制邀请码到剪切板"
 						});
 					}
 				});
@@ -298,9 +298,12 @@
 				console.log(data)
 				// 邀请会员
 				if (data.index === 0) {
-					uni.navigateTo({
-						url: "/pages/mine/change_telphone"
+					uni.showToast({
+						title: '分享去邀请会员'
 					})
+					// uni.navigateTo({
+					// 	url: "/pages/mine/change_telphone"
+					// })
 					// 积分转让
 				} else if (data.index === 1) {
 					uni.navigateTo({

@@ -211,6 +211,7 @@
 			// 选择付款方式
 			radioChange(evt) {
 				this.payType = evt.detail.value;
+				console.log(evt)
 			},
 			// 创建订单
 			creatOrder(){
