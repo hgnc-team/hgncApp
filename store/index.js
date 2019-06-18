@@ -67,6 +67,9 @@ const store = new Vuex.Store({
             state.userPhone = "";
             state.userInviteCode = "";
             state.hasLogin = false; 
+			// 情况缓存信息
+			uni.removeStorageSync('USERS_INFO');
+			uni.removeStorageSync('USER_TOKEN');
         },
 		// 设置密码校验状态
 		SET_PASSWORD_CHECKSTATUS(state, status) {

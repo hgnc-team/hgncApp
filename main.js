@@ -22,39 +22,41 @@ http.config.baseUrl = "http://server.maiyidesan.cn/";
 http.config.baseUrl = "http://server.maiyidesan.cn/";
 /* #endif */
 
-//设置请求前拦截器
-http.interceptor.request = (config) => {
-    // 添加通用参数
-	const _token = uni.getStorageSync('USER_TOKEN') || 'undefined';
-    config.header = {
-        'Content-Type':'application/json;charset=UTF-8',
-		'Authorization': _token
-    }
-}
-//设置请求结束后拦截器
-http.interceptor.response = (response) => {
-    //判断token是否合法
-	const msg = response.data.data;
-	if(msg === "token invalid") {
-		// 表示使用了伪造token
-		uni.navigateTo({
-			url: "/pages/login/login"
-		})
-		
-	} else if (msg === "token timeout" || msg === "not latest token;token timeout"){
-		// 过期token，需要重定向到登录页面
-		uni.navigateTo({
-			url: "/pages/login/login"
-		})
-		return
-	} else if(msg === "not latest token") {
-		response.data.data = "此账户已在别处登录";
-		uni.navigateTo({
-			url: "/pages/login/login"
-		})
-	} 
-    return response;
-}
+// //设置请求前拦截器
+// http.interceptor.request = (config) => {
+//  //    // 添加通用参数
+// 	// const _token = uni.getStorageSync('USER_TOKEN') || 'undefined';
+//  //    config.header = {
+//  //        'Content-Type':'application/json;charset=UTF-8',
+// 	// 	'Authorization': _token
+//  //    }
+// }
+// //设置请求结束后拦截器
+// http.interceptor.response = (response) => {
+//     //判断token是否合法
+// 	const msg = response.data.data;
+// 	if(msg === "token invalid") {
+// 		// 表示使用了伪造token
+// 		uni.navigateTo({
+// 			url: "/pages/login/login"
+// 		})
+// 		
+// 	} else if (msg === "token timeout" || msg === "not latest token;token timeout"){
+// 		// 过期token，需要重定向到登录页面
+// 		uni.navigateTo({
+// 			url: "/pages/login/login"
+// 		})
+// 		// 重新刷新_token
+// 		
+// 		return
+// 	} else if(msg === "not latest token") {
+// 		response.data.data = "此账户已在别处登录";
+// 		uni.navigateTo({
+// 			url: "/pages/login/login"
+// 		})
+// 	} 
+//     return response;
+// }
 
 
 // // 在main.js中注册全局组件
