@@ -32,7 +32,7 @@
 		    </view>
 		</neil-modal>
 		
-		<view class="more" @tap="showMore" v-if="$store.state.secondaryPwd">
+		<view class="more" @tap="showMore" v-show="isShowMore">
 			更多
 		</view>
 	</view>
@@ -82,6 +82,9 @@
 		},
 		computed:{
 			// ...mapState(['secondaryPwd'])
+			isShowMore(){
+				return this.$store.state.secondaryPwd !== null
+			}
 		},
 		methods: {
 			// 注入vuex的方法
