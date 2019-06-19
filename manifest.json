@@ -1,5 +1,5 @@
 {
-    "name" : "MPlus",
+    "name" : "Pengyu",
     "appid" : "__UNI__70311E9",
     "description" : "",
     "versionName" : "1.0.1",
@@ -47,7 +47,9 @@
             /* ios打包配置 */
             "sdkConfigs" : {
                 "oauth" : {},
-                "payment" : {}
+                "payment" : {
+                    "alipay" : {}
+                }
             },
             "splashscreen" : {
                 "android" : {
@@ -58,7 +60,7 @@
             },
             "icons" : {
                 "ios" : {
-                    "appstore" : "C:/Users/cs/Downloads/hgncDesign-master/logo/logo.png",
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
                     "ipad" : {
                         "app" : "unpackage/res/icons/76x76.png",
                         "app@2x" : "unpackage/res/icons/152x152.png",

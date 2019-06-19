@@ -198,7 +198,6 @@ const setImageUrl = function(params) {
 			})
 			return arr
 		} else {
-			// console.log(`${baseUrl}${domain}/${type}/${goodId}/${imageName}`)
 			return [{img: `${baseUrl}${domain}/${type}/${goodId}/${imageName}`}]
 		}
 	} else {

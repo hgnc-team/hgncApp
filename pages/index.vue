@@ -55,7 +55,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: err.errMsg,
+						title: err.errMsg.msg,
 					})
 				})
 			},
