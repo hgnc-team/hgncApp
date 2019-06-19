@@ -109,7 +109,7 @@
 	import service from '../../common/service.js';
 	import {
 		uniIcon,
-		uniNavBar
+		uniNavBar,
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import { mapState, mapMutations, mapActions } from 'vuex';
@@ -573,7 +573,8 @@
 											line-height: 50upx;
 										}
 										.iconfont{
-											font-size: 42upx;
+											font-size: 44upx;
+											padding: 4upx 16upx;
 										}
 										
 										input {
