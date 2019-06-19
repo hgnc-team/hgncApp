@@ -159,7 +159,7 @@
 							type: "goods",
 							goodId: orderDetail.goodsId,
 							imageName: orderDetail.imageUrl
-						});
+						})[0].img;
 						this.orderCode = "2348230948230324234";
 						this.orderTime = orderDetail.createTime;
 						this.payType = "支付宝";

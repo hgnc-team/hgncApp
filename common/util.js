@@ -2,7 +2,7 @@ const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
 const BASE_IMAGE_URL_NO_SLASH = 'https://images.maiyidesan.cn'
 const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
 /**  
- * @Title: service.js    
+ * @Title: util.js    
  * @Description: 公共工具汇总   
  * @author cskying  
  * @date 2019-3-11   
@@ -227,6 +227,7 @@ const setRefreshMode = function(isSupport, offset){
 	});
 	// #endif
 }
+
 
 export default {
 	graceChecker,

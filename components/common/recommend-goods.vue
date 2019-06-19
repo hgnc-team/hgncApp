@@ -45,7 +45,6 @@
 				service.getRecommendGoodList(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					console.log(data);
 					this.goodList = data;
 				}).catch(err=>{
 					uni.hideLoading();

@@ -122,7 +122,7 @@
 								type: "goods",
 								goodId: item.goodsId,
 								imageName: item.imageUrl
-							})
+							})[0].img
 							// 转换订单状态
 							item.statusText = this.traslateStatus(item.status, "TO-TEXT");
 							// 待收获状态，有确认收货按钮（一键结束流程）

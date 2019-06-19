@@ -246,7 +246,7 @@
 					let productList = await service.getGoodListByTopClassType({
 						type: this.tabBars[0].id,
 						page: 1,
-						pageSize: 4,
+						pageSize: 8,
 					})
 					let tempArr = [];
 					productList.data.forEach(o=>{
@@ -255,7 +255,7 @@
 							img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
 							name: o.title,
 							price: '￥'+ o.price,
-							slogan: '1096人付款',
+							// slogan: '1096人付款',
 							show: false,
 							loaded: false
 						})
@@ -348,6 +348,7 @@
 					url: `/pages/home/goods_detail?id=${e.goods_id}`
 				});
 			},
+			// 加载更多
 			loadMore(e) {
 				// setTimeout(() => {
 					this.addData(e);
@@ -362,8 +363,8 @@
 				let productList = await service.getGoodListByTopClassType({
 					type: this.tabBars[e].id,
 					// 下面写法还有更好的处理方法吗？
-					page: parseInt(this.dataList[e].data.length / 4) + 1,
-					pageSize: 4,
+					page: parseInt(this.dataList[e].data.length / 8) + 1,
+					pageSize: 8,
 				});
 				// console.log(productList)
 				if(productList.total <= this.dataList[e].data.length) {
@@ -378,7 +379,7 @@
 						img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
 						name: o.title,
 						price: '￥'+ o.price,
-						slogan: '1096人付款',
+						// slogan: '1096人付款',
 						show: false,
 						loaded: false
 					})

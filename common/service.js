@@ -115,6 +115,13 @@ const changeBindPhone = function(params) {
 }
 
 /**     
+  * @method 刷新token     连续10天没有登录app再登录      
+  **/
+const refleshToken = function(params) {
+	return vm.$http.post('/v1/api/user/refleshToken', {})
+}
+
+/**     
   * @method 获取商品顶级分类列表   
   * @param {String} classScheme   cat1  
   * @return {promise} 返回一个promise对象     
@@ -622,7 +629,8 @@ const LOGIN_MODULE = {
 	register,
 	getSms,
 	reSetPwd,
-	changeBindPhone
+	changeBindPhone,
+	refleshToken
 }
 const HOME_MODULE = {
 	getGoodTopClass,

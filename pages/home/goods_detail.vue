@@ -281,7 +281,7 @@
 									type: "goods",
 									goodId: this.specList[0].id,
 									imageName: this.specList[0].imageUrl
-								})
+								})[0].img
 							}
 						} else {
 							// 无规格
@@ -389,7 +389,7 @@
 						type: "goods",
 						goodId: this.specList[index].id,
 						imageName: this.specList[index].imageUrl
-					})
+					})[0].img
 				}
 				// 更新展示的库存
 				// this.$set(this.specSelected, 'inventory', this.specList[index].inventory);
