@@ -76,8 +76,7 @@
 				}
 				uni.showLoading();
 				service.getGoodTopClass(parms).then(res=>{
-					console.log(res);
-					let data = res.data.data;
+					let data = res;
 					if(data.length > 0) {
 						this.categoryList = data;
 						this.getSubCategory(this.categoryList[0].id);
@@ -95,7 +94,6 @@
 				let idArr = [];
 				idArr.push(id);
 				service.getGoodSecondClass({"topClass": idArr}).then(res=>{
-					console.log(res);
 					uni.hideLoading();
 					let data = res.data.data;
 					if(data.length > 0) {
