@@ -63,7 +63,7 @@
 								<view class="product-list">
 									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
 										<view class="uni-media-list-logo">
-											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="onLoad" :src="item.show?item.img:''" />
+											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="loaded" :src="item.show?item.img:''" />
 											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 										</view>
 										<view class="name">{{item.name}}</view>
@@ -160,7 +160,7 @@
 		onPullDownRefresh() {
 			this.dataList[this.tabIndex].data =  [];
 			this.dataList[this.tabIndex].swiperList = [];
-			this.dataList[this.tabIndex].loadingText = '加载更多...',
+			this.dataList[this.tabIndex].loadingText = '',
 			setTimeout(() => {
 				if(this.dataList[this.tabIndex].swiperList.length === 0) {
 					this.dataList[this.tabIndex].swiperList = this.swiperList;
@@ -235,7 +235,7 @@
 					// 设置
 					cateList.forEach(tab=>{
 						let aryItem = {
-							loadingText: '加载更多...',
+							loadingText: '',
 							data: [],
 							swiperList: []
 						};
@@ -359,6 +359,7 @@
 				},30)	
 			},
 			async addData(e) {
+				this.dataList[e].loadingText = '加载更多...';
 				// 通过index,也就是e,获取类别id
 				let productList = await service.getGoodListByTopClassType({
 					type: this.tabBars[e].id,
@@ -514,7 +515,7 @@
 				}).exec()
 			},
 			// 图片加载完毕的回调
-			onLoad(e) {
+			loaded(e) {
 				// 图片url为空就不会执行这里
 				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
