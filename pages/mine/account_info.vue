@@ -9,22 +9,33 @@
 		<view class="bottom-btn" @tap="logout">
 			<button type="primary">退出当前账号</button>
 		</view>
+		
+		<!-- 模态框 修改昵称-->
+		<neil-modal :show="showModal" @close="closeModal()" @confirm="changeNickName" title="修改昵称">
+		    <view class="input-wrap">	
+		    	<input type="text" v-model="nickName" placeholder="请输入昵称" class="nick-name" />
+		    </view>
+		</neil-modal>
 	</view>
 </template>
 
 <script>
+	import neilModal from '../../components/neil-modal/neil-modal.vue';
 	import myList from "../../components/common/my-list";
 	import { mapMutations } from 'vuex';
 	import service from "../../common/service.js";
 	export default {
 		components: {
-			myList
+			myList,
+			neilModal
 		},
 		data() {
 			return {
 				userinfo: {
 					
 				},
+				showModal: false,
+				nickName: '',
 				pageList1: [{
 						type: "face",
 						title: '头像',
@@ -92,9 +103,25 @@
 		},
 		methods: {
 			init() {
-
+				let userinfo = uni.getStorageSync('USERS_INFO')
+				if(userinfo) {
+					// 初始化头像
+					// 初始化昵称
+					this.pageList1[1].extra.text = userinfo.userName;
+					this.nickName = userinfo.userName;
+					// 初始化id
+					this.pageList1[2].extra.text = userinfo.inviteCode;
+				}
 			},
-			
+			// 关闭modal
+			closeModal(){
+				this.showModal = false;
+			},
+			// 修改昵称
+			changeNickName(){
+				// 请求接口
+				this.pageList1[1].extra.text = this.nickName;
+			},
 			// 点击跳转
 			handleClick(data) {
 				// 更换头像
@@ -104,9 +131,7 @@
 					})
 					// 修改昵称
 				} else if (data.item.type === "nikeName") {
-					uni.showToast({
-						title:"修改昵称"
-					})
+					this.showModal = true;
 					// 管理密码
 				} else if (data.item.type === "password") {
 					uni.navigateTo({
@@ -176,6 +201,9 @@
 					border: none;
 				}
 			}
+		}
+		.input-wrap{
+			padding: 10upx 20upx;
 		}
 	}
 </style>
