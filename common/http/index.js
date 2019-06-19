@@ -2,6 +2,8 @@
  * 通用uni-app网络请求
  * 基于 Promise 对象实现更简单的 request 使用方式，支持请求和响应拦截
  */
+// 是否正在刷新
+let isRefreshing = false;
 
 /*被挂起的请求数组*/
 let refreshSubscribers = [];
@@ -14,8 +16,6 @@ function subscribeTokenRefresh(cb) {
 /*刷新请求（refreshSubscribers数组中的请求得到新的token之后会自执行,用新的token去请求数据）*/
 function onRrefreshed(token) {
 	refreshSubscribers.map(cb => cb(token));
-	/*执行onRefreshed函数后清空数组中保存的请求*/
-	refreshSubscribers = [];
 }
 
 // 请求后台token刷新接口
@@ -64,43 +64,51 @@ function checkTokenStatus(response) {
 }
 
 /* 消息重发 */
-function reloadMessage(config) {
-	let token = '';
-	let currentToken = uni.getStorageSync('USER_TOKEN')
-	refleshToken(config.header['Authorization']).then(res => {
-		console.log(res)
-		if(res[1].data.data.code === 'OK' && res[1].data.data.token) {
-			token = res[1].data.data.token;
-			newToken = token;
-			/*成功刷新token*/
-			config.header['Authorization'] = token;
-			/*更新本地的token*/
-			uni.setStorageSync("USER_TOKEN", token);
-			/*执行数组里的函数,重新发起被挂起的请求*/
-			onRrefreshed(token)
-			
-			/*将请求挂起*/
-			let retry = new Promise((resolve, reject) => {
-				/*(token) => {...}这个函数就是回调函数*/
-				subscribeTokenRefresh(token => {
-					console.log(token)
-					uni.request(config).then(res => {
-						resolve(res.data)
-					})
-				});
-			});
-			return retry;
-		} else {
-			// 清除缓存的token信息
-			uni.removeStorageSync('USERS_INFO');
-			uni.removeStorageSync('USER_TOKEN');
-			// 重定向到登录页面
-			uni.navigateTo({
-				url: "/pages/login/login"
+async function reloadMessage(config) {
+	if(!isRefreshing) {
+		refleshToken(config.header['Authorization']).then(res => {
+			if(res[1].data.data.code === 'OK' && res[1].data.data.token) {
+				let token = res[1].data.data.token;
+				/*成功刷新token*/
+				config.header['Authorization'] = token;
+				/*更新本地的token*/
+				uni.setStorageSync("USER_TOKEN", token);
+				isRefreshing = false;
+				/*执行数组里的函数,重新发起被挂起的请求*/
+				onRrefreshed(token);
+				/*执行onRefreshed函数后清空数组中保存的请求*/
+				refreshSubscribers = [];
+			} else {
+				// 清除缓存的token信息
+				uni.removeStorageSync('USERS_INFO');
+				uni.removeStorageSync('USER_TOKEN');
+				// 重定向到登录页面
+				uni.navigateTo({
+					url: "/pages/login/login"
+				})
+				return
+			}
+		})	
+	}
+	isRefreshing = true;
+	/*将请求挂起*/
+	let retry = new Promise((resolve, reject) => {
+		/*(token) => {...}这个函数就是回调函数*/
+		subscribeTokenRefresh(token => {
+			console.log(config)
+			uni.request({
+				url: config.url,
+				data: config.data,
+				method: config.method,
+				header: {
+					'Authorization': token
+				}
+			}).then(res => {
+				resolve(res.data)
 			})
-			return
-		}
-	})	
+		});
+	});
+	return retry;
 }
 
 
@@ -114,7 +122,7 @@ function _reqlog(req) {
 		// 	console.log("【" + req.requestId + "】 请求参数：" + JSON.stringify(req.data))
 		// }
 	}
-	//TODO 调接口异步写入日志数据库
+	//TODO 调接口异步写入日志数据
 }
 
 /**
