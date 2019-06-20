@@ -232,9 +232,14 @@
 				// 编辑或者新增
 				service[`${this.mode}Address`](params).then(res=>{
 					uni.hideLoading();
-					console.log(res);
 					uni.showToast({
-						title: "收货地址已保存"
+						title: "收货地址已保存",
+						success: function(){
+							setTimeout(()=>{
+								// 返回上一级页面
+								uni.navigateBack()
+							},800)
+						}
 					})	
 					if(this.mode === "add"){
 						// 清空信息
@@ -252,6 +257,7 @@
 					}
 					// 同步vuex修改后的数据
 					this.updataAddressList();
+					
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
