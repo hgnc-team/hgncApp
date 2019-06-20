@@ -19,13 +19,13 @@ function onRrefreshed(token) {
 }
 
 // 请求后台token刷新接口
-function refleshToken(token) {
+function refleshToken(config) {
 	return uni.request({
-		url: '/v1/api/user/refleshToken',
+		url: config.baseUrl + '/v1/api/user/refleshToken',
 		data: {},
 		method: 'post',
 		header: {
-			'Authorization': token
+			'Authorization': config.header['Authorization']
 		}
 	})
 }
@@ -64,9 +64,9 @@ function checkTokenStatus(response) {
 }
 
 /* 消息重发 */
-async function reloadMessage(config) {
+function reloadMessage(config) {
 	if(!isRefreshing) {
-		refleshToken(config.header['Authorization']).then(res => {
+		refleshToken(config).then(res => {
 			if(res[1].data.data.code === 'OK' && res[1].data.data.token) {
 				let token = res[1].data.data.token;
 				/*成功刷新token*/
@@ -96,6 +96,7 @@ async function reloadMessage(config) {
 		/*(token) => {...}这个函数就是回调函数*/
 		subscribeTokenRefresh(token => {
 			console.log(config)
+			// 如果没有传入 success / fail / complete 参数，则会返回封装后的 Promise 对象
 			uni.request({
 				url: config.url,
 				data: config.data,
