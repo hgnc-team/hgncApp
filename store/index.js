@@ -4,6 +4,7 @@ import footer_store from "./modules/footer_store.js";
 import shopCart_store from "./modules/shopCart_store.js";
 import address_store from "./modules/address_store.js";
 import orderList_store from "./modules/orderList_store.js";
+import prod_view_store from "./modules/prod_view_store.js";
 Vue.use(Vuex);
 
 const store = new Vuex.Store({

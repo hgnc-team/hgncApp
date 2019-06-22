@@ -137,7 +137,7 @@
 		<view class="footer uni-flex">
 			<view class="total uni-flex-item flex-center-center">
 				<text>共计：</text>
-				<text class="text-price">{{totalPrice}}M币</text>
+				<text class="text-price">{{totalPrice}} {{ unit }}</text>
 			</view>
 			<view class="buy  uni-flex-item flex-center-center" @tap="creatOrder">
 				去付款
@@ -164,6 +164,8 @@
 				jBalance: 0,
 				// m币余额
 				mBalance: 0,
+				// 货币单位
+				unit: '元'
 			}
 		},
 		computed: {
@@ -188,8 +190,7 @@
 			// M币是否可用
 			isMbPayAvailable() {
 				return this.mBalance >= this.totalPrice; 
-			}
-			
+			}			
 		},
 		methods: {
 			init(){
@@ -211,6 +212,13 @@
 			// 选择付款方式
 			radioChange(evt) {
 				this.payType = evt.detail.value;
+				if (this.payType === 'alipay') {
+					this.unit = '元'
+				} else if (this.payType === 'jf') {
+					this.unit = '分'
+				} else if (this.payType === 'mb') {
+					this.unit = 'M币'
+				}
 				console.log(evt)
 			},
 			// 创建订单
@@ -231,7 +239,6 @@
 					})
 				})
 				let params = {
-					userId: this.userId,
 					goods: goods,
 					addressId: this.address.id
 				}
@@ -239,7 +246,7 @@
 				service.createOrder(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					console.log(data);
+					// console.log(JSON.stringify(data));
 					let orderId = data;
 					// 去支付
 					this.toPay(data);
@@ -279,17 +286,9 @@
 				// 然后调用api，吊起支付宝支付
 				uni.requestPayment({
 					provider: 'alipay',
-					orderInfo: {
-						"dealId": data.dealId,
-						"appKey": data.appKey,
-						"totalAmount": data.totalAmount,
-						"tpOrderId": data.tpOrderId,
-						"dealTitle": data.dealTitle,
-						"rsaSign": data.rsaSign,
-						"bizInfo": data.bizInfo
-					}, //订单数据
+					orderInfo: data.secret, //订单数据
 					success: function(res) {
-						console.log('success:' + JSON.stringify(res));
+						// console.log('success:' + JSON.stringify(res));
 						this.callbackAfterPay(data);
 						this.toResult(orderId, true);
 					},
@@ -357,7 +356,8 @@
 				});
 			}
 		},
-		onLoad() {
+		onLoad(data) {
+			console.log(JSON.stringify(data))
 			this.init();
 		}
 	}

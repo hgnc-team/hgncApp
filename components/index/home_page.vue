@@ -97,7 +97,7 @@
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	//高德SDK
-	import amap from '../../common/SDK/amap-wx.js';
+	// import amap from '../../common/SDK/amap-wx.js';
 
 	export default {
 		components: {
@@ -187,23 +187,23 @@
 				// 初始化navbar
 				this.initBar();
 				// 获取当前地图定位
-				this.getPosition();
+				// this.getPosition();
 			},
 			// 获取当前地图定位
-			getPosition(){
-				// #ifdef APP-PLUS
-				this.amapPlugin = new amap.AMapWX({
-					//高德地图KEY，参考：http://ask.dcloud.net.cn/article/35070
-					key: '7da2bb476a91a511d0c3b6626f7be558'
-				});
-				//定位地址
-				this.amapPlugin.getRegeo({
-					success: data => {
-						this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
-					}
-				});
-				// #endif
-			},
+			// getPosition(){
+			// 	// #ifdef APP-PLUS
+			// 	this.amapPlugin = new amap.AMapWX({
+			// 		//高德地图KEY，参考：http://ask.dcloud.net.cn/article/35070
+			// 		key: '7da2bb476a91a511d0c3b6626f7be558'
+			// 	});
+			// 	//定位地址
+			// 	this.amapPlugin.getRegeo({
+			// 		success: data => {
+			// 			this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
+			// 		}
+			// 	});
+			// 	// #endif
+			// },
 			// 是否开启刷新
 			isSupportRefresh(){
 				// 获取内容主体的高度
@@ -224,14 +224,14 @@
 					"classScheme": "cat1"
 				}
 				// bug 下面的toast用现在的写法不消失
-				// uni.showLoading({
-				// 	title: "加载中..."
-				// })
+				uni.showLoading({
+					title: "加载中..."
+				})
 				let cateList = await service.getGoodTopClass(parms)
 				// console.log(cateList)
 				// 获取到分类数据
 				if (cateList) {
-					// uni.hideLoading();
+					uni.hideLoading();
 					// 设置
 					cateList.forEach(tab=>{
 						let aryItem = {

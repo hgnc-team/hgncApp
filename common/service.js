@@ -133,6 +133,7 @@ const getGoodTopClass = function(params) {
 	return new Promise((resolve,reject)=>{
 		vm.$http.post('/v1/api/goods/topClass', data)
 			.then(res => {
+				// console.log(JSON.stringify(res))
 				if (res.data.status === 200) {
 					resolve(res.data.data)
 				} 
@@ -190,7 +191,7 @@ const getGoodListByTopClassType = function(params) {
 	return new Promise((resolve,reject) => {
 		vm.$http.post('/v1/api/goods/topClass/goodsPageList', data)
 			.then(res=>{
-				console.log(res)
+				// console.log(res)
 				if(res.data.status === 200) {
 					resolve(res.data.data)
 				}
@@ -369,7 +370,7 @@ const deleteAddress = function(params) {
   **/
 const createOrder = function(params) {
 	let data = {
-		userId: params.userId,
+		// userId: params.userId, // 不用穿userId 现在已改成token机制
 		goods: params.goods,
 		addressId: params.addressId
 	}

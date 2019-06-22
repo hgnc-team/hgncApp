@@ -5,7 +5,7 @@
 		</view>
 		<view class="address-list">
 			<radio-group @change="radioChange">
-				<view class="address-item" v-for="(item, index) in getAddressList" :key="index">
+				<view class="address-item" v-for="(item, index) in getAddressList" :key="index" @tap="selectAddr(item)">
 					<view class="info">
 						<view class="uni-bold uni-h5">
 							{{item.receiver}} &nbsp;&nbsp;{{item.phone}}
@@ -78,6 +78,17 @@
 			// 注入vuex的方法
 			...mapMutations(['INIT_ADDRESS']),
 			...mapActions(['updataAddressList']),
+			// 选择地址
+			selectAddr(address) {
+				// 跳不过去，只能在pages/mine/目录下跳，怎么破?
+				// uni.navigateTo({
+				// 	url:"order_pay"
+				// })
+				uni.navigateBack({
+					delta: 1
+				});
+				// console.log(JSON.stringify(address))
+			},
 			init(){
 				let params = {
 					userId: this.$store.state.userId,

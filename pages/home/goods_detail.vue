@@ -241,7 +241,7 @@
 				ids.push(id)
 				uni.showLoading();
 				service.getGoodListById({ids: ids}).then(res=>{
-					console.log(res)
+					// console.log(res)
 					uni.hideLoading();
 					let data = res.data.data;
 					if(data.length > 0) {
