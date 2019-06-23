@@ -21,7 +21,7 @@ function onRrefreshed(token) {
 // 请求后台token刷新接口
 function refleshToken(config) {
 	return uni.request({
-		url: config.baseUrl + '/v1/api/user/refleshToken',
+		url: config.baseUrl ? config.baseUrl + '/v1/api/user/refleshToken' : '/v1/api/user/refleshToken',
 		data: {},
 		method: 'post',
 		header: {
