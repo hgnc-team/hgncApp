@@ -150,6 +150,7 @@
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import { mapState, mapMutations, mapGetters} from 'vuex';
 	import service from '../../common/service.js';
+	import util from '../../common/util.js';
 	// import rainColor from "../../components/common/rain-color.vue"
 	export default {
 		components: {
@@ -179,7 +180,7 @@
 			totalPrice(){
 				let total = 0;
 				_.forEach(this.getOrderList, item => {
-					total += item.price * item.num
+					total += util.calc.Mul(item.price, item.num)
 				})
 				return total
 			},
