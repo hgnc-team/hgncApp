@@ -4,17 +4,21 @@
 			<view class="footer_item" :class="index==now_index?'select_text':''" :style="'width:'+item_width" @click="change_nav(item, index)" v-for="(item,index) in footer_nav" :key="index">
 				<view class="iconfont" :class="index==now_index?item.select_icon:item.icon"></view>
 				<view class="name">{{item.name}}</view>
+				<!-- 购物车数量 -->
+				<uni-badge class="shop-num" :text="total_num" type="primary" v-if="(total_num - 0 > 0)&&item.name_code==='shopCart'"></uni-badge>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import { uniIcon } from '@dcloudio/uni-ui';
+	import { uniIcon, uniBadge} from '@dcloudio/uni-ui';
 	import util from "../../common/util.js";
+	import { mapGetters} from 'vuex';
 	export default {
 		components: {
-			uniIcon
+			uniIcon,
+			uniBadge
 		},
 		data() {
 			return {
@@ -34,6 +38,7 @@
 			}
 		},
 		computed:{
+			...mapGetters(["total_num"]),
 			item_width(){
 				let length = this.$store.state.footer_store.footer_nav.length;
 				switch (length){
@@ -72,6 +77,7 @@
 		float: left;
 		text-align: center;
 		height: 100upx;
+		position: relative;
 		.name{
 			font-size: 22upx;
 		}
@@ -79,6 +85,11 @@
 			font-size: 50upx;
 			margin-right: 0;
 			line-height: 1.2;
+		}
+		.shop-num{
+			position: absolute;
+			top: 4upx;
+			right: 25%;
 		}
 	}
 	.select_text{

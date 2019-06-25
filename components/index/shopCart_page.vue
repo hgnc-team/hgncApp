@@ -345,7 +345,7 @@
 			_totalPrice() {
 				this.allPrice = 0;
 				this.goodsList.forEach(item => {
-					this.allPrice += item.isChecked && item.price * item.num;
+					this.allPrice += item.isChecked && util.calc.Mul(item.price, item.num);
 				});
 				if(this.allPrice <= 0) {
 					this.isCheckAll = false;

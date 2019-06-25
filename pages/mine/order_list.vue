@@ -48,7 +48,9 @@
 						<!-- 再来一单 -->
 						<button type="primary" v-if="item.status === 'd'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toGoodsDetail(item.goodsId)">再来一单</button>
 						<!-- 确认收货 -->
-						<button type="primary" v-if="item.status === '0'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item.goodsId)">确认收货</button>
+						<button type="primary" v-if="item.status === '2'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item.goodsId)">确认收货</button>
+						<!-- 去付款 -->
+						<button type="primary" v-if="item.status === '0'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toPay(item)">去付款</button>
 					</view>
 					
 				</view>
@@ -71,6 +73,7 @@
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	import noData from "../../components/common/no-data.vue";
+	import { mapMutations } from 'vuex';
 	export default {
 		components: {
 			uniTag,
@@ -101,6 +104,7 @@
 			this.getOrderList(this.statusParam);
 		},
 		methods: {
+			...mapMutations(['INIT_ORDER_lIST']),
 			// initData(id){
 			// 	service.getGoodsDetail().then();
 			// },
@@ -171,6 +175,23 @@
 						console.log(123123123231)
 					}
 				})
+			},
+			// 去付款
+			toPay(data){
+				// 同步vuex  
+				let good = {
+					goodsId: data.goodsId,
+					title: data.title,
+					imageUrl: data.imageUrl,
+					standardId: data.id,
+					standardText: data.detail,
+					num: data.num,
+					price: data.price
+				}
+				this.INIT_ORDER_lIST([good]);
+				uni.navigateTo({
+					url: `/pages/shopCart/order_pay?hadOrderId=true`
+				});
 			},
 			// 转化status为对应的文字
 			// value-需要转化的值；mode-转化模式：TO-TEXT:状态码转文字，TO-PARAM: tab下标转为查询参数
