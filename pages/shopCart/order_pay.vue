@@ -205,9 +205,9 @@
 			},
 			// 跳转商品详情
 			toDetail(id){
-				uni.navigateTo({
-					url: `/pages/home/goods_detail?${id}`
-				})
+				// uni.navigateTo({
+				// 	url: `/pages/home/goods_detail?${id}`
+				// })
 			},
 			// 选择付款方式
 			radioChange(evt) {
@@ -263,21 +263,21 @@
 				// 支付流程
 				if(this.payType === "alipay") {
 					// 支付宝支付
-					uni.showToast({
-						title: "支付宝支付"
-					})
+					// uni.showToast({
+					// 	title: "支付宝支付"
+					// })
 					this.alipay(data);
 				} else if (this.payType === "jf") {
 					// 支付宝支付
-					uni.showToast({
-						title: "积分支付"
-					})
+					// uni.showToast({
+					// 	title: "积分支付"
+					// })
 					this.jfPay(data);
 				} else {
 					// 支付宝支付
-					uni.showToast({
-						title: "Mb支付宝支付"
-					})
+					// uni.showToast({
+					// 	title: "Mb支付宝支付"
+					// })
 					this.mbPay(data);
 				}
 			},
