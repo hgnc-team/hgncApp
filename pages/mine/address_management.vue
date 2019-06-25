@@ -84,10 +84,11 @@
 				// uni.navigateTo({
 				// 	url:"order_pay"
 				// })
-				uni.navigateBack({
-					delta: 1
-				});
-				// console.log(JSON.stringify(address))
+				setTimeout(() => {
+					uni.navigateBack({
+						delta: 1
+					});
+				}, 1000);
 			},
 			init(){
 				let params = {
