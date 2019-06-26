@@ -308,19 +308,24 @@
 			},
 			// 二级联动
 			showPicker() {
+				// 关闭下拉刷新
+				util.setRefreshMode(false);
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
-				console.log(e);
+				// console.log(e);
 				if (e && e.label) {
 					this.picker.pickerText = e.label.split('-')[1];
 				}
 			},
 			onChange(e) {
-				console.log(e);
+				// console.log(e);
 			},
 			onCancel(e) {
-				console.log(e);
+				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
+				util.setRefreshMode(true, offset);
+				// console.log(e);
 			},
 			//消息页跳转
 			goMessagesPage() {
