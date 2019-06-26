@@ -286,10 +286,16 @@
 						} else {
 							// 无规格
 							this.specSelected = {
-								id: "",
-								title: "",
+								id: data[0].id,
+								title: data[0].title,
 								price: data[0].price,
 								inventory: data[0].inventory,
+								// 配置规格展示图片
+								imageUrl: util.setImageUrl({
+									type: "goods",
+									goodId: data[0].id,
+									imageName: data[0].imageUrl
+								})[0].img
 							}
 						}
 					}					
@@ -461,20 +467,20 @@
 			},
 			// 规格选定后
 			specSeleted(){
-				if(this.specSelected.inventory <= 0 || (this.specSelected.inventory < this.numberValue && this.numberValue === 1)) {
-					uni.showToast({
-						icon:"none",
-						title: "亲，所选商品库存不足哦！"
-					})
-					return
-				}
-				if(this.specSelected.inventory < this.numberValue) {
-					uni.showToast({
-						icon:"none",
-						title: "亲，所选商品数量超出库存了哦！"
-					})
-					return
-				}
+				// if(this.specSelected.inventory <= 0 || (this.specSelected.inventory < this.numberValue && this.numberValue === 1)) {
+				// 	uni.showToast({
+				// 		icon:"none",
+				// 		title: "亲，所选商品库存不足哦！"
+				// 	})
+				// 	return
+				// }
+				// if(this.specSelected.inventory < this.numberValue) {
+				// 	uni.showToast({
+				// 		icon:"none",
+				// 		title: "亲，所选商品数量超出库存了哦！"
+				// 	})
+				// 	return
+				// }
 				if(this.type === "toCart") {
 					// 加入购物车
 					this.addToCart();
