@@ -1,7 +1,7 @@
 <template>
 	<view class="minePage">
 		<!-- 状态栏 -->
-		<statusBar id="bar"></statusBar>
+		<statusBar></statusBar>
 		<view class="header uni-flex" @tap="toAccountInfo">
 			<view class="face uni-inline-item">
 				<image :src="userinfo.face"></image>
@@ -24,7 +24,7 @@
 				</view>
 			</view>
 			<view class="box">
-				<view class="label" hover-class="hover" @tap="toOrderType(1)">
+				<view class="label" hover-class="hoverd" @tap="toOrderType(1)">
 					<view class="icon">
 						<view class="badge" v-if="dfk_num>0">{{dfk_num}}</view>
 						<text class="iconfont iconxingzhuang"></text>
@@ -33,7 +33,7 @@
 						待付款
 					</view>
 				</view>
-				<view class="label" hover-class="hover" @tap="toOrderType(2)">
+				<view class="label" hover-class="hoverd" @tap="toOrderType(2)">
 					<view class="icon">
 						<view class="badge" v-if="dfh_num>0">{{dfh_num}}</view>
 						<text class="iconfont iconxingzhuang1"></text>
@@ -42,7 +42,7 @@
 						待发货
 					</view>
 				</view>
-				<view class="label" hover-class="hover" @tap="toOrderType(3)">
+				<view class="label" hover-class="hoverd" @tap="toOrderType(3)">
 					<view class="icon">
 						<view class="badge" v-if="dsh_num>0">{{dsh_num}}</view>
 						<text class="iconfont iconxingzhuang2"></text>
@@ -51,7 +51,7 @@
 						待收货
 					</view>
 				</view>
-				<view class="label" hover-class="hover" @tap="toOrderType(4)">
+				<view class="label" hover-class="hoverd" @tap="toOrderType(4)">
 					<view class="icon">
 						<text class="iconfont iconxingzhuang3"></text>
 					</view>
@@ -196,9 +196,6 @@
 		/* #ifdef APP-PLUS */
 		padding-top: var(--status-bar-height);
 		/* #endif */
-		#bar{
-			background: linear-gradient(135deg, #242424, #343434);
-		}
 		.header {
 			background: linear-gradient(135deg, #242424, #343434);
 			width: 100%;
@@ -243,7 +240,7 @@
 			}
 		}
 
-		.hover {
+		.hoverd {
 			background-color: #eee
 		}
 

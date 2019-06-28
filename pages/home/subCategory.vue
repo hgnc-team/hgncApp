@@ -20,7 +20,7 @@
 						<scroll-view class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0"
 						 @scroll="onPageScroll">
 							<!-- 商品列表 -->
-							<view class="product-list" v-if="tab.data.length > 0">
+							<view class="product-list" v-if="isShowProductList">
 								<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">
 									<view class="uni-media-list-logo">
 										<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="imgLoaded" :src="item.show?item.imageUrl:''" />
@@ -70,6 +70,11 @@
 				// 图片默认路径
 				placeholderSrc: "/static/img/logo@0.5x.png",
 
+			}
+		},
+		computed: {
+			isShowProductList() {
+				return this.dataList[this.tabIndex].data.length > 0 
 			}
 		},
 		onReachBottom() {
@@ -213,7 +218,7 @@
 			//得到元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
-					uni.createSelectorQuery().select("#" + id).fields({
+					uni.createSelectorQuery().in(this).select("#" + id).fields({
 						size: true,
 						scrollOffset: true
 					}, (data) => {

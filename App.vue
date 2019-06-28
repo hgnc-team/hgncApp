@@ -63,10 +63,10 @@
 		onHide: function() {
 			console.log('App Hide')
 		},
-		// 捕获 app error
-		onError(err) {
-			console.log(err)
-		},
+		// // 捕获 app error
+		// onError(err) {
+		// 	console.log(err)
+		// },
 		methods: {
 			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST', 'SET_CONFIGS']),
 			// 获取后台相关配置

@@ -403,7 +403,7 @@
 			},
 			// 获取搜索商品列表区域的滚动高度
 			getScrollTop() {
-				uni.createSelectorQuery().select('.product-list').boundingClientRect(data => {
+				uni.createSelectorQuery().in(this).select('.product-list').boundingClientRect(data => {
 					if(data) {
 						// 内容超过一屏
 						this.isShowBtn = data.top <= 0 ? true : false;
@@ -412,7 +412,7 @@
 			},
 			// 图片懒加载
 			load() {
-				uni.createSelectorQuery().selectAll('.lazy').boundingClientRect((images) => {
+				uni.createSelectorQuery().in(this).selectAll('.lazy').boundingClientRect((images) => {
 					_.forEach(images, (image, index)=>{
 						if (image.top <= this.windowHeight) {
 							let item = Object.assign({}, this.goodsList[image.dataset.index]);

@@ -81,7 +81,7 @@
 			getWidth: function(id) {
 				return new Promise((res, rej) => {
 					// 选择节点
-					uni.createSelectorQuery().select("#" + id).fields({
+					uni.createSelectorQuery().in(this).select("#" + id).fields({
 						size: true,
 						scrollOffset: true
 					}, (data) => {

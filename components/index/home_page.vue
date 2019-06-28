@@ -13,8 +13,7 @@
 					</view>
 				</view>
 				<mpvue-picker ref="mpvuePicker" :mode="picker.mode" :deepLength="picker.deepLength" :pickerValueDefault="picker.pickerValueDefault"
-				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel"
-				 :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
+				 :themeColor="picker.themeColor" @onChange="onChange" @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="picker.pickerValueArray"></mpvue-picker>
 			</view>
 			<!-- 搜索 -->
 			<view class="search-wrap">
@@ -41,36 +40,32 @@
 		<view class="swiper-content">
 			<view class="uni-tab-bar">
 				<view class="custom-tabs">
-					<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
-						<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''" :id="'tar'+index"
-						 :data-current="index" @tap="tapTab">
+					<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft" @tap="tapTab">
+						<view v-for="(tab,index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex==index ? 'active' : ''"
+						 :id="'tar'+index" :data-current="index">
 							{{tab.name}}
 							<view class="bottom-line"></view>
-						 </view>
+						</view>
 					</scroll-view>
-					<!-- <view class="subCategory" @tap="toSubCategoryNav" v-if="isShowSubCategoryNav">
-						分类
-					</view> -->
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0" @scroll="onPageScroll">		
+						<scroll-view id="scroll-content" class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0"
+						 @scroll="onPageScrollFn">
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
-							<view class="goods-list">
-								<!-- <view class="title">好物热卖</view> -->
-								<!-- 商品列表 -->
-								<view class="product-list">
-									<view class="product" v-for="(item,index2) in tab.data" :key="index2" @tap="toGoods(item)" :id="'swiper'+index1">		
-										<view class="uni-media-list-logo">
-											<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="loaded" :src="item.show?item.img:''" />
-											<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
-										</view>
-										<view class="name">{{item.name}}</view>
-										<view class="info">
-											<view class="price">{{item.price}}</view>
-											<view class="slogan">{{item.slogan}}</view>
-										</view>	
+							<!-- <view class="title">好物热卖</view> -->
+							<!-- 商品列表 -->
+							<view class="product-list" @click="toGoods">
+								<view class="product" v-for="(item,index2) in tab.data" :key="index2" :data-index="index2" :class="'swiper'+index1">
+									<view class="uni-media-list-logo" :data-index="index2">
+										<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="loaded" :src="item.show?item.img:''" />
+										<image class="image placeholder" :data-index="index2" :class="{loaded:item.loaded}" :src="placeholderSrc" />
+									</view>
+									<view class="name" :data-index="index2">{{item.name}}</view>
+									<view class="info" :data-index="index2">
+										<view class="price">{{item.price}}</view>
+										<view class="slogan">{{item.slogan}}</view>
 									</view>
 								</view>
 							</view>
@@ -88,7 +83,10 @@
 	</view>
 </template>
 <script>
-	import { uniBadge,uniIcon } from '@dcloudio/uni-ui';
+	import {
+		uniBadge,
+		uniIcon
+	} from '@dcloudio/uni-ui';
 	import mpvuePicker from 'mpvue-picker';
 	import _ from "lodash";
 	import topTabMenu from "../../components/common/topTabMenu.vue";
@@ -96,6 +94,7 @@
 	import cityData from "../../common/city.data.js";
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
+
 	//高德SDK
 	// import amap from '../../common/SDK/amap-wx.js';
 
@@ -105,7 +104,7 @@
 			uniIcon,
 			uniBadge,
 			mpvuePicker,
-			customSwiper
+			customSwiper,
 			// dropDownRefresh
 		},
 		data() {
@@ -153,28 +152,27 @@
 
 			};
 		},
-		computed: {
-
-		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
 		onPullDownRefresh() {
-			this.dataList[this.tabIndex].data =  [];
+			console.log(233333333333333333)
+			this.dataList[this.tabIndex].data = [];
 			this.dataList[this.tabIndex].swiperList = [];
 			this.dataList[this.tabIndex].loadingText = '',
-			setTimeout(() => {
-				if(this.dataList[this.tabIndex].swiperList.length === 0) {
-					this.dataList[this.tabIndex].swiperList = this.swiperList;
-				}
-				if(this.dataList[this.tabIndex].data.length === 0){
-					this.addData(this.tabIndex)
-				}
-			
-				let timer = setTimeout(()=>{
-					this.load();
-					timer = null;
-				},100)	
-				uni.stopPullDownRefresh();
-			}, 1000);
+				setTimeout(() => {
+					if (this.dataList[this.tabIndex].swiperList.length === 0) {
+						this.dataList[this.tabIndex].swiperList = this.swiperList;
+					}
+					if (this.dataList[this.tabIndex].data.length === 0) {
+						this.addData(this.tabIndex)
+					}
+
+					let timer = setTimeout(() => {
+						this.load();
+						timer = null;
+					}, 100)
+					console.log(3444444444444)
+					uni.stopPullDownRefresh();
+				}, 1000);
 		},
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
@@ -205,7 +203,7 @@
 			// 	// #endif
 			// },
 			// 是否开启刷新
-			isSupportRefresh(){
+			isSupportRefresh() {
 				// 获取内容主体的高度
 				uni.createSelectorQuery().in(this).select(`.list${this.tabIndex}`).scrollOffset((res) => {
 					// console.log("竖直滚动位置" + res.scrollTop);
@@ -219,7 +217,7 @@
 				}).exec()
 			},
 			// 初始化navBar
-			async initBar(){
+			async initBar() {
 				let parms = {
 					"classScheme": "cat1"
 				}
@@ -233,7 +231,7 @@
 				if (cateList) {
 					uni.hideLoading();
 					// 设置
-					cateList.forEach(tab=>{
+					cateList.forEach(tab => {
 						let aryItem = {
 							loadingText: '',
 							data: [],
@@ -249,12 +247,12 @@
 						pageSize: 8,
 					})
 					let tempArr = [];
-					productList.data.forEach(o=>{
+					productList.data.forEach(o => {
 						tempArr.push({
 							goods_id: o.id,
 							img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
 							name: o.title,
-							price: '￥'+ o.price,
+							price: '￥' + o.price,
 							// slogan: '1096人付款',
 							show: false,
 							loaded: false
@@ -263,14 +261,14 @@
 					// console.log(tempArr)
 					this.dataList[0].data = tempArr
 					this.dataList[0].swiperList = this.swiperList
-					let timer = setTimeout(()=>{
-							this.load();
-							timer = null;
-						},100)
+					let timer = setTimeout(() => {
+						this.load();
+						timer = null;
+					}, 100)
 				}
-			// 	this.tabBars = cateList;
-			// 
-			// 	this.dataList = this.randomfn();
+				// 	this.tabBars = cateList;
+				// 
+				// 	this.dataList = this.randomfn();
 				// .then(res=>{
 				// 	uni.hideLoading();
 				// 	let data = res.data.data;
@@ -292,19 +290,19 @@
 				// })
 			},
 			getProdListByType(params) {
-				return new Promise((resolve,reject)=>{
+				return new Promise((resolve, reject) => {
 					service.getGoodListByType(params)
-						.then(res=>{
+						.then(res => {
 							console.log(res)
 						})
-						.catch(err=>{
+						.catch(err => {
 							console.log(err)
 						})
 				})
 			},
 			// 获取推荐数据
-			getHotListByBar(){
-				
+			getHotListByBar() {
+
 			},
 			// 二级联动
 			showPicker() {
@@ -349,19 +347,21 @@
 			},
 			//商品跳转
 			toGoods(e) {
+				let goods_index = e.target.dataset.index;
+				let goods_id = this.dataList[this.tabIndex].data[goods_index].goods_id;
 				uni.navigateTo({
-					url: `/pages/home/goods_detail?id=${e.goods_id}`
+					url: `/pages/home/goods_detail?id=${goods_id}`
 				});
 			},
 			// 加载更多
 			loadMore(e) {
 				// setTimeout(() => {
-					this.addData(e);
+				this.addData(e);
 				// }, 500);
-				let timer = setTimeout(()=>{
+				let timer = setTimeout(() => {
 					this.load();
 					timer = null;
-				},30)	
+				}, 30)
 			},
 			async addData(e) {
 				this.dataList[e].loadingText = '加载更多...';
@@ -373,18 +373,18 @@
 					pageSize: 8,
 				});
 				// console.log(productList)
-				if(productList.total <= this.dataList[e].data.length) {
+				if (productList.total <= this.dataList[e].data.length) {
 					this.dataList[e].loadingText = '没有更多了';
 					return;
 				}
-	
+
 				let tempArr = [];
-				productList.data.forEach(o=>{
+				productList.data.forEach(o => {
 					tempArr.push({
 						goods_id: o.id,
 						img: `${util.BASE_IMAGE_URL}goods/${o.id}/${o.imageUrl}`,
 						name: o.title,
-						price: '￥'+ o.price,
+						price: '￥' + o.price,
 						// slogan: '1096人付款',
 						show: false,
 						loaded: false
@@ -393,18 +393,18 @@
 				this.dataList[e].data = _.concat(this.dataList[e].data, tempArr);
 			},
 			//去二级分类页面
-			toSubCategoryNav(){
+			toSubCategoryNav() {
 				uni.navigateTo({
 					url: "/pages/home/subCategory_nav"
 				})
 			},
 			async changeTab(e) {
 				let index = e.target.current;
-				if(this.dataList[index].swiperList.length === 0) {
+				if (this.dataList[index].swiperList.length === 0) {
 					this.dataList[index].swiperList = this.swiperList;
 				}
 				// 第一次初始化才做此附加数据的操作
-				if(this.dataList[index].data.length === 0){
+				if (this.dataList[index].data.length === 0) {
 					this.addData(index)
 				}
 				if (this.isClickChange) {
@@ -415,18 +415,18 @@
 				this.setScrollLeft(index);
 				this.isClickChange = false;
 				this.tabIndex = index; //一旦访问data就会出问题
-				
-				let timer = setTimeout(()=>{
+
+				let timer = setTimeout(() => {
 					this.load();
 					timer = null;
-				},100)	
+				}, 100)
 				// 控制刷新开启关闭
 				this.isSupportRefresh();
 			},
-			 //得到元素的size
+			//得到元素的size
 			getElSize(id) {
 				return new Promise((res, rej) => {
-					uni.createSelectorQuery().select("#" + id).fields({
+					uni.createSelectorQuery().in(this).select("#" + id).fields({
 						size: true,
 						scrollOffset: true
 					}, (data) => {
@@ -437,11 +437,11 @@
 			//点击tab-bar
 			async tapTab(e) {
 				let tabIndex = e.target.dataset.current;
-				if(this.dataList[tabIndex].swiperList.length === 0) {
+				if (this.dataList[tabIndex].swiperList.length === 0) {
 					this.dataList[tabIndex].swiperList = this.swiperList;
 				}
 				// 第一次初始化才做此附加数据的操作
-				if(this.dataList[tabIndex].data.length === 0){
+				if (this.dataList[tabIndex].data.length === 0) {
 					this.addData(tabIndex)
 				}
 				if (this.tabIndex === tabIndex) {
@@ -451,30 +451,30 @@
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
 				}
-				let timer = setTimeout(()=>{
+				let timer = setTimeout(() => {
 					this.load();
 					timer = null;
-				},100)	
-				
+				}, 100)
+
 				// 控制刷新开启关闭
 				this.isSupportRefresh();
 			},
 			// 设置顶部nav的滚动距离
-			async setScrollLeft(index){
+			async setScrollLeft(index) {
 				let tabBar = await this.getElSize("tab-bar"),
 					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
 				// let subCategoryNavWidth = uni.upx2px(100);
 				let width = 0;
 				for (let i = 0; i < index; i++) {
-					let result = await this.getElSize('tar'+i);
+					let result = await this.getElSize('tar' + i);
 					width += result.width;
 				}
 				let winWidth = uni.getSystemInfoSync().windowWidth,
-					nowElement = await this.getElSize('tar'+index),
+					nowElement = await this.getElSize('tar' + index),
 					nowWidth = nowElement.width;
-// 				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
-// 					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
-// 				}
+				// 				if (width + nowWidth - tabBarScrollLeft > winWidth - subCategoryNavWidth) {
+				// 					this.scrollLeft = width + nowWidth - winWidth + subCategoryNavWidth;
+				// 				}
 				if (width + nowWidth - tabBarScrollLeft > winWidth) {
 					this.scrollLeft = width + nowWidth - winWidth;
 				}
@@ -482,32 +482,9 @@
 					this.scrollLeft = width;
 				}
 			},
-			// 生成假数据模块，引入真数据后没有使用了
-			// randomfn() {
-			// 	let ary = [];
-			// 	for (let i = 0, length = this.tabBars.length; i < length; i++) {
-			// 		let aryItem = {
-			// 			loadingText: '加载更多...',
-			// 			data: [],
-			// 			swiperList: []
-			// 		};
-			// 		if(i < 1){
-			// 			for (let j = 1; j <= 10; j++) {
-			// 				let item = tpl['data' + Math.floor(Math.random() * 5)];
-			// 				
-			// 				item.show = false;
-			// 				item.loaded = false;
-			// 				aryItem.data.push(item);
-			// 				aryItem.swiperList = this.swiperList;
-			// 			}
-			// 		}
-			// 		ary.push(aryItem);
-			// 	}
-			// 	return ary;
-			// },
 			// 图片懒加载
 			load() {
-				uni.createSelectorQuery().in(this).selectAll(`#swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
+				uni.createSelectorQuery().in(this).selectAll(`.swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
 					images.forEach((image, index) => {
 						if (image.top <= this.windowHeight) {
 							// this.dataList[this.tabIndex].data[image.dataset.index].show = true;
@@ -528,12 +505,12 @@
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
 			},
 			// Scroll-view组件的滚动监听
-			onPageScroll: _.throttle(function(){
+			onPageScrollFn: _.throttle(function() {
 				// 控制图片懒加载
 				this.load();
 				// 控制刷新开启关闭
 				this.isSupportRefresh();
-			}, 100)
+			}, 50)
 		},
 		created() {
 			this.init();
@@ -543,6 +520,7 @@
 			util.setRefreshMode(true, offset);
 			// #endif
 		}
+
 	}
 </script>
 
@@ -560,6 +538,7 @@
 		align-items: center;
 		justify-content: center;
 		background-color: #fff;
+
 		.header {
 			width: 100%;
 			height: 88upx;
@@ -595,24 +574,27 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				.search{
+
+				.search {
 					width: 100%;
 					height: 56upx;
 					background-color: #ffffff;
 					font-size: 28upx;
 					border-radius: 4upx;
+
 					.icon {
 						width: 56upx;
 						height: 56upx;
 						color: #666;
 					}
+
 					.input {
 						line-height: 56upx;
 						color: #999;
 					}
 				}
 
-				
+
 			}
 
 			.location {
@@ -643,67 +625,72 @@
 			background-color: #ff570a;
 			height: 88upx;
 		}
-	
+
 		.swiper-content {
 			width: 100%;
 			height: 100%;
 			position: relative;
 			/* #ifdef H5 */
 			top: 88upx;
-			/* #endif */	
+			/* #endif */
 			/*  #ifdef  APP-PLUS  */
 			top: calc(var(--status-bar-height) + 88upx);
 			/*  #endif  */
 			padding-bottom: 100upx;
 			box-sizing: border-box;
-			.custom-tabs{	
-// 				.subCategory{
-// 					width: 100upx;
-// 					line-height: 88upx;
-// 					height: 88upx;
-// 					border:none;
-// 					background-color: #fff;
-// 					z-index: 1000;
-// 					position: fixed;
-// 					right: 0;
-// 					/* #ifdef H5 */
-// 					top: 88upx;
-// 					/* #endif */	
-// 					/*  #ifdef  APP-PLUS  */
-// 					top: calc(var(--status-bar-height) + 88upx);
-// 					/* #endif */
-// 					text-align: center;
-// 					box-shadow: -2upx 0upx 20upx -2upx #242424;
-// 				}
-				.uni-swiper-tab{
+
+			.custom-tabs {
+
+				// 				.subCategory{
+				// 					width: 100upx;
+				// 					line-height: 88upx;
+				// 					height: 88upx;
+				// 					border:none;
+				// 					background-color: #fff;
+				// 					z-index: 1000;
+				// 					position: fixed;
+				// 					right: 0;
+				// 					/* #ifdef H5 */
+				// 					top: 88upx;
+				// 					/* #endif */	
+				// 					/*  #ifdef  APP-PLUS  */
+				// 					top: calc(var(--status-bar-height) + 88upx);
+				// 					/* #endif */
+				// 					text-align: center;
+				// 					box-shadow: -2upx 0upx 20upx -2upx #242424;
+				// 				}
+				.uni-swiper-tab {
 					// width: calc(100% - 100upx);
 					width: 100%;
 					height: 88upx;
 					line-height: 88upx;
-					border:none;
+					border: none;
 					background-color: #fff;
 					z-index: 100;
 					position: fixed;
 					left: 0;
 					/* #ifdef H5 */
 					top: 88upx;
-					/* #endif */	
+					/* #endif */
 					/*  #ifdef  APP-PLUS  */
 					top: calc(var(--status-bar-height) + 88upx);
+
 					/* #endif */
-// 					padding-right: 20upx;
-// 					box-sizing: border-box;
-					.swiper-tab-list{
-						width:auto;
+					// 					padding-right: 20upx;
+					// 					box-sizing: border-box;
+					.swiper-tab-list {
+						width: auto;
 						position: relative;
 						font-size: 26upx;
 						color: #707070;
 						padding: 0 20upx;
 						box-sizing: border-box;
-						&.active{
+
+						&.active {
 							color: #242424;
 							font-size: 27upx;
-							.bottom-line{
+
+							.bottom-line {
 								width: 20%;
 								height: 6upx;
 								position: absolute;
@@ -716,92 +703,90 @@
 					}
 				}
 			}
-			
-			.swiper-box{
+
+			.swiper-box {
 				height: calc(100% - 100upx);
 				padding-top: 88upx;
 				box-sizing: border-box;
 			}
-			
-			.goods-list {
-				background-color: #fff;
-				font-weight: 600;
-			
-				.title {
-					width: 100%;
-					height: 60upx;
-					color: #242424;
-					font-size: 40upx;
-					margin-bottom: 36upx;
-					padding: 0 30upx;
-					box-sizing: border-box;
-				}			
-				.product-list {
-					width: 100%;
-					display: flex;
-					justify-content: space-between;
-					flex-wrap: wrap;
-					padding: 0 30upx;
-					box-sizing: border-box;
-			
-					.product {
-						width: 47.75%;
-						border-radius: 20upx;
-						background-color: #fff;
-						margin: 0 0 15upx 0;
-						.placeholder {
-							opacity: 0.1;
-							// transition: opacity 0.2s linear;
+
+			.title {
+				width: 100%;
+				height: 60upx;
+				color: #242424;
+				font-size: 40upx;
+				margin-bottom: 36upx;
+				padding: 0 30upx;
+				box-sizing: border-box;
+			}
+
+			.product-list {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				padding: 0 30upx;
+				box-sizing: border-box;
+
+				.product {
+					width: 47.75%;
+					border-radius: 20upx;
+					background-color: #fff;
+					margin: 0 0 15upx 0;
+
+					.placeholder {
+						opacity: 0.1;
+						// transition: opacity 0.2s linear;
+					}
+
+					.placeholder.loaded {
+						opacity: 0;
+					}
+
+					.uni-media-list-logo {
+						width: 100%;
+						height: 300upx;
+						position: relative;
+					}
+
+					.uni-media-list-logo .image {
+						position: absolute;
+					}
+
+					.name {
+						width: 100%;
+						padding: 10upx 0;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						overflow: hidden;
+						font-weight: 400;
+						font-size: 26upx;
+					}
+
+					.info {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						width: 100%;
+						font-weight: 100;
+
+						.price {
+							color: #4c9bfa;
+							font-size: 30upx;
+							font-weight: 600;
 						}
-						
-						.placeholder.loaded {
-							opacity: 0;
-						}
-						
-						.uni-media-list-logo {
-							width: 100%;
-							height: 300upx;
-							position: relative;
-						}
-						
-						.uni-media-list-logo .image {
-							position: absolute;
-						}
-			
-						.name {
-							width: 100%;
-							padding: 10upx 0;
-							display: -webkit-box;
-							-webkit-box-orient: vertical;
-							-webkit-line-clamp: 2;
-							overflow: hidden;
-							font-weight: 400;
-							font-size: 26upx;
-						}
-			
-						.info {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-							width: 100%;
-							font-weight: 100;
-			
-							.price {
-								color: #4c9bfa;
-								font-size: 30upx;
-								font-weight: 600;
-							}
-			
-							.slogan {
-								color: #c2c2c2;
-								font-size: 24upx;
-							}
+
+						.slogan {
+							color: #c2c2c2;
+							font-size: 24upx;
 						}
 					}
-			
 				}
+
 			}
-			.uni-tab-bar-loading{
+
+			.uni-tab-bar-loading {
 				width: 100%;
 				display: flex;
 				justify-content: center;
@@ -813,6 +798,6 @@
 				padding: 0;
 			}
 		}
-		
+
 	}
 </style>

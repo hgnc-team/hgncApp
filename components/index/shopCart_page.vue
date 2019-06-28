@@ -4,8 +4,8 @@
 		<!-- 状态栏 -->
 		<statusBar></statusBar>
 		<!-- 导航栏 -->
-		<uni-nav-bar fixed="true" :background-color="$store.state.titleNView.bg" color="$store.state.titleNView.textColor"
-		 title="购物车" :rightText="rightText" @click-right="onClickRight"></uni-nav-bar>
+		<uni-nav-bar fixed="true" :background-color="titleNView.bg" :color="titleNView.textColor"
+		 :title="'购物车'" :rightText="rightText" @click-right="onClickRight"></uni-nav-bar>
 		<!-- 内容 -->
 		<view class="content">
 			<view class="no-data" v-if="showNoData">
@@ -138,7 +138,7 @@
 			}, 1000);
 		},
 		computed: {
-			...mapState(['hasLogin', 'userId','shopCart_store']),
+			...mapState(['hasLogin', 'userId','shopCart_store', 'titleNView']),
 			setStyle() {
 				let paddingBottom = this.hasLogin ? 98 : 0;
 				return `padding-bottom:${paddingBottom}upx`;
@@ -397,6 +397,12 @@
 							})
 							// 分发删除动作
 							this.deleteGoods(idsArr);
+							// 重置删除按钮
+							_.forEach(this.goodsList, (item)=>{
+								_.forEach(item, (goods) => {
+									goods.scrollLeft = 0;	
+								})
+							})
 						}).catch(err=>{
 							uni.hideLoading();
 							uni.showToast({
