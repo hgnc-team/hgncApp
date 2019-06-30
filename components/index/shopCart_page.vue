@@ -20,23 +20,11 @@
 			 :scroll-left="item.scrollLeft" @touchstart="touchS" @touchend="touchE" >
 				<view class="viewbox">
 					<view class="shangpin uni-flex">
-						<!-- #ifdef H5 -->
 						<view class="uni-inline-item" style="margin-right: 20upx;">
 							<checkbox-group @change="proActive(item)">
 								<checkbox  :value="item.isChecked+ ''" :checked="item.isChecked"></checkbox >
 							</checkbox-group>
 						</view>
-						<!-- #endif -->
-						<!-- #ifdef APP-PLUS -->
-						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<van-checkbox :value="item.isChecked" @change="proActive(item)"></van-checkbox>
-						</view>
-						<!-- #endif -->	
-						<!-- #ifdef MP-WEIXIN -->
-						<view class="uni-inline-item" style="margin-right: 20upx;">
-							<van-checkbox :value="item.isChecked" @change="proActive(item)"></van-checkbox>
-						</view>
-						<!-- #endif -->
 						<view class="shangpin-info uni-flex-item">
 							<view class="img uni-inline-item" @tap="toDetail(item.id)">
 								<image :src="item.imageUrl" mode="aspectFit"></image>
@@ -74,23 +62,11 @@
 		<view class="bottom-jiesuan uni-flex" v-if="!showNoData">
 			<view class="info uni-flex">
 				<view class="allSelectText uni-flex">
-					<!-- #ifdef H5 -->
 					<view class="uni-inline-item">
 						<checkbox-group @change="allCheck()">
 							<checkbox  :value="isCheckAll + ''" :checked="isCheckAll" style="margin-right: 20upx;"></checkbox >
 						</checkbox-group>
 					</view>
-					<!-- #endif -->
-					<!-- #ifdef APP-PLUS -->
-					<view class="uni-inline-item">
-						<van-checkbox :value="isCheckAll" @change="allCheck" style="margin-right: 20upx;z-index: 100;"></van-checkbox>
-					</view>
-					<!-- #endif -->
-					<!-- #ifdef MP-WEIXIN -->
-					<view class="uni-inline-item">
-						<van-checkbox :value="isCheckAll" @change="allCheck" style="margin-right: 20upx;z-index: 100;"></van-checkbox>
-					</view>
-					<!-- #endif -->
 					<view class="allText">全选</view>
 				</view>
 				<view class="total-price" v-if="rightText=='编辑'">
