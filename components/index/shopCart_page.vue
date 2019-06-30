@@ -107,12 +107,8 @@
 				allPrice: 0, 
 			};
 		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
-		onPullDownRefresh() {
-			setTimeout(() => {
-				uni.stopPullDownRefresh();
-			}, 1000);
-		},
+		//下下拉刷新，在组件中不支持onPullDownRefresh触发下拉刷新，改写成自定义方法pullDownRefresh
+		// onPullDownRefresh() {},
 		computed: {
 			...mapState(['hasLogin', 'userId','shopCart_store', 'titleNView']),
 			setStyle() {
@@ -133,6 +129,10 @@
 			init(){
 				// 获取购物车商品列表
 				this.getCartList();
+			},
+			// 自定义方法刷新，在index.vue首页文件中调用
+			pullDownRefresh() {
+				this.init()
 			},
 			//  购物车商品列表分两步查询，先查询产品ids，再通过ids查询产品详细信息
 			// 先查询产品ids

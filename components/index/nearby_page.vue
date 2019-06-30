@@ -126,25 +126,24 @@
 			};
 		},
 		created() {
-			// #ifdef APP-PLUS
-			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
-			const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 126;
-			util.setRefreshMode(true, offset);
-			// #endif
-			this.swiperList = swiperList;
-			this.getPosition();
+			this.init()
 		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
-		onPullDownRefresh() {
-			this.shopList =  [];
-			this.swiperList = [];
-			setTimeout(() => {
+		//下拉刷新，在组件中不支持onPullDownRefresh触发下拉刷新，改写成自定义方法pullDownRefresh
+		// onPullDownRefresh() {},
+		methods: {
+			init(){
+				// #ifdef APP-PLUS
+				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 126;
+				util.setRefreshMode(true, offset);
+				// #endif
 				this.swiperList = swiperList;
 				this.getPosition();
-				uni.stopPullDownRefresh();
-			}, 1000);
-		},
-		methods: {
+			},
+			// 自定义方法刷新，在index.vue首页文件中调用
+			pullDownRefresh() {
+				this.init()
+			},
 			// 获取当前地图定位
 			getPosition(){
 				uni.showLoading({

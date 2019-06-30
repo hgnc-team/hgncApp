@@ -1,10 +1,10 @@
 <template>
 	<view class="indexPage">
-		<homePage v-if="page_code=='home'"></homePage>
-		<nearbyPage v-if="page_code=='nearby'"></nearbyPage>
-		<vipCenterPage v-if="page_code=='vipCenter'"></vipCenterPage>
-		<shopCartPage v-if="page_code=='shopCart'"></shopCartPage>
-		<minePage v-if="page_code=='mine'"></minePage>
+		<homePage v-if="page_code=='home'" ref="homePageRef"></homePage>
+		<nearbyPage v-if="page_code=='nearby'" ref="nearbyRef"></nearbyPage>
+		<vipCenterPage v-if="page_code=='vipCenter'" ref="vipCenterRef"></vipCenterPage>
+		<shopCartPage v-if="page_code=='shopCart'" ref="shopCartRef"></shopCartPage>
+		<minePage v-if="page_code=='mine'" ref="mineRef"></minePage>
 		<footerNav></footerNav>
 	</view>
 </template>
@@ -39,10 +39,24 @@
 		onReady() {
 			
 		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			//  自定义组件模式  在组件中不支持onPullDownRefresh触发下拉刷新
+			if(this.page_code == 'home') {
+				this.$refs.homePageRef.pullDownRefresh()
+			} else if(this.page_code == 'nearby') {
+				this.$refs.nearbyRef.pullDownRefresh()
+			} else if(this.page_code == 'vipCenter') {
+				// this.$refs.vipCenterRef.pullDownRefresh()
+			} else if(this.page_code == 'shopCart') {
+				this.$refs.shopCartRef.pullDownRefresh()
+			} else if(this.page_code == 'mine') {
+				// this.$refs.mineRef.pullDownRefresh()
+			}
+		},
 		methods: {
 			
-		},
-		
+		}	
 	}
 </script>
 

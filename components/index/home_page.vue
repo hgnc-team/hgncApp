@@ -105,7 +105,6 @@
 			uniBadge,
 			mpvuePicker,
 			customSwiper,
-			// dropDownRefresh
 		},
 		data() {
 			return {
@@ -152,32 +151,10 @@
 
 			};
 		},
-		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 pullToRefresh
-		onPullDownRefresh() {
-			console.log(233333333333333333)
-			this.dataList[this.tabIndex].data = [];
-			this.dataList[this.tabIndex].swiperList = [];
-			this.dataList[this.tabIndex].loadingText = '',
-				setTimeout(() => {
-					if (this.dataList[this.tabIndex].swiperList.length === 0) {
-						this.dataList[this.tabIndex].swiperList = this.swiperList;
-					}
-					if (this.dataList[this.tabIndex].data.length === 0) {
-						this.addData(this.tabIndex)
-					}
-
-					let timer = setTimeout(() => {
-						this.load();
-						timer = null;
-					}, 100)
-					console.log(3444444444444)
-					uni.stopPullDownRefresh();
-				}, 1000);
-		},
-		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
-		onReachBottom() {
-			// uni.showToast({title: '触发上拉加载'});
-		},
+		//下拉刷新，在组件中不支持onPullDownRefresh触发下拉刷新，改写成自定义方法pullDownRefresh
+		// onPullDownRefresh() {},
+		//上拉加载，使用scroll-view 上面的@scrolltolower方法去实现
+		// onReachBottom() {},
 		methods: {
 			init() {
 				// 获取设备高度
@@ -186,6 +163,25 @@
 				this.initBar();
 				// 获取当前地图定位
 				// this.getPosition();
+			},
+			// 自定义方法刷新，在index.vue首页文件中调用
+			pullDownRefresh() {
+				this.dataList[this.tabIndex].data = [];
+				this.dataList[this.tabIndex].swiperList = [];
+				this.dataList[this.tabIndex].loadingText = '',
+					setTimeout(() => {
+						if (this.dataList[this.tabIndex].swiperList.length === 0) {
+							this.dataList[this.tabIndex].swiperList = this.swiperList;
+						}
+						if (this.dataList[this.tabIndex].data.length === 0) {
+							this.addData(this.tabIndex)
+						}
+						let timer = setTimeout(() => {
+							this.load();
+							timer = null;
+						}, 100)
+						uni.stopPullDownRefresh();
+					}, 1000);
 			},
 			// 获取当前地图定位
 			// getPosition(){
@@ -206,7 +202,6 @@
 			isSupportRefresh() {
 				// 获取内容主体的高度
 				uni.createSelectorQuery().in(this).select(`.list${this.tabIndex}`).scrollOffset((res) => {
-					// console.log("竖直滚动位置" + res.scrollTop);
 					// 滚动到顶部才开启
 					let isSupport = res.scrollTop === 0 ? true : false;
 					// #ifdef APP-PLUS
@@ -258,7 +253,6 @@
 							loaded: false
 						})
 					});
-					// console.log(tempArr)
 					this.dataList[0].data = tempArr
 					this.dataList[0].swiperList = this.swiperList
 					let timer = setTimeout(() => {
@@ -266,28 +260,6 @@
 						timer = null;
 					}, 100)
 				}
-				// 	this.tabBars = cateList;
-				// 
-				// 	this.dataList = this.randomfn();
-				// .then(res=>{
-				// 	uni.hideLoading();
-				// 	let data = res.data.data;
-				// 	this.tabBars = data;
-				// 	this.isShowSubCategoryNav = true;
-				// 	this.dataList = this.randomfn();
-				// // 	// 加载第一个分类下的产品数据
-				// // 	// console.log(res)
-				// 	let timer = setTimeout(()=>{
-				// 		this.load();
-				// 		timer = null;
-				// 	},100)
-				// }).catch(err=>{
-				// 	uni.hideLoading();
-				// 	uni.showToast({
-				// 		icon:"none",
-				// 		title: "获取顶部导航数据失败"
-				// 	})
-				// })
 			},
 			getProdListByType(params) {
 				return new Promise((resolve, reject) => {
@@ -323,7 +295,6 @@
 				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
 				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
 				util.setRefreshMode(true, offset);
-				// console.log(e);
 			},
 			//消息页跳转
 			goMessagesPage() {
@@ -355,10 +326,10 @@
 			},
 			// 加载更多
 			loadMore(e) {
-				// setTimeout(() => {
+				// 加载数据
 				this.addData(e);
-				// }, 500);
 				let timer = setTimeout(() => {
+					// 加载图片
 					this.load();
 					timer = null;
 				}, 30)
@@ -372,7 +343,6 @@
 					page: parseInt(this.dataList[e].data.length / 8) + 1,
 					pageSize: 8,
 				});
-				// console.log(productList)
 				if (productList.total <= this.dataList[e].data.length) {
 					this.dataList[e].loadingText = '没有更多了';
 					return;

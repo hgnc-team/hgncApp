@@ -18,26 +18,12 @@
 				// app中不展示title标签
 				"app-plus": {
 					"titleNView": false,
+					"bounce": "none", //关闭窗口回弹效果
 					"pullToRefresh": {
 						"support": true,
 						"style": "circle",
 						"color": "#4c9bfa"
-						// "range": "10%"
-// 						"height": "88px",
-// 						"offset": "10%",
-// 						"contentdown": {
-//                             "caption": "下拉可刷新自定义文本"
-//                         },
-//                         "contentover": {
-//                             "caption": "释放可刷新自定义文本"
-//                         },
-//                         "contentrefresh": {
-//                             "caption": "正在刷新自定义文本"
-//                         }
 					}
-				},
-				"usingComponents": {
-					"van-checkbox": "/wxcomponents/vant/checkbox/index"
 				}
 			}
 		},
