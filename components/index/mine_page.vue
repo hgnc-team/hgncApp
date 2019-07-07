@@ -123,8 +123,7 @@
 			
 			// 刷新用户信息
 			this.refreshMemberInfo();
-			this.updataOrderList();
-			console.log(this.dfk_num)
+			this.getOrderNumList();
 		},
 		onLoad() {
 			// 关闭刷新
@@ -136,7 +135,7 @@
 			// #endif
 		},
 		methods: {
-			...mapActions(["updataOrderList"]),
+			...mapActions(["getOrderNumList"]),
 			refreshMemberInfo() {
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',

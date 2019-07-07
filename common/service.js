@@ -404,6 +404,26 @@ const getOrderList = function(params) {
 }
 
 /**     
+  * @method 订单数量统计  
+  * @param {String} userId  用户id 
+  * @param ，订单状态枚举
+* 			"0"为待付款，
+			"1"为已付款待发货，
+			"2"为已发货待收货，
+			"d"为确认收货已完成(done)交易成功状态
+			"c"为未付款订单已取消(cancel)状态,
+			"n"为已付款订单取消未退款状态
+			"a"为已付款订单取消已退款状态
+			其中流程已结束的订单状态为 d,c,a
+  **/
+const getOrderNumList = function(params) {
+	let data = {
+		userId: params.userId || vm.$store.state.userId,
+	}
+	return vm.$http.post('/v1/api/order/num', data)
+}
+
+/**     
   * @method 删除订单  
   * @param {String} userId  用户id 
   * @param {Array} goodsId  商品id【选填】  当一个订单下有多个商品时，传goodsId用来区分不同商品
@@ -668,6 +688,7 @@ const MINE_MODULE = {
 	addAddress,
 	deleteAddress,
 	getOrderList,
+	getOrderNumList,
 	deleteOrder,
 	receivedOrder,
 	getOrderDetail,
