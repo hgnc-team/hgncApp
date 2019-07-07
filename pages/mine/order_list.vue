@@ -18,9 +18,9 @@
 
 						</view>
 						<view class="title uni-h5 uni-flex-item">
-							<view class="">
+							<!-- <view class="">
 								{{item.detail}}
-							</view>
+							</view> -->
 						</view>
 						<view class="status uni-inline-item">
 							{{item.statusText}}
@@ -30,29 +30,35 @@
 						<view class="image uni-inline-item">
 							<image :src="item.imageUrl" mode="aspectFit"></image>
 						</view>
-						<view class="info uni-flex-item">
-							<view class="name uni-h5">
-								<text style="color:#242424;font-weight:bold;">{{item.title}}</text><text style="color:#aaa;font-size:20upx;margin-left:10upx;">X1</text>
-								<view class="total-price">
-									￥<text>{{item.price}}</text>
+						<view class="info uni-flex-item uni-flex uni-column">
+							<view class="name uni-h5 uni-flex-item uni-flex">
+								<text class="title uni-flex-item">{{item.title}}</text>
+								<text class="num uni-inline-item">X{{item.num}}</text>
+								<view class="total-price uni-inline-item">
+									￥{{item.price}}
 								</view>
 							</view>
-							<view class="code uni-text-small text-color-gray uni-column uni-flex">
-								<text>订单编号: {{item.orderNum}}</text>
-								<text>订单时间: {{item.orderTime}}</text>
+							<view class="code uni-flex-item uni-text-small text-color-gray uni-column uni-flex">
+								<text>订单编号: {{item.id}}</text>
+								<text>订单时间: {{item.orderCreateTime}}</text>
 								<text style="line-height:1.4">送货地址: {{item.address}}</text>
 							</view>
 						</view>
 					</view>
-					<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;">
+					<!-- 订单可操作按钮 -->
+					<view class="btn">
 						<!-- 再来一单 -->
-						<button type="primary" v-if="item.status === 'd'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toGoodsDetail(item.goodsId)">再来一单</button>
+						<button type="primary" class="hasBuyAgainBtn" v-if="item.hasBuyAgainBtn" size="mini" @tap="toGoodsDetail(item.id)">再来一单</button>
 						<!-- 确认收货 -->
-						<button type="primary" v-if="item.status === '2'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item.goodsId)">确认收货</button>
+						<button type="primary" class="hasReceiptBtn" v-if="item.hasReceiptBtn"  size="mini" @tap="confirmHarvest(item, index)">确认收货</button>
 						<!-- 去付款 -->
-						<button type="primary" v-if="item.status === '0'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toPay(item)">去付款</button>
+						<button type="primary" class="toPayBtn" v-if="item.toPayBtn" size="mini" @tap="toPay(item)">去付款</button>
+						<!-- 删除 -->
+						<button type="primary" class="hasDeleteBtn" v-if="item.hasDeleteBtn" size="mini" @tap="deleteOrder(item, index)">删除</button>
+						<!-- 关闭 -->
+						<button type="primary" class="hasCloseBtn" v-if="item.hasCloseBtn" size="mini" @tap="closeOrder(item, index)">关闭</button>
 					</view>
-					
+
 				</view>
 			</block>
 			<!-- 暂无数据 -->
@@ -73,7 +79,11 @@
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	import noData from "../../components/common/no-data.vue";
-	import { mapMutations } from 'vuex';
+	import moment from "moment"
+	import {
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		components: {
 			uniTag,
@@ -120,19 +130,30 @@
 					uni.hideLoading();
 					let data = res.data.data.data;
 					if (data.length > 0) {
-						_.forEach(data, item => {
-							// // 拼接图片链接
-							item.imageUrl = util.setImageUrl({
-								type: "goods",
-								goodId: item.goodsId,
-								imageName: item.imageUrl
-							})[0].img
+						_.forEach(data, item => {							
+							// 处理订单时间
+							item.orderCreateTime = moment(item.createTime).format("YYYY年MM月DD日 HH:MM:SS");
+							// 判断订单是否过期,订单创建后半小时过期
+							item.isExpire = moment().isAfter(moment(item.createTime).add(30, 'm'));
+							// 收货地址怕拼接
+							item.address = `${item.province||''}${item.city||''}${item.region||''}${item.detail||''}`;
 							// 转换订单状态
-							item.statusText = this.traslateStatus(item.status, "TO-TEXT");
+							item.statusText = this.traslateStatus(item, "TO-TEXT");
 							// 待收获状态，有确认收货按钮（一键结束流程）
-							item.hasReceiptBtn = status === 2 ? true : false;
+							item.hasReceiptBtn = item.status === 2 ? true : false;
+							// 是否有删除按钮，已完成的订单可以删除
+							item.hasDeleteBtn = (item.status === '0' && item.isExpire) || item.status === 'a' || item.status === 'c' || item.status === 'd';
+							// 是否有关闭按钮，已完成的订单可以删除
+							item.hasCloseBtn = item.status === '0' && !item.isExpire  ? true : false;
+							// 是否有再来一单按钮
+							item.hasBuyAgainBtn = item.status === 'a' || item.status === 'c' || item.status === 'd';
+							// 是否有去付款
+							item.toPayBtn = item.status === '0' && !item.isExpire  ? true : false;
+
 						})
 						this.orderList = this.orderList.concat(data);
+					} else {
+						this.page--
 					}
 				}).catch(err => {
 					uni.hideLoading();
@@ -150,7 +171,7 @@
 					this.page = 1;
 					this.statusParam = this.traslateStatus(this.tabs.current);
 					this.orderList = [];
-					
+
 					this.getOrderList(this.statusParam);
 				}
 			},
@@ -167,17 +188,32 @@
 				})
 			},
 			// 确认收货
-			confirmHarvest(){
+			confirmHarvest(order, index) {
 				util.confirm({
 					title: '',
 					content: '是否确认收货',
 					success: () => {
-						console.log(123123123231)
+						uni.showLoading();
+						service.receivedOrder({orderId: order.id}).then(res => {
+							uni.hideLoading();
+							uni.showToast({
+								title: "收货成功"
+							})							
+							let item = Object.assign({}, this.orderList[index]);
+							item.statusText = "已收货";;
+						this.$set(this.orderList, index, item)
+						}).catch(err => {
+							uni.hideLoading();
+							uni.showToast({
+								icon: "none",
+								title: err.errMsg
+							})
+						})
 					}
 				})
 			},
 			// 去付款
-			toPay(data){
+			toPay(data) {
 				// 同步vuex  
 				let good = {
 					goodsId: data.goodsId,
@@ -186,12 +222,61 @@
 					standardId: data.id,
 					standardText: data.detail,
 					num: data.num,
-					price: data.price
+					prie: data.price
 				}
 				this.INIT_ORDER_lIST([good]);
 				uni.navigateTo({
 					url: `/pages/shopCart/order_pay?hadOrderId=true`
 				});
+			},
+			// 删除订单
+			deleteOrder(order, index){
+				util.confirm({
+					title: '',
+					content: '是否删除订单',
+					success: () => {
+						uni.showLoading();
+						service.deleteOrder({orderId: order.id}).then(res => {
+							uni.hideLoading();
+							uni.showToast({
+								title: "删除成功"
+							})	
+							// 手动删除并刷新列表
+							this.orderList = _.remove(this.orderList, (item, i) => index !== i);
+						}).catch(err => {
+							uni.hideLoading();
+							uni.showToast({
+								icon: "none",
+								title: err.errMsg
+							})
+						})
+					}
+				})
+			},
+			// 关闭订单
+			closeOrder(order, index){
+				util.confirm({
+					title: '',
+					content: '是否关闭订单',
+					success: () => {
+						uni.showLoading();
+						service.receivedOrder({orderId: order.id}).then(res => {
+							uni.hideLoading();
+							uni.showToast({
+								title: "关闭成功"
+							})							
+							let item = Object.assign({}, this.orderList[index]);
+							item.statusText = "已关闭";;
+						this.$set(this.orderList, index, item)
+						}).catch(err => {
+							uni.hideLoading();
+							uni.showToast({
+								icon: "none",
+								title: err.errMsg
+							})
+						})
+					}
+				})
 			},
 			// 转化status为对应的文字
 			// value-需要转化的值；mode-转化模式：TO-TEXT:状态码转文字，TO-PARAM: tab下标转为查询参数
@@ -233,9 +318,9 @@
 							break;
 					}
 				} else {
-					switch (value) {
+					switch (value.status) {
 						case "0":
-							tValue = "待付款";
+							tValue = value.isExpire ? "已失效" : "待付款";
 							break;
 						case "1":
 							tValue = "待发货";
@@ -354,23 +439,64 @@
 
 					.info {
 						margin-top: 18upx;
-
+						display: flex;
 						.name {
-
+							.title {
+								color:#242424;
+								font-weight:bold;
+								text-overflow: -o-ellipsis-lastline;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								display: -webkit-box;
+								-webkit-line-clamp: 2;
+								line-clamp: 2;
+								-webkit-box-orient: vertical;
+								/deep/ span{
+									    overflow: hidden;
+										-o-text-overflow: ellipsis;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-line-clamp: 2;
+										line-clamp: 2;
+										-webkit-box-orient: vertical;
+								}
+							}
+							.num{
+								color:#aaa;
+								font-size:20upx;
+								margin:0upx 20upx;
+							}
 							// 合计的价格
 							.total-price {
-								float: right;
 								font-weight: bold;
 								color: #1c5ef0;
 							}
 						}
 					}
 				}
-				.btn{
-					button{
-						&::after{
+
+				.btn {
+					text-align: right;
+					line-height: 1;
+					padding: 30upx 0;
+					margin-top: 14upx;
+					
+					button {
+						border: 1upx solid #c6c6c6;
+						color: #242424;
+						background-color: #fff;
+						border-radius: 0;
+						font-weight: bold;
+						margin: 10upx;
+						&::after {
 							border-radius: 0;
 						}
+					}
+					.hasBuyAgainBtn, .hasBuyAgainBtn, .hasBuyAgainBtn{
+						color: #1c5ef0;
+					}
+					.hasDeleteBtn, .hasCloseBtn{
+						color: #f44837;
 					}
 				}
 			}

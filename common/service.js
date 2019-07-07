@@ -401,9 +401,9 @@ const createOrder = function(params) {
   **/
 const getOrderList = function(params) {
 	let data = {
-		// userId: params.userId || vm.$store.state.userId,
-		// // userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
-		// status: params.status,
+		userId: params.userId || vm.$store.state.userId,
+		// userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
+		status: params.status,
 		page: params.page,
 		pageSize: params.pageSize
 	}
@@ -470,6 +470,18 @@ const receivedOrder = function(params) {
 		orderId: params.orderId
 	}
 	return vm.$http.post('/v1/api/order/received', data)
+}
+
+/**     
+  * @method 关闭未支付的订单  
+  * @param {Array} orderId  订单id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const closeOrder = function(params) {
+	let data = {
+		orderId: params.orderId
+	}
+	return vm.$http.post('/v1/api/order/close', data)
 }
 
 /**     
@@ -699,6 +711,7 @@ const MINE_MODULE = {
 	getOrderNumList,
 	deleteOrder,
 	receivedOrder,
+	closeOrder,
 	getOrderDetail,
 	setSecondaryPwd,
 	changeSecondaryPwd,
