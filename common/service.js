@@ -122,6 +122,13 @@ const refleshToken = function(params) {
 }
 
 /**     
+  * @method 根据token，返回当前user信息     
+  **/
+const refleshUserInfo = function(params) {
+	return vm.$http.post('/v1/api/user/me', {})
+}
+
+/**     
   * @method 获取商品顶级分类列表   
   * @param {String} classScheme   cat1  
   * @return {promise} 返回一个promise对象     
@@ -394,9 +401,9 @@ const createOrder = function(params) {
   **/
 const getOrderList = function(params) {
 	let data = {
-		userId: params.userId || vm.$store.state.userId,
-		// userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
-		status: params.status,
+		// userId: params.userId || vm.$store.state.userId,
+		// // userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
+		// status: params.status,
 		page: params.page,
 		pageSize: params.pageSize
 	}
@@ -651,7 +658,8 @@ const LOGIN_MODULE = {
 	getSms,
 	reSetPwd,
 	changeBindPhone,
-	refleshToken
+	refleshToken,
+	refleshUserInfo
 }
 const HOME_MODULE = {
 	getGoodTopClass,

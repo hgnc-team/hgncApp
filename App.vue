@@ -55,6 +55,7 @@
 				// 同步store里面的用户名称，等级
 				this.LOGIN(userInfo);	
 			}
+			this.refleshUserInfo();
 			this.getConfigs();
 		},
 		onShow: function() {
@@ -68,7 +69,24 @@
 		// 	console.log(err)
 		// },
 		methods: {
-			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST', 'SET_CONFIGS']),
+			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST', 'REFLESH_USER_INFO', 'SET_CONFIGS']),
+			// 刷新用户信息
+			refleshUserInfo(){
+				uni.showLoading({
+					title: "加载中"
+				})
+				service.refleshUserInfo().then(res=>{
+					uni.hideLoading();
+					let data = res.data.data;
+					this.REFLESH_USER_INFO(data);
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg,
+					})
+				})
+			},
 			// 获取后台相关配置
 			getConfigs(){
 				uni.showLoading({

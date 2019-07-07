@@ -268,6 +268,7 @@ const setRefreshMode = function(isSupport, offset) {
 		pullToRefresh: {
 			support: isSupport,
 			offset: _offset, //仅对"circle"样式下拉刷新控件有效
+			"bounce": "none",
 			"style": "circle",
 			"color": "#4c9bfa"
 		}
