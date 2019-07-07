@@ -36,7 +36,7 @@
 						我的积分
 					</view>
 					<view class="bottom">
-						999
+						{{comPoint}}
 					</view>
 				</view>
 				<view class="row-item uni-flex-item uni-center">
@@ -56,7 +56,7 @@
 						M币钱包>
 					</view>
 					<view class="bottom">
-						9999.99枚
+						{{gold}}枚
 					</view>
 				</view>
 			</view>
@@ -177,22 +177,12 @@
 						extra:{},
 						isShowExtra: false,
 						isShowArrow: true,
-					},
-					{
-						title: '实体加盟',
-						iconfont: 'iconjoin',
-						extra:{
-							text: '需实名认证',
-							color: "#ff8c4f"
-						},
-						isShowExtra: true,
-						isShowArrow: true,
 					}
 				]
 			};
 		},
 		computed: {
-			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode', 'customerTelephone']),
+			...mapState(['userName', 'userLevel', 'userFace', 'userPhone', 'userInviteCode', 'comPoint', 'gold', 'customerTelephone', 'isStoreOwner']),
 			// 
 			subTitle() {
 				let title = "";
@@ -227,8 +217,31 @@
 			init() {
 				// 查询今日释放积分
 				this.getReleaseGold();
-				// 判断当前用户是否，已经进行实名认证了
+				// 根据用户是否实名认证，设置底部跳转列表
+				this.setPageList();
 				
+				
+			},
+			// 设置底部跳转列表
+			setPageList(){
+				let item = this.isStoreOwner ? {
+					title: '店铺管理',
+					iconfont: 'icondianpu',
+					extra:{},
+					isShowExtra: false,
+					isShowArrow: true,
+					
+				} : {
+					title: '实体加盟',
+					iconfont: 'iconjoin',
+					extra:{
+						text: '需实名认证',
+						color: "#ff8c4f"
+					},
+					isShowExtra: true,
+					isShowArrow: true,
+				}
+				this.pageList.push(item)
 			},
 			// 查询今日释放积分
 			getReleaseGold(){

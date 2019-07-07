@@ -10,7 +10,7 @@
 						我的积分
 					</view>
 					<view class="bottom uni-text-small">
-						{{jfValue}}
+						{{comPoint}}
 					</view>
 				</view>
 			</view>
@@ -21,7 +21,7 @@
 						今日释放积分
 					</view>
 					<view class="bottom uni-text-small">
-						{{jfValue}}枚
+						{{releasedToday}}枚
 					</view>
 				</view>
 			</view>
@@ -32,7 +32,7 @@
 						M币钱包
 					</view>
 					<view class="bottom uni-text-small">
-						{{mbValue}}枚
+						{{gold}}枚
 					</view>
 				</view>
 			</view>
@@ -110,20 +110,26 @@
 					</view>
 				</view>
 				<!-- 内容 -->
-				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
-					<view class="time">
-						{{item.time}}
+				<block v-if="!hasNoData">
+					<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
+						<view class="time">
+							{{item.time}}
+						</view>
+						<view class="changed">
+							+{{item.changed}}
+						</view>
+						<view class="balance">
+							{{item.balance}}
+						</view>
+						<view class="remark">
+							{{item.remark}}
+						</view>
 					</view>
-					<view class="changed">
-						+{{item.changed}}
-					</view>
-					<view class="balance">
-						{{item.balance}}
-					</view>
-					<view class="remark">
-						{{item.remark}}
-					</view>
-				</view>
+				</block>
+				<!-- 暂无数据 -->
+				<block v-if="hasNoData">
+					<noData :text="noDataText"></noData>
+				</block>
 			</view>
 		</view>
 		<!-- 返回顶部 -->
@@ -139,21 +145,21 @@
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	import service from "../../common/service.js";
-
+	import noData from "../../components/common/no-data.vue";
+	import {
+		mapState
+	} from 'vuex';
 	export default {
 		components: {
 			uniIcon,
 			MxDatePicker,
-			scrollToTop
+			scrollToTop,
+			noData
 		},
 		data() {
 			return {
-				// 我的积分
-				jfValue: 0,
 				// 今日释放积分
 				releasedToday: 0,
-				// M币钱包
-				mbValue: 0,
 				showPicker: false,
 				// 开始时间
 				startDate: '2019年/01月/01日',
@@ -174,7 +180,8 @@
 				// 数据列表
 				dataList: [],
 				page: 1,
-				pageSize: 10
+				pageSize: 10,
+				noDataText: "暂无相关数据"
 			}
 		},
 		onPageScroll(e) {
@@ -185,14 +192,14 @@
 			this.getDataList();
 		},
 		computed: {
-			isNumInvaild() {
-				return this.mbValue - 0 < this.num - 0
+			...mapState([ 'comPoint', 'gold']),
+			// 是否有数据
+			hasNoData() {
+				return this.dataList.length === 0;
 			}
 		},
 		methods: {
 			init() {
-				this.mbValue = 10299.99;
-				// 获取我的积分
 				// 获取今日释放积分
 				this.getReleaseGold();
 				// 获取M币钱包

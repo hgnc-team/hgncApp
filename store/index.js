@@ -27,8 +27,14 @@ const store = new Vuex.Store({
 		userInviteCode: '',
 		// 商品积分率
 		gobalPointRate: 0,
+		// 普通积分
+		comPoint: 0,
+		// 专用积分
+		gold: 0,
 		// 客服电话
 		customerTelephone: "",
+		// 是否开店
+		isStoreOwner: false,
 		// 图片地址域名
 		imageDomain: "",
 		// 是否校验用户二级密码
@@ -51,7 +57,24 @@ const store = new Vuex.Store({
 			state.userPhone = data.phone;
 			state.userInviteCode = data.inviteCode;
 			state.secondaryPwd = data.secondaryPwd;
+			state.comPoint = data.comPoint;
+			state.gold = data.gold;
 		    state.hasLogin = true;
+			state.isStoreOwner = data.storeOwner === 0 ? false : true;
+		},
+		// 刷新用户信息	
+		REFLESH_USER_INFO(state, data) {
+			state.userName = data.userName || 'PY_'+ data.phone;
+			state.userLevel = data.role;
+			state.userId = data.id;
+			state.userFace = data.face || '/static/HM-PersonalCenter/face_default.png';
+			state.userPhone = data.phone;
+			state.userInviteCode = data.inviteCode;
+			state.secondaryPwd = data.secondaryPwd;
+			state.comPoint = data.comPoint;
+			state.gold = data.gold;
+			state.hasLogin = true;
+			state.isStoreOwner = data.storeOwner === 0 ? false : true;
 		},
 		// 后台相关配置
 		SET_CONFIGS(state, data){
