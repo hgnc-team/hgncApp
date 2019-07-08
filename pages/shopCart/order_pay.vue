@@ -97,7 +97,7 @@
 							支付宝支付
 						</view>
 					</view>
-					<view class="uni-flex-item  uni-flex flex-right">
+					<view class="uni-inline-item  uni-flex flex-right">
 						<view class="checkbox uni-inline-item">
 							<radio value="alipay" :checked="payType === 'alipay'" ></radio>
 						</view>
@@ -107,10 +107,10 @@
 					<view class="title uni-flex uni-flex-item">
 						<view class="iconfont iconicon_integral uni-inline-item"></view>
 						<view class="name uni-inline-item">
-							积分支付（余额{{jBalance}}）
+							积分支付（余额{{comPoint}}）
 						</view>
 					</view>
-					<view class="uni-flex-item  uni-flex flex-right">
+					<view class="uni-inline-item  uni-flex flex-right">
 						<text class="uni-inline-item red" v-if="!isJfPayAvailable">余额不足</text>
 						<view class="checkbox uni-inline-item">
 							<radio value="jf" :checked="payType === 'jf'" :disabled="!isJfPayAvailable"></radio>
@@ -121,10 +121,10 @@
 					<view class="title uni-flex uni-flex-item">
 						<view class="iconfont iconicon_m uni-inline-item"></view>
 						<view class="name uni-inline-item">
-							M币支付（余额{{mBalance}}）
+							M币支付（余额{{gold}}）
 						</view>
 					</view>
-					<view class="uni-flex-item  uni-flex flex-right">
+					<view class="uni-inline-item  uni-flex flex-right">
 						<text class="uni-inline-item red" v-if="!isMbPayAvailable">余额不足</text>
 						<view class="checkbox uni-inline-item">
 							<radio value="mb" :checked="payType === 'mb'"  :disabled="!isMbPayAvailable"></radio>
@@ -161,17 +161,13 @@
 			return {
 				// 支付方式
 				payType: "alipay",
-				// 积分余额
-				jBalance: 0,
-				// m币余额
-				mBalance: 0,
 				// 货币单位
 				unit: '元'
 			}
 		},
 		computed: {
 			// 注入vuex的计算方法
-			...mapState(["userId"]),
+			...mapState(["userId", "comPoint", "gold"]),
 			...mapGetters(["getAddressList", "getOrderList"]),
 			// 默认地址
 			address(){
@@ -186,17 +182,17 @@
 			},
 			// 积分是否可用
 			isJfPayAvailable() {
-				return this.jBalance >= this.totalPrice; 
+				return this.comPoint >= this.totalPrice; 
 			},
 			// M币是否可用
 			isMbPayAvailable() {
-				return this.mBalance >= this.totalPrice; 
+				return this.gold >= this.totalPrice; 
 			}			
 		},
 		methods: {
 			init(){
-				this.jBalance = 450;
-				this.mBalance = 9999;
+				this.comPoint = 450;
+				this.gold = 9999;
 			},
 			// 去地址管理页面
 			toAddress(){
