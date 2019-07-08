@@ -88,6 +88,9 @@
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	import moment from "moment";
+	import {
+		mapMutations
+	} from 'vuex';
 	export default {
 		components: {
 			uniIcon,
@@ -99,44 +102,13 @@
 				orderDetail: {},
 				// 提示
 				notice: "为了您的财产安全，不要点击陌生连接，不要向任何人透露银行卡或验证码信息，谨防诈骗！",
-				// // 商店名称
-				// shopName: "",
-				// // 商店id
-				// shopId: "",
-				// tags: "",
-				// // 订单状态码
-				// orderStatus: "",
-				// // 商品标题
-				// goodsTitle: "",
-				// // 商品id
-				// goodsId: "",
-				// // 商品单价
-				// goodsPrice: "",
-				// // 商品数量
-				// num: 1,
-				// // 商品图片
-				// imgUrl: "",
-				// // 订单编号
-				// orderCode: "",
-				// // 订单时间
-				// orderTime: "",
-				// // 支付方式
-				// payType: "",
-				// // 支付时间
-				// payTime: "",
-				// // 商品总额
-				// totalPrice: "",
-				// // 运费
-				// 
-				// // 实付款
-				// actualPayment: ""
-
 			}
 		},
 		computed: {
 
 		},
 		methods: {
+			...mapMutations(['INIT_ORDER_lIST']),
 			init() {
 
 				this.getOrderDetail();
@@ -443,13 +415,12 @@
 					margin-top: 14upx;
 
 					button {
-						border: 1upx solid #c6c6c6;
 						color: #242424;
 						background-color: #fff;
-						border-radius: 0;
 						font-weight: bold;
 						margin: 10upx;
-
+						border-radius: 4upx;
+						box-shadow: 1upx 1upx 1upx 1upx #eee;
 						&::after {
 							border-radius: 0;
 						}
