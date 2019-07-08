@@ -48,7 +48,7 @@
 					<!-- 订单可操作按钮 -->
 					<view class="btn">
 						<!-- 再来一单 -->
-						<button type="primary" class="hasBuyAgainBtn" v-if="item.hasBuyAgainBtn" size="mini" @tap="toGoodsDetail(item.id)">再来一单</button>
+						<button type="primary" class="hasBuyAgainBtn" v-if="item.hasBuyAgainBtn" size="mini" @tap="toGoodsDetail(item.goodsId)">再来一单</button>
 						<!-- 确认收货 -->
 						<button type="primary" class="hasReceiptBtn" v-if="item.hasReceiptBtn"  size="mini" @tap="confirmHarvest(item, index)">确认收货</button>
 						<!-- 去付款 -->
@@ -79,7 +79,7 @@
 	import service from '../../common/service.js';
 	import util from "../../common/util.js";
 	import noData from "../../components/common/no-data.vue";
-	import moment from "moment"
+	import moment from "moment";
 	import {
 		mapMutations
 	} from 'vuex';
@@ -100,7 +100,8 @@
 				// 状态查询字段
 				statusParam: "",
 				page: 1,
-				noDataText: "暂无订单相关数据"
+				noDataText: "暂无订单相关数据",
+				isDoRefresh: false
 			}
 		},
 		computed: {
@@ -182,9 +183,9 @@
 				})
 			},
 			// 商品详情
-			toGoodsDetail() {
+			toGoodsDetail(id) {
 				uni.navigateTo({
-					url: "/pages/home/goods_detail"
+					url: `/pages/home/goods_detail?id=${id}`
 				})
 			},
 			// 确认收货
@@ -354,8 +355,22 @@
 			this.statusParam = this.traslateStatus(this.tabs.current);
 			// 初始化页面数据
 			this.getOrderList(this.statusParam);
+			
+			
+			
 		},
-
+		onShow(){
+			// 从订单详情页面返回到这个页面的时候刷新数据
+			var pages = getCurrentPages();
+			var currPage = pages[pages.length - 1]; //当前页面
+			if (currPage.data.isDoRefresh == true){
+				currPage.data.isDoRefresh = false;
+				// 初始化状态字段
+				this.statusParam = this.traslateStatus(this.tabs.current);
+				// 初始化页面数据
+				this.getOrderList(this.statusParam);
+			}
+		}
 	}
 </script>
 
@@ -470,6 +485,7 @@
 							.total-price {
 								font-weight: bold;
 								color: #1c5ef0;
+								align-items: baseline;
 							}
 						}
 					}
