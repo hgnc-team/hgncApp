@@ -118,6 +118,7 @@
 	} from '@dcloudio/uni-ui';
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
+	import service from "../../common/service.js";
 	export default {
 		components: {
 			uniIcon,
@@ -125,6 +126,8 @@
 		},
 		data() {
 			return {
+				// 查询人id
+				userId: '',
 				// 总成交额
 				totalTurnover: 0,
 				// 团队人数
@@ -159,6 +162,7 @@
 		},
 		methods: {
 			init() {
+				// 初始化总交易额
 				this.initInfo();
 				this.initTime();
 			},
@@ -169,7 +173,7 @@
 				this.todayInvit = 399;
 				
 				// 默认搜索
-				this.getdata();
+				this.getdata(true);
 			},
 			// 初始化时间
 			initTime(){
@@ -197,8 +201,8 @@
 			// 查询
 			search(){
 				// 结束时间不早于开始时间
-				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
-				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let start = moment(this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "")).valueOf();
+				let end =  moment(this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "")).valueOf();
 				if(moment(end).isBefore(start)) {
 					uni.showToast({
 						icon: "none",
@@ -207,12 +211,29 @@
 				}
 				
 				// 
-				this.getdata();
+				this.getdata(false, start, end);
 			},
-			getdata(){
-				this.totalTurnoverInPeriod = 3230;
-				this.invitNumInPeriod = 240;
-				this.addedScore = 435340;
+			// 获取数据
+			getdata(isGetAll, start, end){
+				uni.showLoading()
+				let params = {
+					userId: this.userId,
+					start: isGetAll ? '' : start + '',
+					end: isGetAll ? '' : end + ''
+				}
+				service.getMyTeamPerformancem(params).then(res=>{
+					uni.hideLoading();
+					console.log(res.data)
+					this.totalTurnoverInPeriod = 3230;
+					this.invitNumInPeriod = 240;
+					this.addedScore = 435340;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 			}
 		},
 		onLoad(options) {
@@ -221,6 +242,7 @@
 				uni.setNavigationBarTitle({
 					title: "经理业绩查询"
 				})
+				this.userId = options.role;
 			}
 			this.init();
 		}

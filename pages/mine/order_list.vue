@@ -498,12 +498,11 @@
 					margin-top: 14upx;
 					
 					button {
-						// border: 1upx solid #c6c6c6;
 						color: #242424;
 						background-color: #fff;
-						border-radius: 4upx;
 						font-weight: bold;
 						margin: 10upx;
+						border-radius: 4upx;
 						box-shadow: 1upx 1upx 1upx 1upx #eee;
 						&::after {
 							border-radius: 0;

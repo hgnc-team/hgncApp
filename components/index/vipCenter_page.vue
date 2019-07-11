@@ -95,16 +95,6 @@
 			</view>
 			<!-- 销售经理以上才展示 -->
 			<view class="row uni-flex" v-if="userLevel > 1">
-				<view class="row-item uni-flex-item uni-center" @tap="toFundManagement">
-					<view class="iconfont iconcommission flex-center-center">
-					</view>
-					<view class="top">
-						资金管理
-					</view>
-					<view class="bottom">
-						佣金提现
-					</view>
-				</view>
 				<view class="row-item uni-flex-item uni-center" @tap="toSalesManagement">
 					<view class="iconfont iconsale flex-center-center">
 					</view>
@@ -124,6 +114,16 @@
 					<view class="bottom">
 						业绩详情
 					</view>
+				</view>
+				<view class="row-item uni-flex-item uni-center" @tap="toFundManagement">
+					<!-- <view class="iconfont iconcommission flex-center-center">
+					</view>
+					<view class="top">
+						资金管理
+					</view>
+					<view class="bottom">
+						佣金提现
+					</view> -->
 				</view>
 			</view>
 		</view>
@@ -290,9 +290,9 @@
 			},
 			// 资金管理
 			toFundManagement() {
-				uni.navigateTo({
-					url: '../../vipCenter/fund_management'
-				})
+				// uni.navigateTo({
+				// 	url: '../../vipCenter/fund_management'
+				// })
 			},
 			// 销售管理
 			toSalesManagement() {

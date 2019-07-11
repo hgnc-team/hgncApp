@@ -640,11 +640,11 @@ const getMyTeamNum = function(params) {
   **/
 const getMyTeamPerformancem = function(params) {
 	let data = {
-		userId: vm.$store.state.userId,
+		userId: params.userId || vm.$store.state.userId,
 		start: params.start,
 		end: params.end
 	}
-	return vm.$http.post('/v1/api/user/myTeamPerformancem', data)
+	return vm.$http.post('/v1/api/user/myTeamPerformance', data)
 }
 
 /**     
@@ -660,6 +660,50 @@ const getMyTeamPoint = function(params) {
 		end: params.end
 	}
 	return vm.$http.post('/v1/api/user/user/myTeamPoint', data)
+}
+
+/**     
+  * @method 查找我的团队积分新增情况  
+  * @param {String} userId   用户id 必填
+  * @param {Number} start  开始时间 选填 
+  * @param {Number} end  结束时间 选填  
+  **/
+const getSalesDetail = function(params) {
+	let data = {
+		userId: params.userId || vm.$store.state.userId,
+		start: params.start,
+		end: params.end
+	}
+	return vm.$http.post('/v1/api/user/team/salesDetail', data)
+}
+
+/**     
+  * @method 开店实名认证  
+  * @param {String} name  用户真实姓名
+  * @param {String} ide  用户身份证号 
+  * @param {String} storeName  店名 
+  * @param {String} sex   性别：女‘0’，男‘1’，保密‘x’
+  * @param {Number} front  身份证正面  
+  * @param {Number} back  身份证反面 
+  * @param {String} license   经营执照
+  * @param {Number} entrust  委托书
+  * @param {Number} address  店铺地址
+  * @param {Number} email  邮箱 选填
+  **/
+const authentication = function(params) {
+	let data = {
+		name: params.name,
+		ide: params.ide,
+		storeName: params.storeName,
+		sex: params.sex,
+		front: params.front,
+		back: params.back,
+		license: params.license,
+		entrust: params.entrust,
+		address: params.address,
+		email: params.email
+	}
+	return vm.$http.post('/v1/api/user/store/apply', data)
 }
 
 const LOGIN_MODULE = {
@@ -693,7 +737,9 @@ const VIPCENTER_MODULE = {
 	getGroupMembers,
 	getMyTeamNum,
 	getMyTeamPerformancem,
-	getMyTeamPoint
+	getMyTeamPoint,
+	getSalesDetail,
+	authentication
 }
 const SHOPCART_MODULE = {
 	getCartList,

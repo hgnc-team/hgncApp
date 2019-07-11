@@ -128,6 +128,7 @@
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
+	import service from "../../common/service.js";
 	const dataList = [{
 					name: "张某",
 					time: "2019/04/07 23:23:19",
@@ -373,8 +374,8 @@
 			// 查询
 			search() {
 				// 结束时间不早于开始时间
-				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
-				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let start = moment(this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "")).valueOf();
+				let end =  moment(this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "")).valueOf();
 				if (moment(end).isBefore(start)) {
 					uni.showToast({
 						icon: "none",
@@ -383,7 +384,7 @@
 				}
 
 				//todo 执行查询操作
-				this.getDataList();
+				this.getDataList(false, start, end);
 
 			},
 			// 变更排序
@@ -401,13 +402,24 @@
 
 			},
 			// 获取数据
-			getDataList(){
+			getDataList(isGetAll, start, end){
 				uni.showLoading()
-				this.dataList = [];
-				setTimeout(()=>{
-					this.dataList = dataList;
+				let params = {
+					userId: this.userId,
+					start: isGetAll ? '' : start,
+					end: isGetAll ? '' : end
+				}
+				service.getSalesDetail(params).then(res=>{
 					uni.hideLoading();
-				}, 1000)
+					console.log(res.data)
+					this.dataList = res.data.data;
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 			},
 			touchS(e) {
 				startX = e.mp.changedTouches[0].clientX;

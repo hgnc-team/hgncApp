@@ -211,7 +211,7 @@
 				//获取当前时间
 				let now = moment();
 				// 结束时间为当前
-				this.endDate = now.format("YYYY年MM月DD日");
+				this.endDate = moment().format("YYYY年MM月DD日");
 				// 开始时间为7天前
 				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
 			},

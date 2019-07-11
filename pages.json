@@ -43,7 +43,7 @@
 				"navigationBarTitleText": "忘记密码"
 			}
 		}
-	],
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "M+",

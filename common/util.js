@@ -10,6 +10,7 @@ const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
  */
 import store from '../store/index.js';
 import _ from 'lodash';
+
 /**     
  * @method 表单优雅校验   
  * @param {String} error 错误提示  
@@ -105,6 +106,13 @@ const graceChecker = {
 					break;
 				case 'email':
 					var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+					if (!reg.test(data[rule[i].name])) {
+						this.error = rule[i].errorMsg;
+						return false;
+					}
+					break;
+				case 'card':
+					var reg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
 					if (!reg.test(data[rule[i].name])) {
 						this.error = rule[i].errorMsg;
 						return false;
