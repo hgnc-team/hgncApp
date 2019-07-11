@@ -32,8 +32,8 @@
 				<view class="title uni-inline-item text-color-gray">
 					<text class="required">*</text>商家名称:
 				</view>
-				<!-- <input class="uni-input uni-flex-item" type="text" v-model="storeName" name="storeName" /> -->
-				<input class="uni-input uni-flex-item" type="file" v-model="card" name="card" />
+				<input class="uni-input uni-flex-item" type="text" v-model="storeName" name="storeName" />
+				<!-- <input class="uni-input uni-flex-item" type="file" v-model="card" name="card" /> -->
 			</view>
 
 			<!-- 性别 -->
@@ -183,6 +183,7 @@
 		}
 	];
 	import uploadImage from '../../components/upload-image/upload-image.vue';
+	import service from "../../common/service.js";
 	import util from '../../common/util.js';
 	export default {
 		components: {
@@ -271,14 +272,18 @@
 				// 校验数据
 				let isUserInvalid = false;
 				_.forEach(checkList, (item) => {
+					// 邮箱非必填
+					if(item.name === 'email' && !this[item.name]) {
+						return false
+					}
 					const isValid = this.isValidFn(item.name, item.rules);
 					if (!isValid) {
-					    uni.showToast({
-					        icon: 'none',
-					        title: util.graceChecker.error
-					    });
+						uni.showToast({
+							icon: 'none',
+							title: util.graceChecker.error
+						});
 						isUserInvalid = true;
-					    return false;
+						return false;
 					}
 				});
 				if( isUserInvalid ) {
@@ -299,8 +304,9 @@
 				}
 				service.authentication(params).then(res=>{
 					uni.hideLoading();
-					console.log(res.data)
-					this.dataList = res.data.data;
+					uni.showToast({
+						title: '上传成功'
+					})
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({

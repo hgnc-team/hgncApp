@@ -56,18 +56,23 @@
 						this.imageSrc = imageSrc;
 						// console.log('chooseImage', res)
 						// console.log('imageSrc', imageSrc)
-						// this.readFile(imageSrc)
-						const uploadTask = uni.uploadFile({
-						  url : 'http://server.maiyidesan.cn/v1/api/user/store/apply',
-						  filePath: imageSrc,
-						  name: 'image',
-						  formData: {
-						   'user': 'test'
-						  },
-						  success: function (uploadFileRes) {
-						   console.log(uploadFileRes.data);
-						  }
-						 });
+						this.readFile(imageSrc)
+						// console.log(uni.getStorageSync('USER_TOKEN'))
+						// const uploadTask = uni.uploadFile({
+						//   url : 'https://www.example.com/upload',
+						//   filePath: imageSrc,
+						//   name: 'file',
+						//   formData: {
+						//    'user': 'test'
+						//   },
+						//   header:{
+						// 	  // "Content-Type": "multipart/form-data",
+						// 	  // 'Authorization': uni.getStorageSync('USER_TOKEN') || 'undefined'
+						// 	},
+						//   success: function (uploadFileRes) {
+						// 	console.log(uploadFileRes.data);
+						//   }
+						//  });
 					}
 				});
 			},
@@ -118,6 +123,7 @@
 			},
 			// 转化为文件
 			turnToFile(fs, oldFile) {
+				let vm = this
 				return new Promise((resolve, reject) => {
 					var reader = new plus.io.FileReader();
 					reader.readAsDataURL(oldFile)
@@ -127,24 +133,25 @@
 						console.log("11" + e);
 						console.log("evt.target" + e.target);
 						console.log(e.target.result);
-						// object专成file  
-						let file = (function(path, name) {
-							let arr = path.split(',')
-							let mime = arr[0].match(/:(.*?);/)[1]
-							let bstr = atob(arr[1])
-							let n = bstr.length
-							let u8arr = new Uint8Array(n)
-							while (n--) {
-								u8arr[n] = bstr.charCodeAt(n);
-							}
-							return new File([u8arr], name, {
-								type: mime
-							});
-						})(e.target.result, fs.name);
-						resolve({
-							data: data,
-							file: file
-						})
+						vm.$emit('getImage', e.target.result)
+						// // object专成file  
+						// let file = (function(path, name) {
+						// 	let arr = path.split(',')
+						// 	let mime = arr[0].match(/:(.*?);/)[1]
+						// 	let bstr = atob(arr[1])
+						// 	let n = bstr.length
+						// 	let u8arr = new Uint8Array(n)
+						// 	while (n--) {
+						// 		u8arr[n] = bstr.charCodeAt(n);
+						// 	}
+						// 	return new File([u8arr], name, {
+						// 		type: mime
+						// 	});
+						// })(e.target.result, fs.name);
+						// resolve({
+						// 	data: data,
+						// 	file: file
+						// })
 					};
 				})
 			}
@@ -180,7 +187,7 @@
 			.iconicon_fork_fill {
 				position: absolute;
 				right: 8upx;
-				top: 0upx;
+				top: -6upx;
 				color: #f44837;
 				opacity: 0.6;
 			}
