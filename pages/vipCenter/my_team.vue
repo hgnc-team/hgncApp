@@ -24,7 +24,7 @@
 					<view class="image uni-inline-item">
 						<image :src="item.imageUrl || '/static/HM-PersonalCenter/face_default.png'" mode="widthFix"></image>
 					</view>
-					<view class="info uni-flex-item uni-flex" @tap="toManagerAchievement">
+					<view class="info uni-flex-item uni-flex" @tap="toManagerAchievement(item.id)">
 						<view class="uni-flex-item uni-flex uni-column" style="justify-content: center;">
 							<view class="uni-flex uni-row" style="align-items: center;">
 								<text class="">{{item.name}}</text>
@@ -184,6 +184,7 @@
 			},
 			// 初始化list
 			initList() {
+				this.dataList = [];
 				uni.showLoading();
 				service.getGroupMembers({type: this.currentTab}).then(res => {
 						uni.hideLoading();
@@ -225,10 +226,10 @@
 			}
 		},
 		// 经理业绩查询
-		toManagerAchievement() {
+		toManagerAchievement(id) {
 			if (this.currentTab === "manager") {
 				uni.navigateTo({
-					url: "/pages/vipCenter/performance_management?role=manager"
+					url: `/pages/vipCenter/performance_management?role=manager&userId=${id}`
 				})
 			}
 		}

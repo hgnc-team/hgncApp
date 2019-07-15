@@ -242,7 +242,7 @@
 				uni.setNavigationBarTitle({
 					title: "经理业绩查询"
 				})
-				this.userId = options.role;
+				this.userId = options.userId;
 			}
 			this.init();
 		}
