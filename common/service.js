@@ -612,7 +612,8 @@ const getScoreHistory = function(params) {
   **/
 const getGroupMembers = function(params) {
 	let data = {
-		userId: vm.$store.state.userId
+		userId: params.userId || vm.$store.state.userId,
+		type: params.type
 	}
 	return vm.$http.post('/v1/api/user/groupMembers', data)
 }

@@ -34,7 +34,7 @@
 								</view>
 							</view>
 							<view class="uni-text-small text-color-gray">
-								ID: {{item.id}}
+								ID: {{item.inviteCode}}
 							</view>
 						</view>
 						<!-- 团队会员 -->
@@ -44,8 +44,8 @@
 							</view>
 						</block>
 						<!-- 销售经理 -->
-						<block v-if="currentTab==='manager' || currentTab==='majordomo'">
-							<view class="manager uni-flex-item uni-flex uni-column" :class="{'margin-right-30': currentTab==='majordomo'}">
+						<block v-if="currentTab==='manager' || currentTab==='director'">
+							<view class="manager uni-flex-item uni-flex uni-column" :class="{'margin-right-30': currentTab==='director'}">
 								<view class="uni-text-small text-color-gray" style="text-align: right;">
 									业绩：<text class="achievement">￥{{item.achievement}}</text>
 								</view>
@@ -103,7 +103,7 @@
 		},
 		{
 			name: "业务总监",
-			type: "majordomo"
+			type: "director"
 		}
 	]
 	export default {
@@ -126,13 +126,11 @@
 				majordomoList: [],
 				// 是否有数据
 				hasData: false,
+				dataList: []
 			}
 		},
 		computed: {
 			...mapState(["userLevel"]),
-			dataList() {
-				return this.getListByOrder();
-			},
 			totalNum() {
 				return this.dataList.length;
 			},
@@ -146,7 +144,7 @@
 						case "manager":
 							text = "您的团队中暂无销售经理"
 							break;
-						case "majordomo":
+						case "director":
 							text = "您的团队中暂无业务总监"
 							break;
 						default:
@@ -187,106 +185,17 @@
 			// 初始化list
 			initList() {
 				uni.showLoading();
-				service.getGroupMembers().then(res => {
+				service.getGroupMembers({type: this.currentTab}).then(res => {
 						uni.hideLoading();
 						let data = res.data.data;
 						console.log(data);
-						// if(data.length > 0) {
-						data = [{
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "辅导费",
-							id: 29472923,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "公公公",
-							id: 23455555,
-							createTime: 1554342330693,
-							userLevel: 2,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 3,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 2,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 3,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: "2099/04/15",
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}]
-						_.forEach(data, item => {
-							// 转化时间格式
-							console.log(item.createTime);
-							item.createTime = moment(item.createTime).format("YYYY/MM/DD");
-							console.log(item.createTime);
-							if (item.userLevel === 1) {
-								this.memberList.push(item)
-							} else if (item.userLevel === 2) {
-								this.managerList.push(item)
-							} else if (item.userLevel === 3) {
-								this.majordomoList.push(item)
-							}
-						})
-					// }
+						if(data.length > 0) {
+							_.forEach(data, item => {
+								// 转化时间格式
+								item.createTime = moment(item.createTime).format("YYYY/MM/DD");
+							})
+							this.dataList = data
+						}
 				}).catch(err => {
 				uni.hideLoading();
 				uni.showToast({
@@ -295,27 +204,11 @@
 				})
 			})
 		},
-		getListByOrder(){
-			let list = [];
-			switch (this.currentTab) {
-				case "member":
-					list = this.memberList;
-					break;
-				case "manager":
-					list = this.managerList;
-					break;
-				case "majordomo":
-					list = this.majordomoList;
-					break;
-				default:
-					break;
-			}
-			return list
-		},
 		// 切换tabs
 		changeTab(type) {
 			if (this.currentTab !== type) {
 				this.currentTab = type;
+				this.initList();
 			}
 		},
 		clear(keyword) {
