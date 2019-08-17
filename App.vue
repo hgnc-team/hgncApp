@@ -1,9 +1,12 @@
 <script>
-	import { mapMutations, mapState } from "vuex";
+	import {
+		mapMutations,
+		mapState
+	} from "vuex";
 	import service from "./common/service.js";
-	import _  from 'lodash';
+	import _ from 'lodash';
 	import util from './common/util.js';
-	
+
 	export default {
 		onLaunch: function() {
 			console.log('App Launch');
@@ -38,7 +41,7 @@
 			// #endif
 			// 获取缓存用户信息
 			let userInfo = uni.getStorageSync('USERS_INFO');
-			if(userInfo) {
+			if (userInfo) {
 				// 用户角色等级
 				const userLevel = userInfo.role || 0;
 				const userId = userInfo.id;
@@ -52,9 +55,7 @@
 				this.setfooterBar(userLevel);
 				// 缓存用户信息
 				uni.setStorageSync('USERS_INFO', userInfo);
-				// 同步store里面的用户名称，等级
-				this.LOGIN(userInfo);
-				// 有登录信息后 才刷新token 
+				// 有登录信息后 才刷新token，刷新用户信息
 				this.refleshUserInfo();
 			}
 			this.getConfigs();
@@ -70,17 +71,17 @@
 		// 	console.log(err)
 		// },
 		methods: {
-			...mapMutations(['LOGIN', 'INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST', 'REFLESH_USER_INFO', 'SET_CONFIGS']),
+			...mapMutations(['INIT_GOODS', 'INIT_ADDRESS', 'INIT_ORDERLIST', 'REFLESH_USER_INFO', 'SET_CONFIGS']),
 			// 刷新用户信息
-			refleshUserInfo(){
+			refleshUserInfo() {
 				uni.showLoading({
 					title: "加载中"
 				})
-				service.refleshUserInfo().then(res=>{
+				service.refleshUserInfo().then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
 					this.REFLESH_USER_INFO(data);
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -89,15 +90,15 @@
 				})
 			},
 			// 获取后台相关配置
-			getConfigs(){
+			getConfigs() {
 				uni.showLoading({
 					title: "加载中"
 				})
-				service.getConfigs().then(res=>{
+				service.getConfigs().then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
 					this.SET_CONFIGS(data);
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -107,19 +108,19 @@
 			},
 			//  购物车商品列表分两步查询，先查询产品ids，再通过ids查询产品详细信息
 			// 先查询产品ids
-			getCartList(userId){
+			getCartList(userId) {
 				uni.showLoading();
-				service.getCartList(userId).then(res=>{
+				service.getCartList(userId).then(res => {
 					uni.hideLoading();
 					const data = res.data.data.data;
-					if(data.length > 0) {
+					if (data.length > 0) {
 						// 通过ids批量查询商品详情
 						this.getCartListDetail(data);
 					} else {
 						// 同步购物车数据;
 						this.INIT_GOODS([]);
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
@@ -128,17 +129,19 @@
 				})
 			},
 			// 通过ids查询产品详细信息
-			getCartListDetail(cartData){
+			getCartListDetail(cartData) {
 				// 配置查询ids数组
 				let goodsId = []
 				_.forEach(cartData, item => {
 					goodsId.push(item.goodsId);
 				})
 				uni.showLoading();
-				service.getGoodListById({ids: goodsId}).then(res=>{
+				service.getGoodListById({
+					ids: goodsId
+				}).then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
-					
+
 					// 需要对比的数组
 					let contrastArr = [];
 					_.forEach(data, item => {
@@ -154,7 +157,7 @@
 						// 获取购物车中当前产品在详情数组中的下标
 						let currentIndex = this.getIndex(item.goodsId, data, "id");
 						// 查询是否有相应的规格
-						let standardIndex = this.getIndex(item.standardId , data[currentIndex].standard, "id");
+						let standardIndex = this.getIndex(item.standardId, data[currentIndex].standard, "id");
 						goodsList.push({
 							scrollLeft: 0,
 							// 是否被选中
@@ -170,41 +173,44 @@
 							// 规格id
 							standardId: item.standardId,
 							// 价格  下架展示为空，未下架优先展示规格里面的单价
-							price: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].price : data[currentIndex].price),
+							price: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].price :
+								data[currentIndex].price),
 							// 商品标题
 							title: removedIndex > -1 ? "亲，所选商品已经下架了哦" : data[currentIndex].title,
 							// 规格描述
-							standardText: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].title : ""),
+							standardText: removedIndex > -1 ? "" : (standardIndex > -1 ? data[currentIndex].standard[standardIndex].title :
+								""),
 							// 商品是否失效, 实时查询的产品无此规格，则表示商品失效
 							isInvalid: standardIndex > -1 ? false : true,
 							imageUrl: removedIndex > -1 ? "/static/img/logo@0.5x.png" : util.setImageUrl({
 								type: "goods",
 								goodId: item.goodsId,
-								imageName: standardIndex > -1 ? (data[currentIndex].standard[standardIndex].imageUrl || data[currentIndex].imageUrl) : data[currentIndex].imageUrl
+								imageName: standardIndex > -1 ? (data[currentIndex].standard[standardIndex].imageUrl || data[
+									currentIndex].imageUrl) : data[currentIndex].imageUrl
 							})[0].img,
 						})
 					})
 					// 同步购物车数据;
 					this.INIT_GOODS(goodsList);
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title:  err.errMsg,
+						title: err.errMsg,
 					})
 				})
 			},
 			// 根据id查询对应下标
-			getIndex(id, arr, key){
+			getIndex(id, arr, key) {
 				return key ? _.findIndex(arr, item => id === item[key]) : _.findIndex(arr, item => id === item);
 			},
 			// 筛选哪些产品失效了
-			getRemovedGoods(arr, arr2){
+			getRemovedGoods(arr, arr2) {
 				return _.difference(arr, arr2)
 			},
 			// 获取收货地址数据
-			getAddress(userId){
-				if(!userId) {
+			getAddress(userId) {
+				if (!userId) {
 					return
 				}
 				let params = {
@@ -214,13 +220,13 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getAddressList(params).then(res=>{
+				service.getAddressList(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
-					if(data.length > 0) {
+					if (data.length > 0) {
 						this.INIT_ADDRESS(data);
-					} 
-				}).catch(err=>{
+					}
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -229,8 +235,8 @@
 				})
 			},
 			// 获取订单列表
-			getOrderList(userId){
-				if(!userId) {
+			getOrderList(userId) {
+				if (!userId) {
 					return
 				}
 				let params = {
@@ -243,13 +249,13 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getOrderList(params).then(res=>{
+				service.getOrderList(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data.data;
-					if(data.length > 0) {
+					if (data.length > 0) {
 						this.INIT_ORDERLIST(data);
-					} 
-				}).catch(err=>{
+					}
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -260,14 +266,14 @@
 			// 设置不同的tabbar
 			setfooterBar(userLevel) {
 				// 用户等级大于1的才能看到会员中心
-				let barType =  userLevel >= 1 ? "menu_5" : "menu_4";
+				let barType = userLevel >= 1 ? "menu_5" : "menu_4";
 				// 触发设置导航
 				this.$store.dispatch(barType);
 				// 切换导航下标
 				this.$store.dispatch("change_page", this.pageCode);
 			}
 		}
-		
+
 	}
 </script>
 
@@ -316,11 +322,13 @@
 			}
 		}
 	}
-	.uni-list .uni-list-item .uni-list-item__icon .uni-list-item__icon-img{
+
+	.uni-list .uni-list-item .uni-list-item__icon .uni-list-item__icon-img {
 		width: 36upx;
 		height: 36upx;
 		margin-right: 20upx;
-		image{
+
+		image {
 			width: 100%;
 			height: 100%;
 		}
@@ -345,11 +353,13 @@
 			border-radius: 2upx;
 		}
 	}
+
 	// 全局 蓝色价格字体样式
 	.text-price {
 		color: #59a0fa !important;
 		font-size: 28upx;
 	}
+
 	// 水平垂直居中
 	.flex-center-center {
 		display: flex;
@@ -357,6 +367,7 @@
 		align-items: center;
 
 	}
+
 	// 右对齐
 	.flex-right {
 		justify-content: flex-end;
@@ -368,16 +379,19 @@
 		height: 30upx;
 		background-color: #f0f0f0;
 	}
+
 	// 占位条-20upx
 	.place-bar-20 {
 		width: 100%;
 		height: 20upx;
 		background-color: #f0f0f0;
 	}
+
 	// 灰色字体
 	.text-color-gray {
 		color: #888 !important;
 	}
+
 	// 白色字体
 	.text-color-white {
 		color: #fff !important;
@@ -425,5 +439,18 @@
 		font-size: $uni-font-size-lg;
 		color: $uni-color-title;
 		font-weight: 600;
+	}
+	
+	// 加载更多的样式
+	.uni-bar-loading {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 60upx;
+		color: #979797;
+		font-size: 24upx;
+		background-color: #f0f0f0;
+		padding: 0;
 	}
 </style>

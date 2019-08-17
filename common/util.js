@@ -266,18 +266,18 @@ const setImageUrl = function(params) {
  * @param {String} offset下拉刷新的起始位置
  **/
 const setRefreshMode = function(isSupport, offset) {
+	// #ifdef APP-PLUS
 	// upx转化为px
 	let _offset = offset ? uni.upx2px(offset) + "px" : "0px";
-	// #ifdef APP-PLUS
 	const pages = getCurrentPages();
 	const page = pages[pages.length - 1];
-	var currentWebview = page.$getAppWebview();
+	const currentWebview = page.$getAppWebview();
 	currentWebview.setStyle({
 		pullToRefresh: {
 			support: isSupport,
 			offset: _offset, //仅对"circle"样式下拉刷新控件有效
 			"bounce": "none",
-			"style": "circle",
+			"style": plus.os.name === 'Android' ? 'circle' : 'default',
 			"color": "#4c9bfa"
 		}
 	});
