@@ -303,7 +303,7 @@
 							service.getOrderDetail({ids:[data.orderId]})
 							.then(res => {
 								// 支付成功跳转到支付成功页面
-								console.log(JSON.stringify(res));
+								// console.log(JSON.stringify(res));
 								if (res.data.status === 200) {
 									if (res.data.data.length > 0 && res.data.data[0].status === '1') {
 										clearInterval(this.timer);

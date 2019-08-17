@@ -26,19 +26,19 @@
 					<view class="title uni-inline-item">
 						付款金额
 					</view>
-					<text class="text-price uni-flex uni-flex-item flex-right">￥1500</text>
+					<text class="text-price uni-flex uni-flex-item flex-right">￥{{total}}</text>
 				</view>
 				<view class="info-item uni-flex">
 					<view class="title uni-inline-item">
 						订单总计
 					</view>
-					<text class="text-price uni-flex uni-flex-item flex-right">￥1400</text>
+					<text class="text-price uni-flex uni-flex-item flex-right">￥{{total}}</text>
 				</view>
 				<view class="info-item uni-flex">
 					<view class="title uni-inline-item">
 						优惠减免
 					</view>
-					<text class="text-price uni-flex uni-flex-item flex-right">-￥400</text>
+					<text class="text-price uni-flex uni-flex-item flex-right">-￥0</text>
 				</view>
 			</view>
 		</view>
@@ -129,6 +129,8 @@
 	import util from "../../common/util.js";
 	import minCountdown from '../../components/common/min-countdown.vue'
 	import recommendGoods from '../../components/common/recommend-goods.vue';
+	import service from '../../common/service.js';
+	
 	export default {
 		components: {
 			uniIcon,
@@ -152,38 +154,7 @@
 				// m币余额
 				mBalance: 0,
 				// 总价
-				total:0,
-				//猜你喜欢列表
-				productList: [
-					{
-						goods_id: 1,
-						img: '/static/img/common/good2.jpg',
-						name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-						price: '￥68',
-						slogan: '686人付款'
-					},
-					{
-						goods_id: 2,
-						img: '/static/img/common/good6.jpg',
-						name: 'VKE 小爱早教智能机器人语音互动 听故事儿童玩具wifi版',
-						price: '￥288',
-						slogan: '232人付款'
-					},
-					{
-						goods_id: 3,
-						img: '/static/img/common/good7.jpg',
-						name: '进口智利三文鱼400g',
-						price: '￥216',
-						slogan: '3235人付款'
-					},
-					{
-						goods_id: 4,
-						img: '/static/img/common/good8.jpg',
-						name: '【赠送小黄人杯子】意大利进口科砾霖牙膏2支',
-						price: '￥58',
-						slogan: '35人付款'
-					}
-				]
+				total:0
 			}
 		},
 		computed: {
@@ -203,7 +174,7 @@
 			},
 			// 倒计时结束的回调
 			countDownOver(){
-				console.log('倒计时结束')
+				// console.log('倒计时结束')
 				this.isShowCount = false;
 			},
 			// 选择付款方式
@@ -246,8 +217,6 @@
 					})
 					this.mbPay();
 				}
-				
-				// this.toResult();
 			},
 			// 支付宝支付
 			alipay(){
@@ -289,16 +258,27 @@
 				
 			},
 			// 积分支付
-			jfPay(){
-			
-			},
+			jfPay(){},
 			// M币支付
-			mbPay(){
-				
-			},
+			mbPay(){},
 		},
 		onLoad(option) {
+			// 前一个页面（订单支付页面，支付结果）
 			this.payStatus = option.payStatus;
+			// 前一个页面（订单支付页面，订单号）
+			this.orderId = option.orderId;
+			// 再次查询一次订单，确认下结果(其实没有必要，to do：将上一步订单的处理结果对象，传到本页面，怎么在页面间传递对象？)
+			service.getOrderDetail({ids:[this.orderId]})
+			.then(res => {
+				// 支付成功跳转到支付成功页面
+				// console.log(JSON.stringify(res));
+				if (res.data.status === 200 && res.data.data.length > 0) {
+					let orderData = res.data.data[0]
+					if (orderData.status === '1') {
+						this.total = orderData.price * orderData.num;
+					}
+				}
+			});
 			this.title = this.payStatus === "success" ? "付款成功" : "付款失败";
 			this.icon = this.payStatus === "success" ? "checkmarkempty" : "closeempty";
 			this.init();
