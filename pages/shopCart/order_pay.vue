@@ -162,8 +162,14 @@
 				// 支付方式
 				payType: "alipay",
 				// 货币单位
-				unit: '元'
+				unit: '元',
+				// 轮询计时器
+				timer: null,
+				pollingTimes: 0
 			}
+		},
+		destroyed() {
+			clearInterval(this.timer);
 		},
 		computed: {
 			// 注入vuex的计算方法
@@ -243,8 +249,6 @@
 				service.createOrder(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
-					// console.log(JSON.stringify(data));
-					//let orderId = data;
 					// 去支付
 					this.toPay(data);
 				}).catch(err=>{
@@ -285,18 +289,42 @@
 					provider: 'alipay',
 					orderInfo: data.secret, //订单数据
 					success: function(res) {
-						console.log("----支付宝返回----")
-						console.log('success:' + JSON.stringify(res));
+						// console.log("----支付宝成功返回----")
+						// console.log(JSON.stringify(data))
+						// console.log('success:' + JSON.stringify(res));
 						// this.callbackAfterPay(data);
-						// this.toResult(orderId, true);
-					},
+						this.timer = setInterval(() => {
+							if (this.pollingTimes >= 10) {
+								clearInterval(this.timer);
+								this.toResult(data.orderId, false);
+								return;
+							}
+							this.pollingTimes ++;
+							service.getOrderDetail({ids:[data.orderId]})
+							.then(res => {
+								// 支付成功跳转到支付成功页面
+								console.log(JSON.stringify(res));
+								if (res.data.status === 200) {
+									if (res.data.data.length > 0 && res.data.data[0].status === '1') {
+										clearInterval(this.timer);
+										this.toResult(data.orderId, true);
+									}
+								} else {
+									clearInterval(this.timer);
+									this.toResult(data.orderId, false);
+								}
+							});
+						}, 1000);
+					}.bind(this),
 					fail: function(err) {
 // 						uni.showToast({
 // 							icon: "none",
 // 							title:  err.errMsg || err.data.data,
 // 						})
-						
 						// this.toResult(data.orderId, false);
+						console.log("----支付宝失败返回-----")
+						console.log(JSON.stringify(data))
+						console.log('fail:' + JSON.stringify(err));
 					}
 				});	
 			},
@@ -314,7 +342,7 @@
 				// 去结果页
 				this.toResult(orderId);
 			},
-			// 支付成功了回调
+			// 支付成功了回调，这个接口是支付宝去调用的，不用客户端调用
 			callbackAfterPay(){
 				let parms = {
 					orderId: data.orderId,
