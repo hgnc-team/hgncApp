@@ -264,7 +264,6 @@
 					this.goBack();
 				}).catch((err)=>{
 					// 请求失败
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',

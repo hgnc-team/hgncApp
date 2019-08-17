@@ -53,9 +53,10 @@
 				// 缓存用户信息
 				uni.setStorageSync('USERS_INFO', userInfo);
 				// 同步store里面的用户名称，等级
-				this.LOGIN(userInfo);	
+				this.LOGIN(userInfo);
+				// 有登录信息后 才刷新token 
+				this.refleshUserInfo();
 			}
-			this.refleshUserInfo();
 			this.getConfigs();
 		},
 		onShow: function() {
@@ -186,7 +187,6 @@
 					// 同步购物车数据;
 					this.INIT_GOODS(goodsList);
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
