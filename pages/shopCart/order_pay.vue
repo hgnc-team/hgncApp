@@ -244,7 +244,7 @@
 					uni.hideLoading();
 					let data = res.data.data;
 					// console.log(JSON.stringify(data));
-					let orderId = data;
+					//let orderId = data;
 					// 去支付
 					this.toPay(data);
 				}).catch(err=>{
@@ -285,16 +285,18 @@
 					provider: 'alipay',
 					orderInfo: data.secret, //订单数据
 					success: function(res) {
-						// console.log('success:' + JSON.stringify(res));
-						this.callbackAfterPay(data);
-						this.toResult(orderId, true);
+						console.log("----支付宝返回----")
+						console.log('success:' + JSON.stringify(res));
+						// this.callbackAfterPay(data);
+						// this.toResult(orderId, true);
 					},
 					fail: function(err) {
 // 						uni.showToast({
 // 							icon: "none",
 // 							title:  err.errMsg || err.data.data,
 // 						})
-						this.toResult(data.orderId, false);
+						
+						// this.toResult(data.orderId, false);
 					}
 				});	
 			},
