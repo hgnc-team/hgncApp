@@ -153,13 +153,7 @@
 		},{
 			"path": "order_detail",
 			"style": {
-				"navigationBarTitleText": "订单详情",
-				"app-plus":{
-					"buttons": [{
-						"type":"none",
-						"text": "完成"
-					}]
-				}
+				"navigationBarTitleText": "订单详情"
 			}
 		},{
 			"path": "goods_detail",
@@ -185,7 +179,14 @@
 		},{
 			"path": "order_result",
 			"style": {
-				"navigationBarTitleText": "交易详情"
+				"navigationBarTitleText": "交易详情",
+				"app-plus":{
+					"titleNView": {
+						"buttons": [{
+							"type":"share"
+						}]
+					}
+				}
 			}
 		}]
 	}, {
