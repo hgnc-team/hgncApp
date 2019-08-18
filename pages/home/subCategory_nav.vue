@@ -224,7 +224,7 @@
 			
 			.nav-right {
 				width: 75%;
-				padding: 0 30upx;
+				padding: 0 30upx 20upx;
 				box-sizing: border-box;
 				background-color: #fff;
 				.title{

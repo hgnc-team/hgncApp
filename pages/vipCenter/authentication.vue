@@ -305,7 +305,7 @@
 				service.authentication(params).then(res=>{
 					uni.hideLoading();
 					uni.showToast({
-						title: '上传成功'
+						title: '申请提交成功'
 					})
 				}).catch(err=>{
 					uni.hideLoading();

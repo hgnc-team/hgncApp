@@ -102,10 +102,6 @@
 		methods:{
 			// 注入vuex的方法
 			...mapActions(['updataAddressList']),
-			init(){
-				// 
-				// this.getLocation();
-			},
 			// 获取当前定位信息
 			getLocation(){
 				// #ifdef APP-PLUS
@@ -115,7 +111,6 @@
 				})		
 				plus.geolocation.getCurrentPosition((res)=>{
 					uni.hideLoading();
-					console.log(JSON.stringify(res));
 					const address = res.address;
 					this.address = {
 						country: address.country,
@@ -124,7 +119,6 @@
 						district: address.district,
 						street: address.street
 					};
-					// this.addresses = res.addresses;
 				}, (err)=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -139,10 +133,8 @@
 			},
 			onCancel(e) {
 				console.log(e);
-				
 			},
 			onConfirm(e) {
-				console.log(e);
 				if(e) {
 					// e label: "北京市-市辖区-西城区", value: Array(3), cityCode: "110102"
 					let arr = e.label.split("-");
@@ -214,7 +206,6 @@
 				}
 				
 				let params = {
-					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603",
 					userId: this.$store.state.userId,
 					id: this.id,
 					province: this.address.province,
@@ -259,7 +250,6 @@
 					this.updataAddressList();
 					
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -280,7 +270,6 @@
 			}
 		},	
 		onLoad(option) {
-			console.log(option); //打印出上个页面传递的参数。
 			let title = option.mode === "edit" ? "地址编辑" : "新增地址";
 			uni.setNavigationBarTitle({
 				title: title
@@ -292,7 +281,6 @@
 				this.phone = option.phone;
 				this.addresses = option.detail;
 				this.isDefault = option.default == '0' ? false : true;
-				console.log(this.isDefault)
 				this.address = {
 					country: "",
 					province: option.province,
@@ -300,8 +288,9 @@
 					district: option.region,
 					street: ""
 				}
+			} else {
+				this.getLocation();
 			}	
-			this.init()
 		},
 	}
 </script>

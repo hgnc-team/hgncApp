@@ -58,7 +58,10 @@
 						<!-- 关闭 -->
 						<button type="primary" class="hasCloseBtn" v-if="item.hasCloseBtn" size="mini" @tap="closeOrder(item, index)">关闭</button>
 					</view>
-
+				</view>
+				<!-- 加载更多 -->
+				<view class="uni-bar-loading">
+					{{loadingText}}
 				</view>
 			</block>
 			<!-- 暂无数据 -->
@@ -99,6 +102,7 @@
 				orderList: [],
 				// 状态查询字段
 				statusParam: "",
+				loadingText: "",
 				page: 1,
 				noDataText: "暂无订单相关数据",
 				isDoRefresh: false
@@ -112,6 +116,7 @@
 		onReachBottom() {
 			// 加载更多
 			this.page++;
+			this.loadingText = '加载更多...';
 			this.getOrderList(this.statusParam);
 		},
 		methods: {
@@ -155,6 +160,9 @@
 						this.orderList = this.orderList.concat(data);
 					} else {
 						this.page--
+						setTimeout(() => {
+							this.loadingText = '没有更多了';
+						}, 10);
 					}
 				}).catch(err => {
 					uni.hideLoading();

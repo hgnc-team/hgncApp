@@ -72,7 +72,7 @@
 							<!-- 底部信息 -->
 							<bottomInfo></bottomInfo>
 							<!-- 加载更多 -->
-							<view class="uni-tab-bar-loading">
+							<view class="uni-bar-loading">
 								{{tab.loadingText}}
 							</view>
 						</scroll-view>
@@ -163,6 +163,14 @@
 				this.initBar();
 				// 获取当前地图定位
 				// this.getPosition();
+			},
+			// 开启下拉刷新
+			openRefresh(){
+				// #ifdef APP-PLUS
+				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
+				util.setRefreshMode(true, offset);
+				// #endif
 			},
 			// 自定义方法刷新，在index.vue首页文件中调用
 			pullDownRefresh() {
@@ -283,18 +291,16 @@
 				this.$refs.mpvuePicker.show();
 			},
 			onConfirm(e) {
-				// console.log(e);
 				if (e && e.label) {
 					this.picker.pickerText = e.label.split('-')[1];
 				}
+				this.openRefresh();
 			},
 			onChange(e) {
 				// console.log(e);
 			},
 			onCancel(e) {
-				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
-				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
-				util.setRefreshMode(true, offset);
+				this.openRefresh();
 			},
 			//消息页跳转
 			goMessagesPage() {
@@ -332,6 +338,7 @@
 					// 加载图片
 					this.load();
 					timer = null;
+					clearTimeout(timer)
 				}, 30)
 			},
 			async addData(e) {
@@ -484,11 +491,7 @@
 		},
 		created() {
 			this.init();
-			// #ifdef APP-PLUS
-			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
-			const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
-			util.setRefreshMode(true, offset);
-			// #endif
+			this.openRefresh();
 		}
 
 	}
@@ -753,21 +756,7 @@
 						}
 					}
 				}
-
-			}
-
-			.uni-tab-bar-loading {
-				width: 100%;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 60upx;
-				color: #979797;
-				font-size: 24upx;
-				background-color: #f0f0f0;
-				padding: 0;
 			}
 		}
-
 	}
 </style>

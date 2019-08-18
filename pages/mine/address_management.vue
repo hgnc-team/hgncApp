@@ -5,7 +5,7 @@
 		</view>
 		<view class="address-list">
 			<radio-group @change="radioChange">
-				<view class="address-item" v-for="(item, index) in getAddressList" :key="index" @tap="selectAddr(item)">
+				<view class="address-item" v-for="(item, index) in getAddressList" :key="index" @tap.prevent="selectAddr(item)">
 					<view class="info">
 						<view class="uni-bold uni-h5">
 							{{item.receiver}} &nbsp;&nbsp;{{item.phone}}
@@ -26,7 +26,7 @@
 							</label>
 						</view>
 						<view class="btn-right uni-flex">
-							<view class="edit flex-center-center common-mr-20" @tap="editAddress(item)">
+							<view class="edit flex-center-center common-mr-20" @tap.stop="editAddress(item)">
 								<view class="icon">
 									<uni-icon type="compose" size="26"></uni-icon>
 								</view>
@@ -79,7 +79,7 @@
 			...mapMutations(['INIT_ADDRESS']),
 			...mapActions(['updataAddressList']),
 			// 选择地址
-			selectAddr(address) {
+			selectAddr(address,e) {
 				// 跳不过去，只能在pages/mine/目录下跳，怎么破?
 				// uni.navigateTo({
 				// 	url:"order_pay"
@@ -93,7 +93,6 @@
 			init(){
 				let params = {
 					userId: this.$store.state.userId,
-					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603"
 				}
 				// 获取用户收获地址列表
 				uni.showLoading();
@@ -105,7 +104,6 @@
 						this.INIT_ADDRESS(data);
 					} 		
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -114,7 +112,6 @@
 				})
 			},
 			radioChange(e) {
-				console.log(e)
 				// 请求设置为默认接口
 				let params = {
 					id: e.detail.value,
@@ -129,7 +126,6 @@
 					// 同步到vuex
 					this.updataAddressList();
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -145,7 +141,6 @@
 			// 删除地址
 			deleteAddress(id){
 				var that = this;
-				console.log(this);
 				uni.showModal({
 					title: "确认",
 					content: "是否删除地址？",

@@ -126,13 +126,24 @@
 			// 注入vuex的两个方法
 			...mapMutations(['INIT_GOODS', 'INIT_ORDER_lIST']), 
 			...mapActions(['deleteGoods']),
+			// 开启下拉刷新
+			openRefresh(){
+				// #ifdef APP-PLUS
+				util.setRefreshMode(false);
+				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+				const offset = uni.getSystemInfoSync().statusBarHeight + 120;
+				util.setRefreshMode(true, offset);
+				// #endif
+			},
 			init(){
+				// // 开启下拉刷新
+				// this.openRefresh();
 				// 获取购物车商品列表
 				this.getCartList();
 			},
 			// 自定义方法刷新，在index.vue首页文件中调用
 			pullDownRefresh() {
-				this.init()
+				this.init();
 			},
 			//  购物车商品列表分两步查询，先查询产品ids，再通过ids查询产品详细信息
 			// 先查询产品ids
@@ -141,6 +152,7 @@
 				service.getCartList(this.userId).then(res=>{
 					uni.hideLoading();
 					const data = res.data.data.data;
+					uni.stopPullDownRefresh();
 					if(data.length > 0) {
 						// 通过ids批量查询商品详情
 						this.getCartListDetail(data);
@@ -150,6 +162,7 @@
 					}
 				}).catch(err=>{
 					uni.hideLoading();
+					uni.stopPullDownRefresh();
 					uni.showToast({
 						icon: 'none',
 						title: err.errMsg,
@@ -216,7 +229,6 @@
 					// 同步购物车数据;
 					this.INIT_GOODS(goodsList);
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
@@ -459,16 +471,16 @@
 			}
 		},
 		created() {
-			// #ifdef APP-PLUS
-			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
-			const offset = uni.getSystemInfoSync().statusBarHeight + 120;
-			util.setRefreshMode(true, offset);
-			// #endif
 			// 是否展示编辑按钮（无数据时不展示）
 			this.rightText = this.showNoData ? "" : "编辑";
 			// 登陆后初始化页面
 			if(this.hasLogin) {
+				// 开启下拉刷新
+				this.openRefresh();
 				this.init();
+			} else {
+				// 关闭下拉刷新
+				util.setRefreshMode(false);
 			}
 		}
 	};
