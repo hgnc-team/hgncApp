@@ -30,7 +30,7 @@
 		{
 		    "path" : "pages/login/login",
 		    "style" : {
-		        "navigationBarTitleText" : "M+ 登录",
+		        "navigationBarTitleText" : "鹏鱼登录",
 				// app中不展示title标签
 				"app-plus": {  
 					"titleNView": false  
@@ -46,7 +46,7 @@
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "M+",
+		"navigationBarTitleText": "鹏鱼",
 		"navigationBarBackgroundColor": "#242424"
 	},
 	
@@ -153,8 +153,13 @@
 		},{
 			"path": "order_detail",
 			"style": {
-				"navigationBarTitleText": "订单详情"
-				
+				"navigationBarTitleText": "订单详情",
+				"app-plus":{
+					"buttons": [{
+						"type":"none",
+						"text": "完成"
+					}]
+				}
 			}
 		},{
 			"path": "goods_detail",

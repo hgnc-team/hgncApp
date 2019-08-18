@@ -707,6 +707,17 @@ const authentication = function(params) {
 	return vm.$http.post('/v1/api/user/store/apply', data)
 }
 
+/**
+ * @method 支付宝加签
+ * 
+ * 
+ * */
+ function doSecretInAlipay(orderId) {
+	 let data = {
+		 orderId
+	 }
+	 return vm.$http.post('/v1/api/order/alipay/secret', data)
+ } 
 const LOGIN_MODULE = {
 	getConfigs,
 	login,
@@ -747,7 +758,8 @@ const SHOPCART_MODULE = {
 	addToCart,
 	deleteFromCart,
 	createOrder,
-	callbackAfterPay
+	callbackAfterPay,
+	doSecretInAlipay
 }
 const MINE_MODULE = {
 	getAddressList,
