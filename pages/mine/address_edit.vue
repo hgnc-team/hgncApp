@@ -288,9 +288,10 @@
 					district: option.region,
 					street: ""
 				}
-			} else {
-				this.getLocation();
-			}	
+			} 
+			// else {
+			// 	this.getLocation();
+			// }	
 		},
 	}
 </script>
