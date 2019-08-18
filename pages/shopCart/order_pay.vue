@@ -247,10 +247,12 @@
 				}
 				uni.showLoading();
 				service.createOrder(params).then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					// 去支付
-					this.toPay(data);
+					// console.log(JSON.stringify(res));
+					if (res.data.status === 200) {
+						uni.hideLoading();
+						// 去支付
+						this.toPay(res.data.data);
+					}
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -284,49 +286,54 @@
 			},
 			// 支付宝支付
 			alipay(data){
-				// 然后调用api，吊起支付宝支付
-				uni.requestPayment({
-					provider: 'alipay',
-					orderInfo: data.secret, //订单数据
-					success: function(res) {
-						// console.log("----支付宝成功返回----")
-						// console.log(JSON.stringify(data))
-						// console.log('success:' + JSON.stringify(res));
-						// this.callbackAfterPay(data);
-						this.timer = setInterval(() => {
-							if (this.pollingTimes >= 10) {
-								clearInterval(this.timer);
-								this.toResult(data.orderId, false);
-								return;
-							}
-							this.pollingTimes ++;
-							service.getOrderDetail({ids:[data.orderId]})
-							.then(res => {
-								// 支付成功跳转到支付成功页面
-								// console.log(JSON.stringify(res));
-								if (res.data.status === 200) {
-									if (res.data.data.length > 0 && res.data.data[0].status === '1') {
+				service.doSecretInAlipay(data.orderId)
+				.then(res => {
+					if (res.data.status === 200) {
+						// 然后调用api，吊起支付宝支付
+						uni.requestPayment({
+							provider: 'alipay',
+							orderInfo: res.data.data.secret, //订单数据
+							success: function(res) {
+								// console.log("----支付宝成功返回----")
+								// console.log(JSON.stringify(data))
+								// console.log('success:' + JSON.stringify(res));
+								// this.callbackAfterPay(data);
+								this.timer = setInterval(() => {
+									if (this.pollingTimes >= 10) {
 										clearInterval(this.timer);
-										this.toResult(data.orderId, true);
+										this.toResult(data.orderId, false);
+										return;
 									}
-								} else {
-									clearInterval(this.timer);
-									this.toResult(data.orderId, false);
-								}
-							});
-						}, 1000);
-					}.bind(this),
-					fail: function(err) {
-// 						uni.showToast({
-// 							icon: "none",
-// 							title:  err.errMsg || err.data.data,
-// 						})
-						// this.toResult(data.orderId, false);
-						console.log("----支付宝失败返回-----")
-						console.log(JSON.stringify(data))
-						console.log('fail:' + JSON.stringify(err));
+									this.pollingTimes ++;
+									service.getOrderDetail({ids:[data.orderId]})
+									.then(res => {
+										// 支付成功跳转到支付成功页面
+										// console.log(JSON.stringify(res));
+										if (res.data.status === 200) {
+											if (res.data.data.length > 0 && res.data.data[0].status === '1') {
+												clearInterval(this.timer);
+												this.toResult(data.orderId, true);
+											}
+										} else {
+											clearInterval(this.timer);
+											this.toResult(data.orderId, false);
+										}
+									});
+								}, 1000);
+							}.bind(this),
+							fail: function(err) {
+							// 	uni.showToast({
+							// 		icon: "none",
+							// 		title:  err.errMsg || err.data.data,
+							// })
+							// this.toResult(data.orderId, false);
+							console.log("----支付宝失败返回-----")
+							console.log(JSON.stringify(data))
+							console.log('fail:' + JSON.stringify(err));
+							}
+						});
 					}
-				});	
+				})
 			},
 			// 积分支付
 			jfPay(orderId){
