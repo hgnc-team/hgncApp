@@ -57,7 +57,9 @@ const store = new Vuex.Store({
 			state.userPhone = data.phone;
 			state.userInviteCode = data.inviteCode;
 			state.secondaryPwd = data.secondaryPwd;
+			// 我的积分
 			state.comPoint = data.comPoint;
+			// M币钱包
 			state.gold = data.gold;
 		    state.hasLogin = true;
 			state.isStoreOwner = data.storeOwner === 0 ? false : true;

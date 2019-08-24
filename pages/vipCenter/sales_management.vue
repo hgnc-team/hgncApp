@@ -369,7 +369,7 @@
 			// 
 			changeTab(tab) {
 				this.currentTab = tab;
-				this.getDataList();
+				this.getDataList(true);
 			},
 			// 查询
 			search() {
@@ -382,10 +382,8 @@
 						title: "结束时间不能早于开始时间"
 					})
 				}
-
 				//todo 执行查询操作
 				this.getDataList(false, start, end);
-
 			},
 			// 变更排序
 			filterFn(type) {
@@ -394,20 +392,17 @@
 					this.currentFilter = type;
 				} else {
 					this.isDesc = !this.isDesc;
-					
-					this.getDataList();
+					this.getDataList(true);
 				}
-
 				//todo 执行排序操作
-
 			},
 			// 获取数据
 			getDataList(isGetAll, start, end){
 				uni.showLoading()
 				let params = {
 					userId: this.userId,
-					start: isGetAll ? '' : start,
-					end: isGetAll ? '' : end
+					start: isGetAll ? 0 : start,
+					end: isGetAll ? +new Date() : end
 				}
 				service.getSalesDetail(params).then(res=>{
 					uni.hideLoading();
@@ -443,8 +438,10 @@
 			}
 		},
 		onLoad() {
-			this.init();
+			// 先初始化时间，再执行init中的查询
 			this.initTime();
+			this.init();
+			
 		}
 	}
 </script>

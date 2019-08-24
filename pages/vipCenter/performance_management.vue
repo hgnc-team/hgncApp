@@ -162,9 +162,11 @@
 		},
 		methods: {
 			init() {
+				// 一定要先初始化时间
+				this.initTime();
 				// 初始化总交易额
 				this.initInfo();
-				this.initTime();
+				
 			},
 			initInfo(){
 				this.teamSize = 9029;
@@ -179,10 +181,10 @@
 			initTime(){
 				//获取当前时间
 				let now = moment();
-				// 结束时间为当前
-				this.endDate = now.format("YYYY年MM月DD日");
 				// 开始时间为7天前
 				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
+				// 结束时间为当前
+				this.endDate = now.format("YYYY年MM月DD日");
 			},
 			onShowDatePicker(type) { //显示
 				this.showPicker = true;
@@ -209,7 +211,6 @@
 						title: "结束时间不能早于开始时间"
 					})
 				}
-				
 				// 
 				this.getdata(false, start, end);
 			},
@@ -218,8 +219,8 @@
 				uni.showLoading()
 				let params = {
 					userId: this.userId,
-					start: isGetAll ? '' : start + '',
-					end: isGetAll ? '' : end + ''
+					start: isGetAll ? 0 : start,
+					end: isGetAll ? +new Date() : end
 				}
 				service.getMyTeamPerformancem(params).then(res=>{
 					uni.hideLoading();
