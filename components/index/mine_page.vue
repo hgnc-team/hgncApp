@@ -120,12 +120,10 @@
 			...mapGetters(["dfk_num",, "dfh_num", "dsh_num"])
 		},
 		mounted() {
-			
 			// 刷新用户信息
 			this.refreshMemberInfo();
+			// 查询各类订单数量
 			this.getOrderNumList();
-		},
-		onLoad() {
 			// 关闭刷新
 			util.setRefreshMode(false);
 			//加载

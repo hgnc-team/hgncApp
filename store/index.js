@@ -84,19 +84,6 @@ const store = new Vuex.Store({
 			state.imageDomain = data.DEFAULT_IMAGE_DOMAIN;
 			state.customerTelephone = data.customer_Telephone || "400334233"
 		},
-		// 退出登录
-		LOGOUT(state) {  
-            state.userName = "";
-            state.userLevel = 0;
-            state.userId = "";
-            state.userFace = "";
-            state.userPhone = "";
-            state.userInviteCode = "";
-            state.hasLogin = false; 
-			// 情况缓存信息
-			uni.removeStorageSync('USERS_INFO');
-			uni.removeStorageSync('USER_TOKEN');
-        },
 		// 设置密码校验状态
 		SET_PASSWORD_CHECKSTATUS(state, status) {
 			state.isCheckPassword = status;
@@ -107,7 +94,22 @@ const store = new Vuex.Store({
 		}
 	},
 	actions: {
-		
+		logout({commit, dispatch, state, rootState}, data){
+			state.userName = "";
+			state.userLevel = 0;
+			state.userId = "";
+			state.userFace = "";
+			state.userPhone = "";
+			state.userInviteCode = "";
+			state.hasLogin = false; 
+			// 还原底部按钮（隐藏会员中心）
+			console.log(state)
+			// 触发设置导航
+			dispatch("menu_4");
+			// 情况缓存信息
+			uni.removeStorageSync('USERS_INFO');
+			uni.removeStorageSync('USER_TOKEN');
+		}
 	},
 	modules:{
 		footer_store,

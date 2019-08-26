@@ -191,7 +191,7 @@
 							// 输入达到五次，登出设备
 							service.logout().then(res=>{
 								uni.hideLoading();
-								this.$store.commit('LOGOUT');
+								this.$store.dispatch('logout');
 								uni.reLaunch({
 									url: "/pages/login/login"
 								})
