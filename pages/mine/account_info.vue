@@ -13,7 +13,7 @@
 		<!-- 模态框 修改昵称-->
 		<neil-modal :show="showModal" @close="closeModal()" @confirm="changeNickName" title="修改昵称">
 		    <view class="input-wrap">	
-		    	<input type="text" v-model="nickName" placeholder="请输入昵称" class="nick-name" />
+		    	<input type="text" v-model="nickName.newName" placeholder="请输入昵称" class="nick-name" />
 		    </view>
 		</neil-modal>
 	</view>
@@ -35,7 +35,10 @@
 					
 				},
 				showModal: false,
-				nickName: '',
+				nickName: {
+					oldName: '',
+					newName: ''
+				},
 				pageList1: [{
 						type: "face",
 						title: '头像',
@@ -108,7 +111,7 @@
 					// 初始化头像
 					// 初始化昵称
 					this.pageList1[1].extra.text = userinfo.userName;
-					this.nickName = userinfo.userName;
+					this.nickName.oldName = userinfo.userName;
 					// 初始化id
 					this.pageList1[2].extra.text = userinfo.inviteCode;
 				}
@@ -120,7 +123,8 @@
 			// 修改昵称
 			changeNickName(){
 				// 请求接口
-				this.pageList1[1].extra.text = this.nickName;
+				this.nickName.oldName = this.nickName.newName;
+				this.pageList1[1].extra.text = this.nickName.newName;
 			},
 			// 点击跳转
 			handleClick(data) {
@@ -132,6 +136,7 @@
 					// 修改昵称
 				} else if (data.item.type === "nikeName") {
 					this.showModal = true;
+					this.nickName.newName = this.nickName.oldName;
 					// 管理密码
 				} else if (data.item.type === "password") {
 					uni.navigateTo({
@@ -204,6 +209,9 @@
 		}
 		.input-wrap{
 			padding: 10upx 20upx;
+		}
+		/deep/ .neil-modal__container {
+			top: 40% !important;
 		}
 	}
 </style>
