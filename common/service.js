@@ -402,7 +402,6 @@ const createOrder = function(params) {
 const getOrderList = function(params) {
 	let data = {
 		userId: params.userId || vm.$store.state.userId,
-		// userId: "e8b46f10-43c8-11e9-9de7-55194d563065",
 		status: params.status,
 		page: params.page,
 		pageSize: params.pageSize

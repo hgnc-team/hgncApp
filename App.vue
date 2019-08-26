@@ -49,8 +49,6 @@
 				this.getCartList(userId);
 				// 获取收货地址
 				this.getAddress(userId);
-				// 获取订单列表数据
-				this.getOrderList(userId);
 				// 设置底部导航栏
 				this.setfooterBar(userLevel);
 				// 缓存用户信息
@@ -225,35 +223,6 @@
 					let data = res.data.data;
 					if (data.length > 0) {
 						this.INIT_ADDRESS(data);
-					}
-				}).catch(err => {
-					uni.hideLoading();
-					uni.showToast({
-						icon: "none",
-						title: err.errMsg,
-					})
-				})
-			},
-			// 获取订单列表
-			getOrderList(userId) {
-				if (!userId) {
-					return
-				}
-				let params = {
-					userId: userId,
-					status: "", // 查询全部
-					page: 1,
-					pageSize: 1000
-				}
-				uni.showLoading({
-					title: "加载中"
-				})
-				// 获取用户收获地址列表
-				service.getOrderList(params).then(res => {
-					uni.hideLoading();
-					let data = res.data.data.data;
-					if (data.length > 0) {
-						this.INIT_ORDERLIST(data);
 					}
 				}).catch(err => {
 					uni.hideLoading();

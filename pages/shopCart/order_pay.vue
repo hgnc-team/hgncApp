@@ -196,10 +196,6 @@
 			}			
 		},
 		methods: {
-			init(){
-				this.comPoint = 450;
-				this.gold = 9999;
-			},
 			// 去地址管理页面
 			toAddress(){
 				uni.navigateTo({
