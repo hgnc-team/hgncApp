@@ -108,7 +108,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -152,7 +152,7 @@
 				invitNumInPeriod: 0,
 				// 时间段内新增优惠积分
 				addedScore: 0
-				
+
 			}
 		},
 		computed: {
@@ -166,14 +166,14 @@
 				this.initTime();
 				// 初始化总交易额
 				this.initInfo();
-				
+
 			},
 			initInfo(){
 				this.teamSize = 9029;
 				this.totalTurnover = 10299.99;
 				this.todayTurnover = 3456.88;
 				this.todayInvit = 399;
-				
+
 				// 默认搜索
 				this.getdata(true);
 			},
@@ -196,7 +196,7 @@
 					this[`${this.type}Date`] = moment(e.value).format("YYYY年MM月DD日");
 				}
 			},
-			// 
+			//
 			changeTab(tab){
 				this.currentTab = tab;
 			},
@@ -211,7 +211,7 @@
 						title: "结束时间不能早于开始时间"
 					})
 				}
-				// 
+				//
 				this.getdata(false, start, end);
 			},
 			// 获取数据
@@ -219,8 +219,8 @@
 				uni.showLoading()
 				let params = {
 					userId: this.userId,
-					start: isGetAll ? 0 : start,
-					end: isGetAll ? +new Date() : end
+					start: isGetAll ? undefined : start,
+					end: isGetAll ? undefined : end
 				}
 				service.getMyTeamPerformancem(params).then(res=>{
 					uni.hideLoading();

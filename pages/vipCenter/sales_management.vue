@@ -309,7 +309,7 @@
 				startDate: '',
 				// 结束时间
 				endDate: '',
-				// 
+				//
 				type: 'start',
 				// picker的返回值
 				timeValue: "",
@@ -328,7 +328,7 @@
 			}
 		},
 		onPageScroll(e) {
-			this.isShowBtn = e.scrollTop >= 216 ? true : false 
+			this.isShowBtn = e.scrollTop >= 216 ? true : false
 		},
 		computed: {
 			disabled() {
@@ -366,7 +366,7 @@
 					console.log('date => ' + e.date);
 				}
 			},
-			// 
+			//
 			changeTab(tab) {
 				this.currentTab = tab;
 				this.getDataList(true);
@@ -401,7 +401,7 @@
 				uni.showLoading()
 				let params = {
 					userId: this.userId,
-					start: isGetAll ? 0 : start,
+					start: isGetAll ? 1 : start,
 					end: isGetAll ? +new Date() : end
 				}
 				service.getSalesDetail(params).then(res=>{
@@ -441,7 +441,7 @@
 			// 先初始化时间，再执行init中的查询
 			this.initTime();
 			this.init();
-			
+
 		}
 	}
 </script>
@@ -572,7 +572,7 @@
 						padding: 15upx;
 						font-size: 24upx;
 					}
-					
+
 					.name,
 					.time,
 					.product,
@@ -581,12 +581,12 @@
 					.money, {
 						border-right: 1upx solid #f0f0f0;
 					}
-					
+
 					.time {
 						flex: 0 0 24%;
 						padding-left: 30upx;
 					}
-					
+
 					.name,
 					.product,
 					.balance,
@@ -596,7 +596,7 @@
 						flex: 0 0 12.67%;
 						padding-left: 15upx;
 					}
-					
+
 				}
 
 				.table-header {
