@@ -32,7 +32,7 @@
 								</view>
 								<text class="uni-text">编辑</text>
 							</view>
-							<view class="delete flex-center-center" @tap="deleteAddress(item.id)">
+							<view class="delete flex-center-center" @tap.stop="deleteAddress(item.id)">
 								<view class="icon">
 									<uni-icon type="trash" size="26"></uni-icon>
 								</view>
