@@ -283,11 +283,11 @@ const addToCart = function(params) {
   * @return {promise} 返回一个promise对象     
   **/
 const deleteFromCart = function(params) {
-	let data = {
-		userId: params.userId,
-		goodsIds: params.ids
-	}
-	return vm.$http.post('/v1/api/cart/delete', data)
+	// let data = {
+	// 	userId: params.userId,
+	// 	goodsIds: params.ids
+	// }
+	return vm.$http.post('/v1/api/cart/delete', params)
 }
 
 /**     

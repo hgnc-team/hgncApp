@@ -21,7 +21,7 @@
 						今日释放积分
 					</view>
 					<view class="bottom uni-text-small">
-						{{releasedToday}}枚
+						{{releasedToday}}分
 					</view>
 				</view>
 			</view>
@@ -203,7 +203,6 @@
 				// 获取今日释放积分
 				this.getReleaseGold();
 				// 获取M币钱包
-				
 				this.getDataList();
 			},
 			// 初始化时间
@@ -233,7 +232,9 @@
 				uni.showLoading()
 				service.getReleaseGold().then(res=>{
 					uni.hideLoading();
-					this.releasedToday = res.data.data || "0.00";
+					// console.log('============================')
+					// console.log(JSON.stringify(res))
+					this.releasedToday = res.data.data || "--";
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -303,9 +304,9 @@
 			}
 		},
 		onLoad() {
-			this.init();
-			// 
+			// 一定要，先初始化时间
 			this.initTime();
+			this.init();
 		}
 	}
 </script>

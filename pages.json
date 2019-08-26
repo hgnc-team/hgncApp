@@ -54,15 +54,6 @@
 		// 首页
 		"root": "pages/home",
 		"pages": [
-// 			{
-// 			"path": "home_page",
-// 			"style": {
-// 				"navigationBarTitleText": "首页",
-// 				"app-plus": {
-// 					"titleNView": false
-// 				}
-// 			}
-// 		},
 		{
 			"path": "messages",
 			"style": {
@@ -110,15 +101,6 @@
 		// 附近
 		"root": "pages/nearby",
 		"pages": [
-// 			{
-// 			"path": "nearby_page",
-// 			"style": {
-// 				"navigationBarTitleText": "附近",
-// 				"app-plus": {
-// 					"titleNView": false
-// 				}
-// 			}
-// 		},
 		{
 			"path": "shop_index",
 			"style": {
@@ -153,13 +135,7 @@
 		},{
 			"path": "order_detail",
 			"style": {
-				"navigationBarTitleText": "订单详情",
-				"app-plus":{
-					"buttons": [{
-						"type":"none",
-						"text": "完成"
-					}]
-				}
+				"navigationBarTitleText": "订单详情"
 			}
 		},{
 			"path": "goods_detail",
@@ -192,12 +168,6 @@
 		// 会员中心
 		"root": "pages/vipCenter",
 		"pages": [
-// 			{
-// 			"path": "vipCenter_page",
-// 			"style": {
-// 				"navigationBarTitleText": "会员中心"
-// 			}
-// 		},
 		{
 			"path": "fund_management",
 			"style": {
@@ -288,12 +258,6 @@
 		// 购物车
 		"root": "pages/shopCart",
 		"pages": [
-// 			{
-// 			"path": "shopCart_page",
-// 			"style": {
-// 				"navigationBarTitleText": "购物车"
-// 			}
-// 		},
 		{
 			"path": "order_pay",
 			"style": {
@@ -304,19 +268,23 @@
 		},{
 			"path": "order_result",
 			"style": {
-				"navigationBarTitleText": "交易详情"
+				"navigationBarTitleText": "交易详情",
+				"app-plus":{
+					"titleNView": {
+						"buttons": [{
+							"type":"none",
+							"text":"完成",
+							"fontSize": "16px",
+							"width":"60px"
+						}]
+					}
+				}
 			}
 		}]
 	}, {
 		// 我的
 		"root": "pages/mine",
 		"pages": [
-// 			{
-// 			"path": "mine_page",
-// 			"style": {
-// 				"navigationBarTitleText": "我的"
-// 			}
-// 		},
 		{
 			"path": "order_list",
 			"style": {

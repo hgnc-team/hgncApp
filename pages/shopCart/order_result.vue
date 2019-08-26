@@ -262,6 +262,12 @@
 			// M币支付
 			mbPay(){},
 		},
+		// 监听右上角原生导航栏按钮点击事件
+		onNavigationBarButtonTap(event) {
+			uni.navigateTo({
+				url: `/pages/mine/order_list`
+			})
+		},
 		onLoad(option) {
 			// 前一个页面（订单支付页面，支付结果）
 			this.payStatus = option.payStatus;

@@ -108,7 +108,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -152,7 +152,7 @@
 				invitNumInPeriod: 0,
 				// 时间段内新增优惠积分
 				addedScore: 0
-				
+
 			}
 		},
 		computed: {
@@ -162,16 +162,18 @@
 		},
 		methods: {
 			init() {
+				// 一定要先初始化时间
+				this.initTime();
 				// 初始化总交易额
 				this.initInfo();
-				this.initTime();
+
 			},
 			initInfo(){
 				this.teamSize = 9029;
 				this.totalTurnover = 10299.99;
 				this.todayTurnover = 3456.88;
 				this.todayInvit = 399;
-				
+
 				// 默认搜索
 				this.getdata(true);
 			},
@@ -179,10 +181,10 @@
 			initTime(){
 				//获取当前时间
 				let now = moment();
-				// 结束时间为当前
-				this.endDate = now.format("YYYY年MM月DD日");
 				// 开始时间为7天前
 				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
+				// 结束时间为当前
+				this.endDate = now.format("YYYY年MM月DD日");
 			},
 			onShowDatePicker(type) { //显示
 				this.showPicker = true;
@@ -194,7 +196,7 @@
 					this[`${this.type}Date`] = moment(e.value).format("YYYY年MM月DD日");
 				}
 			},
-			// 
+			//
 			changeTab(tab){
 				this.currentTab = tab;
 			},
@@ -209,8 +211,7 @@
 						title: "结束时间不能早于开始时间"
 					})
 				}
-				
-				// 
+				//
 				this.getdata(false, start, end);
 			},
 			// 获取数据
@@ -218,8 +219,8 @@
 				uni.showLoading()
 				let params = {
 					userId: this.userId,
-					start: isGetAll ? '' : start + '',
-					end: isGetAll ? '' : end + ''
+					start: isGetAll ? undefined : start,
+					end: isGetAll ? undefined : end
 				}
 				service.getMyTeamPerformancem(params).then(res=>{
 					uni.hideLoading();
