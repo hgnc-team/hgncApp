@@ -288,7 +288,17 @@
 		{
 			"path": "order_list",
 			"style": {
-				"navigationBarTitleText": "我的订单"
+				"navigationBarTitleText": "我的订单",
+				// app中不展示title标签
+				"app-plus": {
+					"titleNView": true,
+					"bounce": "none", //关闭窗口回弹效果
+					"pullToRefresh": {
+						"support": true,
+						"style": "circle",
+						"color": "#4c9bfa"
+					}
+				}
 			}
 		},{
 			"path": "order_detail",

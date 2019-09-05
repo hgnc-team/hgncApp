@@ -100,8 +100,6 @@
 					current: 0,
 				},
 				orderList: [],
-				// 状态查询字段
-				statusParam: "",
 				loadingText: "",
 				page: 1,
 				noDataText: "暂无订单相关数据",
@@ -113,21 +111,22 @@
 				return this.orderList.length === 0;
 			}
 		},
+		onPullDownRefresh() {
+			this.orderList = [];
+			this.getOrderList();
+		},
 		onReachBottom() {
 			// 加载更多
 			this.page++;
 			this.loadingText = '加载更多...';
-			this.getOrderList(this.statusParam);
+			this.getOrderList();
 		},
 		methods: {
 			...mapMutations(['INIT_ORDER_lIST']),
-			// initData(id){
-			// 	service.getGoodsDetail().then();
-			// },
 			// 获取订单列表
-			getOrderList(status) {
+			getOrderList() {
 				let params = {
-					status: status,
+					status: this.traslateStatus(this.tabs.current),
 					page: this.page,
 					pageSize: 10,
 				}
@@ -164,8 +163,10 @@
 							this.loadingText = '没有更多了';
 						}, 10);
 					}
+					uni.stopPullDownRefresh();
 				}).catch(err => {
 					uni.hideLoading();
+					uni.stopPullDownRefresh();
 					uni.showToast({
 						icon: "none",
 						title: err.errMsg
@@ -178,10 +179,8 @@
 					this.tabs.current = index;
 					// 初始化查询条件
 					this.page = 1;
-					this.statusParam = this.traslateStatus(this.tabs.current);
 					this.orderList = [];
-
-					this.getOrderList(this.statusParam);
+					this.getOrderList();
 				}
 			},
 			// 订单详情
@@ -357,15 +356,16 @@
 			}
 		},
 		onLoad(e) {
+			// 开启下拉刷新
+			// #ifdef APP-PLUS
+			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+			const offset = uni.getSystemInfoSync().statusBarHeight + 65;
+			util.setRefreshMode(true, offset);
+			// #endif
 			// 获取页面传参 - 当前tab
 			this.tabs.current = e.index - 0;
-			// 初始化状态字段
-			this.statusParam = this.traslateStatus(this.tabs.current);
 			// 初始化页面数据
-			this.getOrderList(this.statusParam);
-			
-			
-			
+			this.getOrderList();		
 		},
 		onShow(){
 			// 从订单详情页面返回到这个页面的时候刷新数据
@@ -373,10 +373,8 @@
 			var currPage = pages[pages.length - 1]; //当前页面
 			if (currPage.data.isDoRefresh == true){
 				currPage.data.isDoRefresh = false;
-				// 初始化状态字段
-				this.statusParam = this.traslateStatus(this.tabs.current);
 				// 初始化页面数据
-				this.getOrderList(this.statusParam);
+				this.getOrderList();
 			}
 		}
 	}

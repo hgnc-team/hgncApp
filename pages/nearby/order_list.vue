@@ -1,7 +1,8 @@
 <template>
 	<view class="orderListPage">
 		<view class="tabs uni-flex">
-			<view class="tab uni-flex-item flex-center-center" :class="{active: index === currentTab}" v-for="(item, index) in tabs" :key="index" @tap="changeTabs(index)">
+			<view class="tab uni-flex-item flex-center-center" :class="{active: index === currentTab}" v-for="(item, index) in tabs"
+			 :key="index" @tap="changeTabs(index)">
 				<view class="name">
 					{{item}}
 				</view>
@@ -10,7 +11,7 @@
 		</view>
 		<!-- 列表内容 -->
 		<view class="order-list">
-			<view class="order-list-item" v-for="(item, index) in orderList" :key="index" >
+			<view class="order-list-item" v-for="(item, index) in orderList" :key="index">
 				<view class="title-wrap uni-flex" @tap="toShopIndex(item.id)">
 					<view class="iconfont icondianpu uni-inline-item"></view>
 					<view class="title uni-h5 uni-flex-item uni-flex">
@@ -26,7 +27,7 @@
 					</view>
 				</view>
 				<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
-					<view class="image uni-inline-item" >
+					<view class="image uni-inline-item">
 						<image :src="item.url" mode="aspectFit"></image>
 					</view>
 					<view class="info uni-flex-item">
@@ -43,7 +44,8 @@
 						</view>
 					</view>
 				</view>
-				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;" @tap="toGoodsDetail(item.goodsId)">
+				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;"
+				 @tap="toGoodsDetail(item.goodsId)">
 					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 				</view>
 			</view>
@@ -60,76 +62,47 @@
 	import util from "../../common/util.js";
 	export default {
 		components: {
-			uniIcon		
+			uniIcon
 		},
 		data() {
-			return {	
+			return {
 				tabs: ["全部", "到店消费", "待付款"],
 				currentTab: 0,
-				orderList: [{
-					name: "大藏小玩",
-					status: 0,
-					title: "防宋代明月石",
-					num: 1,
-					price: 555.55,
-					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09",
-					orderAddress: "奥斯卡的很深刻的经费和思考的家伙水电费你说，都没你份"
-				},{
-					name: "大藏小玩",
-					status: 1,
-					title: "防宋代明月石",
-					num: 16,
-					price: 555.55,
-					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09",
-					orderAddress: "奥斯卡的很深刻的经费和思考的家伙水电费你说，都没你份奥术大师"
-				},{
-					name: "大藏小玩",
-					status: 2,
-					title: "防宋代明月石",
-					num: 10,
-					price: 555.55,
-					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09"
-				},{
-					name: "大藏小玩",
-					status: 2,
-					title: "防宋代明月石",
-					num: 11,
-					price: 555.55,
-					orderCode: "12323423454566546",
-					orderTime: "2019-01-01 12:05:09"
-				}],
+				orderList: [],
 				page: 1
 			}
 		},
-		computed:{
-			noData(){
+		computed: {
+			noData() {
 				return this.orderList.length === 0;
 			}
 		},
+		onPullDownRefresh() {
+			this.getOrderList();
+		},
 		onReachBottom() {
 			console.log(11111)
-			uni.showToast({title: '触发上拉加载'});
+			uni.showToast({
+				title: '触发上拉加载'
+			});
 		},
 		methods: {
-			initData(id){
+			initData(id) {
 				service.getGoodsDetail().then();
 			},
 			// 获取订单列表
-			getOrderList(status){
+			getOrderList() {
 				let params = {
-					status: status,
+					status: this.switchStatus(this.tabs.current),
 					page: this.page,
 					pageSize: 10,
 				}
 				uni.showLoading();
-				service.getOrderList(params).then(res=>{
+				this.orderList
+				service.getOrderList(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data.data;
-					console.log(data);
-					if(data.length > 0) {
+					if (data.length > 0) {
 						// 拼接图片链接
 						_.forEach(data, item => {
 							item.imageUrl = util.setImageUrl({
@@ -139,11 +112,12 @@
 							})[0].img
 						})
 						this.orderList = this.orderList.concat(data);
+						uni.stopPullDownRefresh();
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
-						icon:"none",
+						icon: "none",
 						title: err.errMsg
 					})
 				})
@@ -153,33 +127,32 @@
 				if (this.currentTab !== index) {
 					this.currentTab = index;
 					this.page = 1;
-					let status = this.switchStatus(this.tabs.current);
-					this.getOrderList(status);
+					this.getOrderList();
 				}
 			},
 			// 店铺首页
-			toShopIndex(id){
+			toShopIndex(id) {
 				uni.navigateTo({
 					url: `/pages/nearby/shop_index?id=${id}`
 				})
 			},
 			// 订单详情
-			toOrderDetail(id){
+			toOrderDetail(id) {
 				uni.navigateTo({
 					url: `/pages/nearby/order_detail?id=${id}`
 				})
 			},
 			// 商品详情
-			toGoodsDetail(){
+			toGoodsDetail() {
 				uni.navigateTo({
 					url: "/pages/home/goods_detail"
 				})
 			},
 			// 转化status
-			switchStatus(index){
-// 				status订单状态  后台枚举范围 ：
+			switchStatus(index) {
+				// 				status订单状态  后台枚举范围 ：
 				let status = "";
-				switch (index){
+				switch (index) {
 					case 0:
 						// 全部
 						status = "已完成";
@@ -197,39 +170,48 @@
 				}
 				return status;
 			}
-			
+
 		},
 		onLoad(e) {
-			console.log(e)
-			// this.initData(e.id);
+			// 开启下拉刷新
+			// #ifdef APP-PLUS
+			// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
+			const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
+			util.setRefreshMode(true, offset);
+			// #endif
+
 			this.tabs.current = e.index - 0;
 			// 初始化页面数据
-			let status = this.switchStatus(this.tabs.current);
-			this.getOrderList(status);
+			this.getOrderList();
+
 		},
-		
+
 	}
 </script>
 
 <style lang="scss">
-	.orderListPage{
-		background-color:#f0f0f0;
-		.tabs{
+	.orderListPage {
+		background-color: #f0f0f0;
+
+		.tabs {
 			width: 100%;
 			height: 80upx;
 			position: fixed;
 			/* #ifdef H5 */
 			top: 80upx;
-			/* #endif */	
+			/* #endif */
 			z-index: 1000;
 			background-color: #fff;
 			color: #999;
 			border-bottom: 1upx solid #f0f0f0;
-			.tab{
+
+			.tab {
 				position: relative;
-				&.active{
+
+				&.active {
 					color: #242424;
-					.line-bottom{
+
+					.line-bottom {
 						width: 20upx;
 						height: 6upx;
 						background-color: #242424;
@@ -241,65 +223,75 @@
 				}
 			}
 		}
-		.order-list{
+
+		.order-list {
 			/* #ifdef H5 */
 			padding-top: 80upx;
-			/* #endif */	
+			/* #endif */
 			/*  #ifdef  APP-PLUS  */
-			padding-top: 80upx; 
-			/* #endif */	
-			.order-list-item{
-				background-color:#fff;
+			padding-top: 80upx;
+
+			/* #endif */
+			.order-list-item {
+				background-color: #fff;
 				width: 100%;
 				border: 1px solid #eee;
-				margin-top:16upx;
-				.title-wrap{
+				margin-top: 16upx;
+
+				.title-wrap {
 					width: 100%;
 					height: 74upx;
-					border-bottom: 1upx solid #f0f0f0;	
+					border-bottom: 1upx solid #f0f0f0;
 					padding: 0 30upx;
 					box-sizing: border-box;
-					.title{
-						.name{
-							margin: 0 10upx 0 20upx ;
+
+					.title {
+						.name {
+							margin: 0 10upx 0 20upx;
 						}
-						.icon{
-							
-						}
+
+						.icon {}
 					}
-					.order-status{
+
+					.order-status {
 						width: 100upx;
 					}
 				}
-				.order-info{
+
+				.order-info {
 					padding: 0 30upx;
 					box-sizing: border-box;
-					.image{
+
+					.image {
 						width: 184upx;
 						height: 184upx;
-						margin-top:30upx;
+						margin-top: 30upx;
 						margin-right: 20upx;
-						image{
+
+						image {
 							width: 100%;
 							height: 100%;
 						}
 					}
-					
-					.info{
-						margin-top:18upx;
-						.name{
+
+					.info {
+						margin-top: 18upx;
+
+						.name {
+
 							// 合计的价格
-							.total-price{
-								float:right;
-								font-weight:bold;
-								color:#1c5ef0;
+							.total-price {
+								float: right;
+								font-weight: bold;
+								color: #1c5ef0;
 							}
 						}
 					}
 				}
-				.btn{
-					button{
-						&::after{
+
+				.btn {
+					button {
+						&::after {
 							border-radius: 0;
 						}
 					}
