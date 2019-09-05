@@ -1,10 +1,13 @@
 <template>
 	<view class="indexPage">
-		<homePage v-if="page_code=='home'" ref="homePageRef"></homePage>
-		<nearbyPage v-if="page_code=='nearby'" ref="nearbyRef"></nearbyPage>
-		<vipCenterPage v-if="page_code=='vipCenter'" ref="vipCenterRef"></vipCenterPage>
-		<shopCartPage v-if="page_code=='shopCart'" ref="shopCartRef"></shopCartPage>
-		<minePage v-if="page_code=='mine'" ref="mineRef"></minePage>
+		<!-- h5起作用，app中暂时不支持 -->
+		<!-- <keep-alive> -->
+			<homePage v-if="page_code=='home'" ref="homePageRef" name="home"></homePage>
+			<nearbyPage v-else-if="page_code=='nearby'" ref="nearbyRef" name="nearby"></nearbyPage>
+			<vipCenterPage v-else-if="page_code=='vipCenter'" ref="vipCenterRef" name="vipCenter"></vipCenterPage>
+			<shopCartPage v-else-if="page_code=='shopCart'" ref="shopCartRef" name="shopCart"></shopCartPage>
+			<minePage v-else-if="page_code=='mine'" ref="mineRef" name="mine"></minePage>
+		<!-- </keep-alive> -->
 		<footerNav></footerNav>
 	</view>
 </template>
@@ -16,11 +19,15 @@
 	import shopCartPage from "../components/index/shopCart_page.vue";
 	import minePage from "../components/index/mine_page.vue";
 	import footerNav from "../components/index/footer_nav.vue";
-	
-	import { mapState } from 'vuex';
+
+	import {
+		mapState
+	} from 'vuex';
 	export default {
 		data() {
-			return {}
+			return {
+
+			}
 		},
 		components: {
 			homePage,
@@ -29,7 +36,7 @@
 			shopCartPage,
 			minePage,
 			footerNav
-		},	
+		},
 		computed: {
 			...mapState(["footer_store"]),
 			page_code() {
@@ -37,36 +44,38 @@
 			}
 		},
 		onReady() {
-			
+
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
 			//  自定义组件模式  在组件中不支持onPullDownRefresh触发下拉刷新
-			if(this.page_code == 'home') {
+			if (this.page_code == 'home') {
 				this.$refs.homePageRef.pullDownRefresh()
-			} else if(this.page_code == 'nearby') {
+			} else if (this.page_code == 'nearby') {
 				this.$refs.nearbyRef.pullDownRefresh()
-			} else if(this.page_code == 'vipCenter') {
+			} else if (this.page_code == 'vipCenter') {
 				// this.$refs.vipCenterRef.pullDownRefresh()
-			} else if(this.page_code == 'shopCart') {
+			} else if (this.page_code == 'shopCart') {
 				this.$refs.shopCartRef.pullDownRefresh()
-			} else if(this.page_code == 'mine') {
+			} else if (this.page_code == 'mine') {
 				// this.$refs.mineRef.pullDownRefresh()
 			}
 		},
 		methods: {
-			
-		}	
+
+		}
 	}
 </script>
 
 <style lang="scss">
-	page{
+	page {
 		width: 100%;
 		height: 100%;
 	}
+
 	.indexPage {
 		width: 100%;
-		height: 100%;;
+		height: 100%;
+		;
 	}
 </style>

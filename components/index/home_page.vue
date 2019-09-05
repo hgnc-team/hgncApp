@@ -50,8 +50,8 @@
 				</view>
 				<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 					<swiper-item v-for="(tab,index1) in dataList" :key="index1">
-						<scroll-view id="scroll-content" class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)" scroll-top="0"
-						 @scroll="onPageScrollFn">
+						<scroll-view id="scroll-content" class="list" :class="'list'+ index1" scroll-y @scrolltolower="loadMore(index1)"
+						 scroll-top="0" @scroll="onPageScrollFn">
 							<!-- 轮播图 -->
 							<customSwiper :swiperList="tab.swiperList" @toSwiper="toSwiper" :isDotsInside="false"></customSwiper>
 							<!-- <view class="title">好物热卖</view> -->
@@ -59,7 +59,8 @@
 							<view class="product-list" @click="toGoods">
 								<view class="product" v-for="(item,index2) in tab.data" :key="index2" :data-index="index2" :class="'swiper'+index1">
 									<view class="uni-media-list-logo" :data-index="index2">
-										<image class="image" lazy-load :class="{lazy:!item.show}" :data-index="index2" @load="loaded" :src="item.show?item.img:''" />
+										<image class="image" lazy-load="true" :class="{lazy:!item.show}" :data-index="index2" @load="loaded" @error="imageError"
+										 :src="item.show?item.img:''" />
 										<image class="image placeholder" :data-index="index2" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 									</view>
 									<view class="name" :data-index="index2">{{item.name}}</view>
@@ -165,7 +166,7 @@
 				// this.getPosition();
 			},
 			// 开启下拉刷新
-			openRefresh(){
+			openRefresh() {
 				// #ifdef APP-PLUS
 				// 下拉刷新的起始位置(状态栏高度+导航栏高度+导航tab的高度)
 				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 100;
@@ -229,7 +230,6 @@
 					title: "加载中..."
 				})
 				let cateList = await service.getGoodTopClass(parms)
-				// console.log(cateList)
 				// 获取到分类数据
 				if (cateList) {
 					uni.hideLoading();
@@ -266,7 +266,8 @@
 					let timer = setTimeout(() => {
 						this.load();
 						timer = null;
-					}, 100)
+						clearTimeout(timer)
+					}, 200)
 				}
 			},
 			getProdListByType(params) {
@@ -334,12 +335,6 @@
 			loadMore(e) {
 				// 加载数据
 				this.addData(e);
-				let timer = setTimeout(() => {
-					// 加载图片
-					this.load();
-					timer = null;
-					clearTimeout(timer)
-				}, 30)
 			},
 			async addData(e) {
 				this.dataList[e].loadingText = '加载更多...';
@@ -368,6 +363,10 @@
 					})
 				});
 				this.dataList[e].data = _.concat(this.dataList[e].data, tempArr);
+				let timer = setTimeout(() => {
+					this.load();
+					timer = null;
+				}, 200)
 			},
 			//去二级分类页面
 			toSubCategoryNav() {
@@ -393,10 +392,7 @@
 				this.isClickChange = false;
 				this.tabIndex = index; //一旦访问data就会出问题
 
-				let timer = setTimeout(() => {
-					this.load();
-					timer = null;
-				}, 100)
+
 				// 控制刷新开启关闭
 				this.isSupportRefresh();
 			},
@@ -428,10 +424,6 @@
 					this.isClickChange = true;
 					this.tabIndex = tabIndex;
 				}
-				let timer = setTimeout(() => {
-					this.load();
-					timer = null;
-				}, 100)
 
 				// 控制刷新开启关闭
 				this.isSupportRefresh();
@@ -464,11 +456,12 @@
 				uni.createSelectorQuery().in(this).selectAll(`.swiper${this.tabIndex} .lazy`).boundingClientRect((images) => {
 					images.forEach((image, index) => {
 						if (image.top <= this.windowHeight) {
-							// this.dataList[this.tabIndex].data[image.dataset.index].show = true;
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
 							item.show = true;
+							// item.loaded = true;
 							// 重新刷新数据
 							this.$set(this.dataList[this.tabIndex].data, image.dataset.index, item);
+							console.log(JSON.stringify(this.dataList[this.tabIndex].data))
 						}
 					})
 				}).exec()
@@ -476,10 +469,13 @@
 			// 图片加载完毕的回调
 			loaded(e) {
 				// 图片url为空就不会执行这里
-				// this.dataList[this.tabIndex].data[e.target.dataset.index].loaded = true;
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
+				console.log('load', this.dataList[this.tabIndex].data)
+			},
+			imageError: function(e) {
+				console.error('image发生error事件，携带值为' + e.detail.errMsg)
 			},
 			// Scroll-view组件的滚动监听
 			onPageScrollFn: _.throttle(function() {
@@ -724,6 +720,9 @@
 
 					.uni-media-list-logo .image {
 						position: absolute;
+						image{
+							will-change: transform
+						}
 					}
 
 					.name {
