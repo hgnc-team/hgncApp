@@ -58,6 +58,9 @@ export default {
 			isFocus: false
 		};
 	},
+	created() {
+		this.getFocus()
+	},
 	methods: {
 		//HM修改 触发组件confirm事件
 		triggerConfirm(){
