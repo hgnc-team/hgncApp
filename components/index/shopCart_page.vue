@@ -39,10 +39,8 @@
 										<text class="danjia uni-inline-item">￥{{ item.price }}</text>
 										<text class="shuliang uni-inline-item uni-text-small">x {{ item.num }}</text>
 									</view>
-									<view class="numInput">
-										<text class="reduce iconfont" @tap="changeCount(item,-1)" :class="item.num == 0 ? 'numbox-disabled' : ''">-</text>
-										<input class="input" type="number" v-model="item.num" />
-										<text class="plus iconfont" @tap="changeCount(item,1)">+</text>
+									<view class="number-box">
+										<uni-number-box :min="1" :max="999" @change="changeNum($event,item)"  :value="item.num"></uni-number-box>
 									</view>
 								</view>
 							</view>
@@ -86,6 +84,7 @@
 	import {
 		uniIcon,
 		uniNavBar,
+		uniNumberBox
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import { mapState, mapMutations, mapActions } from 'vuex';
@@ -95,7 +94,8 @@
 		components: {
 			uniIcon,
 			uniNavBar,
-			recommendGoods
+			recommendGoods,
+			uniNumberBox
 		},
 		data() {
 			return {
@@ -319,16 +319,10 @@
 						item.isChecked = false;
 					});
 			},
-			changeCount(val, way) {
-				if (way > 0) {
-					val.num++;
-				} else {
-					val.num--;
-					if (val.num < 1) {
-						val.num = 1;
-					}
-				}
+			changeNum(val, item){
+				item.num = val
 			},
+			
 			// 每次调用此方法，将初始值为0，便利价格并累加
 			_totalPrice() {
 				this.allPrice = 0;
@@ -556,36 +550,13 @@
 									.shuliang{
 										color:#666;
 									}
-									.numInput{
+									.number-box{
 										position: absolute;
 										right: 0upx;
 										top: 0upx;
-										text {
-											float: left;
-											color: #999;
-											font-size: 22upx;
-											line-height: 50upx;
-										}
-										.iconfont{
-											font-size: 44upx;
-											padding: 4upx 16upx;
-										}
-										
-										input {
-											display: inline-block;
-											height: 40upx;
-											width: 56upx;
-											margin: 0 20upx;
-											float: left;
-											text-align: center;
-											line-height: 40upx;
-											font-size: 24upx;
-											color: #999;
-											border: 1upx solid #f0f0f0;
-										}
-										
-										.numbox-disabled {
-											color: #c0c0c0;
+										.uni-numbox {
+											transform: scale(0.65);
+											transform-origin: right;
 										}
 									}
 								}
