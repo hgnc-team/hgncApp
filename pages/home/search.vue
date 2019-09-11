@@ -7,28 +7,28 @@
 			<view class="back uni-inline-item" @tap="goBack">
 				<uni-icon type="back"></uni-icon>
 			</view>
-			
+
 			<view class="search-box uni-inline-item">
 				<!-- mSearch组件 如果使用原样式，删除组件元素-->
-				<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)"
-				 @confirm="doSearch(false)" v-model="keyword" radius="0" @input="clear"></mSearch>
+				<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)" @confirm="doSearch(false)"
+				 v-model="keyword" radius="0" @input="clear"></mSearch>
 				<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
-							
+
 				<!-- <view class="input-box">
 					<input type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
 					 placeholder-class="placeholder-class" confirm-type="search">
 				</view>
 				<view class="search-btn" @tap="doSearch(false)">搜索</view> -->
-				
+
 				<!-- 原样式 end -->
 			</view>
-			<view class="cart uni-inline-item"  :class="isShowIcon?'active':''" @tap="toCart">
+			<view class="cart uni-inline-item" :class="isShowIcon?'active':''" @tap="toCart">
 				<view class="iconfont iconicon_shoppingcart_nor">
-					
+
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 历史搜索 热门搜索-->
 		<view class="search-keyword" @touchstart="blur" v-show="!isShowSearchList">
 			<view class="keyword-box">
@@ -59,11 +59,11 @@
 				</view>
 			</view>
 		</view>
-			
+
 		<!-- 搜索到的商品 -->
 		<view class="goods-wrap" v-if="isShowSearchList">
 			<view class="tabs filters uni-flex uni-row">
-				<view class="default uni-flex-item flex-center-center uni-center" :class="currentTab=='default'?'active':''" @tap="changeTab('default')"> 
+				<view class="default uni-flex-item flex-center-center uni-center" :class="currentTab=='default'?'active':''" @tap="changeTab('default')">
 					默认
 					<view class="bottom-line"></view>
 				</view>
@@ -86,41 +86,43 @@
 					</view>
 					<view class="product-list common-ma-30">
 						<view class="product" v-for="(item, index) in goodsList" :key="index" @tap="toGoods(item)">
-							<!-- <image lazy-load class="lazy" mode="scaleToFill" :src="item.imageUrl"></image> -->
 							<view class="uni-media-list-logo">
-								<image class="image" :class="{lazy:!item.show}" :data-index="index" @load="onLoad" :src="item.show?item.imageUrl:''" />
-								<image class="image placeholder" :class="{loaded:item.loaded}" :src="placeholderSrc" />
+								<image class="image" :class="{lazy:!item.show}" :data-index="index" @load="onLoaded" :src="item.show?item.imageUrl:''" />
+								<image class="image placeholder" :data-index="index" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 							</view>
-							
+
 							<view class="name">￥{{item.title}}</view>
 							<view class="info">
 								<view class="price">{{item.price}}</view>
 								<view class="slogan">{{item.type}}</view>
-							</view>	
+							</view>
 						</view>
 					</view>
 				</view>
-				<view class="hasNoData"  v-if="!hasData">
+				<view class="hasNoData" v-if="!hasData">
 					<noData :text="noDataText"></noData>
 					<view class="place-bar"></view>
 					<!-- 推荐商品列表 -->
 					<recommendGoods :title="'推荐商品'" :num="4"></recommendGoods>
-				</view>				
-			</view>	
+				</view>
+			</view>
 		</view>
-		
+
 		<!-- 返回顶部 -->
 		<scrollToTop :isShowBtn="isShowBtn"></scrollToTop>
 	</view>
 </template>
 
 <script>
-	import { uniIcon } from '@dcloudio/uni-ui';
+	import {
+		uniIcon
+	} from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
 	import recommendGoods from '../../components/common/recommend-goods.vue';
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	import noData from "../../components/common/no-data.vue";
+	import util from '../../common/util.js';
 	export default {
 		components: {
 			uniIcon,
@@ -141,13 +143,13 @@
 				hotKeywordList: [],
 				goodsList: [],
 				// 推荐产品列表
-				RecommendGoodsList:[],
+				RecommendGoodsList: [],
 				// 热门搜索的开关
 				forbid: '',
 				// 筛选条件
 				currentTab: 'default',
 				// 价格的升降序
-				isPriceDesc: true, 
+				isPriceDesc: true,
 				// 是否展示搜索到的产品列表
 				isShowSearchList: false,
 				// 是否展示购物车图标
@@ -156,7 +158,7 @@
 				hasData: false,
 				// 产品总数
 				totalNum: 0,
-				page:1,
+				page: 1,
 				// 图片懒加载
 				show: false,
 				// 图片默认路径
@@ -167,7 +169,7 @@
 				isShowBtn: false
 			}
 		},
-		onLoad() {
+		created() {
 			this.init();
 			// 获取设备高度
 			this.windowHeight = uni.getSystemInfoSync().windowHeight;
@@ -175,13 +177,13 @@
 		onPageScroll() {
 			this.pageScroll();
 		},
-		computed:{
-			noDataText(){
+		computed: {
+			noDataText() {
 				return `抱歉,未找到“${this.keyword}”相关产品`;
 			}
-// 			totalNum(){
-// 				return this.goodsList.length;
-// 			}
+			// 			totalNum(){
+			// 				return this.goodsList.length;
+			// 			}
 		},
 		methods: {
 			init() {
@@ -203,7 +205,7 @@
 				uni.getStorage({
 					key: 'OldKeys',
 					success: (res) => {
-						var OldKeys = JSON.parse(res.data);
+						let OldKeys = JSON.parse(res.data);
 						this.oldKeywordList = OldKeys;
 					}
 				});
@@ -215,14 +217,14 @@
 			},
 			//高亮关键字
 			drawCorrelativeKeyword(keywords, keyword) {
-				var len = keywords.length,
+				let len = keywords.length,
 					keywordArr = [];
-				for (var i = 0; i < len; i++) {
-					var row = keywords[i];
+				for (let i = 0; i < len; i++) {
+					let row = keywords[i];
 					//定义高亮#9f9f9f
-					var html = row[0].replace(keyword, "<span style='color: #9f9f9f;'>" + keyword + "</span>");
+					let html = row[0].replace(keyword, "<span style='color: #9f9f9f;'>" + keyword + "</span>");
 					html = '<div>' + html + '</div>';
-					var tmpObj = {
+					let tmpObj = {
 						keyword: row[0],
 						htmlStr: html
 					};
@@ -255,8 +257,8 @@
 			hotToggle() {
 				this.forbid = this.forbid ? '' : '_forbid';
 			},
-			clear(keyword){
-				if(!keyword){
+			clear(keyword) {
+				if (!keyword) {
 					this.isShowSearchList = false;
 					this.keyword = "";
 				}
@@ -264,9 +266,9 @@
 			//执行搜索
 			doSearch(key) {
 				key = key ? key : this.keyword ? this.keyword : this.defaultKeyword;
-// 				console.log("key",key);
-// 				console.log("this.keyword",this.keyword)
-// 				console.log("this.defaultKeyword",this.defaultKeyword)
+				// 				console.log("key",key);
+				// 				console.log("this.keyword",this.keyword)
+				// 				console.log("this.defaultKeyword",this.defaultKeyword)
 				this.keyword = key;
 				//保存为历史 
 				this.saveKeyword(key);
@@ -282,9 +284,8 @@
 				uni.getStorage({
 					key: 'OldKeys',
 					success: (res) => {
-						// console.log(res.data);
-						var OldKeys = JSON.parse(res.data);
-						var findIndex = OldKeys.indexOf(keyword);
+						let OldKeys = JSON.parse(res.data);
+						let findIndex = OldKeys.indexOf(keyword);
 						if (findIndex == -1) {
 							OldKeys.unshift(keyword);
 						} else {
@@ -300,7 +301,7 @@
 						this.oldKeywordList = OldKeys; //更新历史搜索
 					},
 					fail: (e) => {
-						var OldKeys = [keyword];
+						let OldKeys = [keyword];
 						uni.setStorage({
 							key: 'OldKeys',
 							data: JSON.stringify(OldKeys)
@@ -309,93 +310,105 @@
 					}
 				});
 			},
-			changeTab(type){
+			changeTab(type) {
 				// type： deafult sales  price
-				if(type === "default") {
+				if (type === "default") {
 					this.isPriceDesc = true;
 				}
 				// 价格可以切换升降序
-				if(type === "price") {
+				if (type === "price") {
 					this.currentTab = type;
 					this.goodsList = [];
 					this.getGoodsListByOrder();
 					this.isPriceDesc = !this.isPriceDesc;
 					return
 				}
-				
+
 				// 默认和销量
-				if(this.currentTab != type){
+				if (this.currentTab != type) {
 					this.currentTab = type;
 					this.goodsList = [];
 					this.getGoodsListByOrder();
 				}
 			},
 			// 按筛选条件查询列表
-			getGoodsListByOrder(){
-				if(this.currentTab === "price") {
+			getGoodsListByOrder() {
+				if (this.currentTab === "price") {
 					// 价格可以切换升降序
-					let orderBy = this.isPriceDesc ? [["price", "desc"]] : [["price", "asc"]];
+					let orderBy = this.isPriceDesc ? [
+						["price", "desc"]
+					] : [
+						["price", "asc"]
+					];
 					this.getGoodsList(this.keyword, orderBy);
 				} else {
 					// 默认和销量只有降序
 					// let orderBy = this.currentTab === 'default' ? [["createTime", "desc"]] : [["sales", "desc"]];
-					let orderBy = [["createTime", "desc"]];
+					let orderBy = [
+						["createTime", "desc"]
+					];
 					this.getGoodsList(this.keyword, orderBy);
 				}
 			},
 			// 查询产品列表
-			getGoodsList(key, orderBy){
+			getGoodsList(key, orderBy) {
 				const data = {
 					title: key,
 					page: this.page,
 					pageSize: 10,
-					orderBy: orderBy 
+					orderBy: orderBy
 				}
 				this.isShowSearchList = true;
 				uni.showLoading({
 					title: "加载中..."
 				});
-				service.getGoodListBySearch(data).then(res=>{
+				service.getGoodListBySearch(data).then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
 					this.totalNum = data.total;
-					if(data.data.length > 0) {
+					if (data.data.length > 0) {
 						this.hasData = true;
-						const  goodsList = data.data;
-						this.goodsList = _.concat(goodsList);
-						_.forEach(this.goodsList, item => {
+						const goodsList = data.data;
+						_.forEach(goodsList, item => {
 							item.show = false;
 							item.loaded = false;
+							// 拼接图片链接
+							item.imageUrl = util.setImageUrl({
+								type: "goods",
+								goodId: item.id,
+								imageName: item.imageUrl
+							})[0].img
 						});
+						this.goodsList = _.concat(goodsList);
 						setTimeout(() => {
 							this.load();
 						}, 100)
 					} else {
 						this.hasData = false;
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title:  err.errMsg,
+						title: err.errMsg,
 					})
 				})
 			},
 			// 商品详情
-			toGoods(item){
+			toGoods(item) {
 				uni.navigateTo({
 					url: `/pages/home/goods_detail?id=${item.id}`
 				})
 			},
 			// 购物车
-			toCart(){
+			toCart() {
 				this.$store.dispatch("change_page", "shopCart");
 				uni.navigateTo({
 					url: "/pages/index"
 				})
 			},
 			// 返回顶部
-			scrollToTop(){
+			scrollToTop() {
 				uni.pageScrollTo({
 					scrollTop: 0,
 					duration: 30
@@ -404,7 +417,7 @@
 			// 获取搜索商品列表区域的滚动高度
 			getScrollTop() {
 				uni.createSelectorQuery().in(this).select('.product-list').boundingClientRect(data => {
-					if(data) {
+					if (data) {
 						// 内容超过一屏
 						this.isShowBtn = data.top <= 0 ? true : false;
 					}
@@ -412,46 +425,49 @@
 			},
 			// 图片懒加载
 			load() {
+				let vm = this
 				uni.createSelectorQuery().in(this).selectAll('.lazy').boundingClientRect((images) => {
-					_.forEach(images, (image, index)=>{
-						if (image.top <= this.windowHeight) {
-							let item = Object.assign({}, this.goodsList[image.dataset.index]);
+					_.forEach(images, (image, index) => {
+						if (image.top <= vm.windowHeight) {
+							let item = Object.assign({}, vm.goodsList[image.dataset.index]);
 							item.show = true;
 							// 重新刷新数据
-							this.$set(this.goodsList, image.dataset.index, item);
+							vm.$set(vm.goodsList, image.dataset.index, item);
 						}
 					})
 				}).exec()
 			},
-			onLoad(e) {
+			onLoaded(e) {
 				// 图片url为空就不会执行这里
 				let item = Object.assign({}, this.goodsList[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.goodsList, e.target.dataset.index, item);
 			},
-			pageScroll: _.throttle(function(){
+			pageScroll: _.throttle(function() {
 				this.getScrollTop();
 				this.load();
 			}, 100),
-			goBack(){
+			goBack() {
 				uni.navigateBack()
 			}
 		}
 	}
 </script>
 <style lang="scss">
-	page{
+	page {
 		width: 100%;
 		height: 100%;
 		background-color: #fff;
 	}
-	.searchPage{
+
+	.searchPage {
 		width: 100%;
 		height: 100%;
 		background-color: #fff;
-		.header-wrap{
+
+		.header-wrap {
 			width: 100%;
-			height:88upx;
+			height: 88upx;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -463,34 +479,39 @@
 			top: var(--status-bar-height);
 			/*  #endif  */
 			z-index: 1000;
+
 			.back {
 				width: 80upx;
 				height: 100%;
 				justify-content: center;
 			}
-			.search-box{
+
+			.search-box {
 				flex: 1 1 0%;
 				height: 88upx;
 				padding: 10upx;
 				justify-content: center;
 				box-sizing: border-box;
-				.search .content{
+
+				.search .content {
 					background-color: #f0f0f0;
 				}
 			}
+
 			.cart {
 				width: 0upx;
 				justify-content: center;
 				transition: all 0.2s linear;
 				visibility: hidden;
-				&.active{
+
+				&.active {
 					width: 100upx;
 					visibility: visible;
-					transform-origin:center left;
+					transform-origin: center left;
 				}
 			}
 		}
-		
+
 		.search-box .input-box {
 			width: 85%;
 			flex-shrink: 1;
@@ -595,8 +616,9 @@
 			color: #6b6b6b;
 			box-sizing: border-box;
 		}
-		.goods-wrap{
-			.tabs{
+
+		.goods-wrap {
+			.tabs {
 				width: 100%;
 				height: 80upx;
 				background-color: #fff;
@@ -607,46 +629,59 @@
 				/*  #endif  */
 				z-index: 1000;
 				border-bottom: 1upx solid #f0f0f0;
+
 				.uni-flex-item {
-					color:#666;
+					color: #666;
 					position: relative;
-					.bottom-line{
-						display: none; 
+
+					.bottom-line {
+						display: none;
 					}
 				}
-				.price{
+
+				.price {
+
 					/*向上*/
-					.triangle_border_up{
-						width:0;
-						height:0;
-						border-width:0 10upx 10upx;
-						border-style:solid;
-						border-color:transparent transparent #999;/*透明 透明  灰*/
-						position:absolute;
+					.triangle_border_up {
+						width: 0;
+						height: 0;
+						border-width: 0 10upx 10upx;
+						border-style: solid;
+						border-color: transparent transparent #999;
+						/*透明 透明  灰*/
+						position: absolute;
 						top: 30upx;
 						right: 135upx;
-						&.up{
-							border-color:transparent transparent #333;/*透明 透明  灰*/
+
+						&.up {
+							border-color: transparent transparent #333;
+							/*透明 透明  灰*/
 						}
 					}
+
 					/*向下*/
-					.triangle_border_down{
-						width:0;
-						height:0;
-						border-width:10upx 10upx 0;
-						border-style:solid;
-						border-color:#999 transparent transparent;/*灰 透明 透明 */
-						position:absolute;
+					.triangle_border_down {
+						width: 0;
+						height: 0;
+						border-width: 10upx 10upx 0;
+						border-style: solid;
+						border-color: #999 transparent transparent;
+						/*灰 透明 透明 */
+						position: absolute;
 						top: 44upx;
 						right: 135upx;
-						&.down{
-							border-color:#333 transparent transparent;/*灰 透明 透明 */
+
+						&.down {
+							border-color: #333 transparent transparent;
+							/*灰 透明 透明 */
 						}
 					}
 				}
-				.active{
-					color:#242424;
-					.bottom-line{
+
+				.active {
+					color: #242424;
+
+					.bottom-line {
 						display: block;
 						width: 10%;
 						height: 6upx;
@@ -658,62 +693,68 @@
 					}
 				}
 			}
-			.content{
+
+			.content {
 				padding-top: 168upx;
 				/*  #ifdef  APP-PLUS  */
 				padding-top: calc(var(--status-bar-height) + 168upx);
+
 				/*  #endif  */
-				.hasData{
-					.total{
+				.hasData {
+					.total {
 						height: 50upx;
 						background-color: #f0f0f0;
 						color: #666;
-					}	
+					}
 				}
-				.hasNoData{
 
-					.Recommend-goods-list{
-						.title{
+				.hasNoData {
+
+					.Recommend-goods-list {
+						.title {
 							padding: 20upx 30upx;
 							box-sizing: border-box;
 						}
 					}
 				}
-				.product-list{
+
+				.product-list {
 					background-color: #fff;
 					display: flex;
 					justify-content: space-between;
 					flex-wrap: wrap;
-					box-sizing: border-box;			
+					box-sizing: border-box;
+
 					.product {
 						width: 47.75%;
 						// border-radius: 20upx;
 						background-color: #fff;
 						margin: 0 0 15upx 0;
+
 						.placeholder {
 							opacity: 0.1;
 							transition: opacity 0.1s linear;
 						}
-						
+
 						.placeholder.loaded {
 							opacity: 0;
 						}
-						
+
 						.uni-media-list-logo {
 							width: 100%;
 							height: 300upx;
 							position: relative;
 						}
-						
+
 						.uni-media-list-logo .image {
 							position: absolute;
 						}
-						
-// 						image{
-// 							width: 100%;
-// 							height: 246upx;
-// 						}
-							
+
+						// 						image{
+						// 							width: 100%;
+						// 							height: 246upx;
+						// 						}
+
 						.name {
 							width: 100%;
 							padding: 10upx 0;
@@ -724,20 +765,20 @@
 							font-weight: 400;
 							font-size: 26upx;
 						}
-							
+
 						.info {
 							display: flex;
 							justify-content: space-between;
 							align-items: center;
 							width: 100%;
 							font-weight: 100;
-							
+
 							.price {
 								color: #4c9bfa;
 								font-size: 30upx;
 								font-weight: 600;
 							}
-							
+
 							.slogan {
 								color: #c2c2c2;
 								font-size: 24upx;
@@ -747,8 +788,8 @@
 				}
 			}
 		}
-		
-		.scrollToTop{
+
+		.scrollToTop {
 			width: 86upx;
 			height: 86upx;
 			background-color: #fff;
