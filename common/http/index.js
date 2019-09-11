@@ -95,7 +95,6 @@ function reloadMessage(config) {
 	let retry = new Promise((resolve, reject) => {
 		/*(token) => {...}这个函数就是回调函数*/
 		subscribeTokenRefresh(token => {
-			console.log(config)
 			// 如果没有传入 success / fail / complete 参数，则会返回封装后的 Promise 对象
 			uni.request({
 				url: config.url,

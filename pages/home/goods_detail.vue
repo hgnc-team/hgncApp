@@ -414,7 +414,7 @@
 				// 查询商品是否已经存在于购物车
 				let isExist = _.findIndex(this.goodsList, item => item.standardId === this.specSelected.id) > -1;
 				// 购物车增加长度限制 最多50个
-				if (!isExist && this.goodsList.length >= 50) {
+				if (!isExist && this.goodsList.length > 50) {
 					uni.showToast({
 						icon: "none",
 						title: "亲，购物车商品数量超出了限制哦，请删除部分后在添加"
