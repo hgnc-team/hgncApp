@@ -11,7 +11,7 @@
 		</view>
 		
 		<!-- 模态框 修改昵称-->
-		<neil-modal :show="showModal" @close="closeModal()" @confirm="changeNickName" title="修改昵称">
+		<neil-modal :show="showModal" @close="closeModal()" @confirm="changeNickName" title="修改昵称" class="nick-name-modal">
 		    <view class="input-wrap">	
 		    	<input type="text" v-model="nickName.newName" placeholder="请输入昵称" class="nick-name" />
 		    </view>
@@ -207,11 +207,16 @@
 				}
 			}
 		}
-		.input-wrap{
-			padding: 10upx 20upx;
-		}
-		/deep/ .neil-modal__container {
-			top: 40% !important;
+		.nick-name-modal{
+			/deep/ .neil-modal__container {
+				top: 30% !important;
+			}
+			.input-wrap{
+				padding: 40upx 20upx;
+			}
+		}	
+		.neil-modal__container {
+			top: 30% !important;
 		}
 	}
 </style>
