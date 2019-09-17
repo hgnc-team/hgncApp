@@ -1,0 +1,19 @@
+前提：
+1.下载安装HBuilderX
+http://www.dcloud.io/hbuilderx.html
+2. git clone hgncApp代码库
+3.其他同一般的代码编辑器
+4.安装完项目之后(npm i)，打包步骤如下：
+5.通知娄永亮(18186653094)将苹果设备uuid 加入到ipa包中才能安装
+
+主菜单栏选择  发行-》原生App云打包，做如下设置：
+IOS包名： cn.maiyidesan.server
+证书私钥密码 Mc@000306
+证书profile文件： PengyuProfile.mobileprovision
+私钥证书: pengyuCert.p12
+渠道包：无
+自定义基座 勾选上 (视情况而定)
+
+广告联盟，全部去掉勾选
+
+最后，点击"打包"
