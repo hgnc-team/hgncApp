@@ -59,7 +59,7 @@
 							<view class="product-list" @click="toGoods">
 								<view class="product" v-for="(item,index2) in tab.data" :key="index2" :data-index="index2" :class="'swiper'+index1">
 									<view class="uni-media-list-logo" :data-index="index2">
-										<image class="image" lazy-load="true" :class="{lazy:!item.show}" :data-index="index2" @load="loaded" @error="imageError"
+										<image class="image" lazy-load="true" :class="{lazy:!item.show}" :data-index="index2" @load="loaded"
 										 :src="item.show?item.img:''" />
 										<image class="image placeholder" :data-index="index2" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 									</view>
@@ -543,7 +543,7 @@
 					height: 56upx;
 					background-color: #ffffff;
 					font-size: 28upx;
-					border-radius: 4upx;
+					border-radius: 6upx;
 
 					.icon {
 						width: 56upx;
