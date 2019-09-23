@@ -2,11 +2,6 @@
 	<!-- 我的团队 -->
 	<view class="myTeamPage">
 		<view class="header">
-			<view class="search-box uni-inline-item">
-				<!-- mSearch组件 如果使用原样式，删除组件元素-->
-				<mSearch :mode="2" button="inside" :placeholder="'搜索用户ID'" @search="doSearch()" @confirm="doSearch()" v-model="keyword"
-				 radius="0" @input="clear"></mSearch>
-			</view>
 			<view class="tabs uni-flex" v-if="tabs.length >0">
 				<view class="uni-flex-item flex-center-center" v-for="(item, index) in tabs" :key="index" :class="currentTab==item.type?'active':''"
 				 @tap="changeTab(item.type)">
