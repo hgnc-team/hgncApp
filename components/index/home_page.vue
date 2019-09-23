@@ -500,7 +500,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: #fff;
+		background-color: #f0f0f0;
 
 		.header {
 			width: 100%;
@@ -690,7 +690,7 @@
 				flex-wrap: wrap;
 				padding: 0 30upx;
 				box-sizing: border-box;
-
+				background-color: #fff;
 				.product {
 					width: 47.75%;
 					border-radius: 20upx;
