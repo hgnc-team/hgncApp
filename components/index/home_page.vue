@@ -458,10 +458,8 @@
 						if (image.top <= this.windowHeight) {
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
 							item.show = true;
-							// item.loaded = true;
 							// 重新刷新数据
 							this.$set(this.dataList[this.tabIndex].data, image.dataset.index, item);
-							console.log(JSON.stringify(this.dataList[this.tabIndex].data))
 						}
 					})
 				}).exec()
@@ -472,10 +470,6 @@
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
-				console.log('load', this.dataList[this.tabIndex].data)
-			},
-			imageError: function(e) {
-				console.error('image发生error事件，携带值为' + e.detail.errMsg)
 			},
 			// Scroll-view组件的滚动监听
 			onPageScrollFn: _.throttle(function() {
