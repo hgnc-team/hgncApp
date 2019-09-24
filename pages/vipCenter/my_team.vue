@@ -304,7 +304,7 @@
 
 		.list-wrap {
 			width: 100%;
-			padding-top: 188upx;
+			padding-top: 75upx;
 			background-color: #f0f0f0;
 
 			.totalNum {

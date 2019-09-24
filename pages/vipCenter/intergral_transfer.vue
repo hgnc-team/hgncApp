@@ -11,7 +11,7 @@
 						我的积分
 					</view>
 					<view class="bottom uni-bold">
-						{{jfValue}}
+						{{comPoint}}
 					</view>
 				</view>
 			</view>
@@ -23,7 +23,7 @@
 						M币钱包(枚)
 					</view>
 					<view class="bottom uni-bold">
-						{{mbValue}}
+						{{gold}}
 					</view>
 				</view>
 			</view>
@@ -80,6 +80,9 @@
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
+	import {
+		mapState
+	} from 'vuex';
 	export default {
 		components:{
 			uniIcon
@@ -100,15 +103,12 @@
 			}
 		},
 		computed:{
+			...mapState([ 'comPoint', 'gold']),
 			isNumInvaild(){
 				return this.mbValue - 0 < this.num - 0
 			}
 		},
 		methods: {
-			init(){
-				this.jfValue = 1029;
-				this.mbValue = 10299.99;
-			},
 			initPosition() {
 			    /**
 			     * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
@@ -116,17 +116,12 @@
 			     */
 			    this.positionTop = uni.getSystemInfoSync().windowHeight - 80;
 			},
-			// 获取用户积分信息
-			getUserInfo(){
-				
-			},
 			// 关闭提示
 			closeNotice() {
 				this.isShowNotice = false;
 			},
 			// 确认转出
 			formSubmit(e){
-				 console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
 				 if(e.detail.value.num === "") {
 					 return
 				 }

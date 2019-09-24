@@ -108,7 +108,6 @@
 				</view>
 			</view>
 		</view>
-
 	</view>
 </template>
 
@@ -158,7 +157,7 @@
 		computed: {
 			isNumInvaild() {
 				return this.mbValue - 0 < this.num - 0
-			}
+			}	
 		},
 		methods: {
 			init() {
@@ -166,14 +165,10 @@
 				this.initTime();
 				// 初始化总交易额
 				this.initInfo();
-
+				// 初始化话局部数据
+				this.search()
 			},
 			initInfo(){
-				this.teamSize = 9029;
-				this.totalTurnover = 10299.99;
-				this.todayTurnover = 3456.88;
-				this.todayInvit = 399;
-
 				// 默认搜索
 				this.getdata(true);
 			},
@@ -181,10 +176,10 @@
 			initTime(){
 				//获取当前时间
 				let now = moment();
-				// 开始时间为7天前
-				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
 				// 结束时间为当前
 				this.endDate = now.format("YYYY年MM月DD日");
+				// 开始时间为7天前
+				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
 			},
 			onShowDatePicker(type) { //显示
 				this.showPicker = true;
@@ -224,10 +219,11 @@
 				}
 				service.getMyTeamPerformancem(params).then(res=>{
 					uni.hideLoading();
-					console.log(res.data)
-					this.totalTurnoverInPeriod = 3230;
-					this.invitNumInPeriod = 240;
-					this.addedScore = 435340;
+					if(res.data) {
+						this.totalTurnoverInPeriod = 3230;
+						this.invitNumInPeriod = 240;
+						this.addedScore = 435340;
+					}
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({

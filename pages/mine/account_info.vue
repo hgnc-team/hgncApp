@@ -24,6 +24,7 @@
 	import myList from "../../components/common/my-list";
 	import { mapMutations } from 'vuex';
 	import service from "../../common/service.js";
+	import util from "../../common/util.js";
 	export default {
 		components: {
 			myList,
@@ -91,7 +92,7 @@
 						title: '累计消费',
 						iconfont: 'iconmoney',
 						extra: {
-							text: "￥242234234",
+							text: util.currency(242234234, "￥"),
 							color: "#999"
 						},
 						isShowExtra: true,
