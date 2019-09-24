@@ -27,7 +27,7 @@
 			scrollToTop(){
 				uni.pageScrollTo({
 					scrollTop: 0,
-					duration: 30
+					duration: 300
 				});
 			},
 		}
