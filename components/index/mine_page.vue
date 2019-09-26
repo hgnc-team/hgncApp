@@ -65,7 +65,10 @@
 		<!-- 跳转列表 -->
 		<myList :pageList="pageList" @handleClick="handleClick"></myList>
 		<view class="version">
+			Copyright&copy;2019 <br/>
 			当前版本号: {{version}}
+			<br/>
+			湖北鑫方宝网络科技有限公司
 		</view>
 	</view>
 </template>
