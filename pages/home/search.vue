@@ -9,23 +9,14 @@
 			</view>
 
 			<view class="search-box uni-inline-item">
-				<!-- mSearch组件 如果使用原样式，删除组件元素-->
-				<mSearch :mode="2" button="inside" :placeholder="defaultKeyword" @search="doSearch(false)" @confirm="doSearch(false)"
-				 v-model="keyword" radius="0" @input="clear"></mSearch>
-				<!-- 原样式 如果使用原样式，恢复下方注销代码 -->
-
-				<!-- <view class="input-box">
-					<input type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
+				<view class="input-box with-fun">
+					<input class="uni-input" type="text" :placeholder="defaultKeyword" @input="inputChange" v-model="keyword" @confirm="doSearch(false)"
 					 placeholder-class="placeholder-class" confirm-type="search">
+					 <view class="uni-icon uni-icon-clear" v-if="showClearIcon" @click="clearIcon"></view>
 				</view>
-				<view class="search-btn" @tap="doSearch(false)">搜索</view> -->
+				<view class="search-btn" @tap="doSearch(false)">搜索</view>
 
 				<!-- 原样式 end -->
-			</view>
-			<view class="cart uni-inline-item" :class="isShowIcon?'active':''" @tap="toCart">
-				<view class="iconfont iconicon_shoppingcart_nor">
-
-				</view>
 			</view>
 		</view>
 
@@ -118,7 +109,7 @@
 		uniIcon
 	} from '@dcloudio/uni-ui';
 	import service from '../../common/service.js';
-	import mSearch from '../../components/common/mehaotian-search-revision.vue';
+	// import mSearch from '../../components/common/mehaotian-search-revision.vue';
 	import recommendGoods from '../../components/common/recommend-goods.vue';
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	import noData from "../../components/common/no-data.vue";
@@ -126,7 +117,7 @@
 	export default {
 		components: {
 			uniIcon,
-			mSearch,
+			// mSearch,
 			noData,
 			recommendGoods,
 			scrollToTop
@@ -137,6 +128,7 @@
 				defaultKeyword: "",
 				// 输入的关键词
 				keyword: "",
+				showClearIcon: false,
 				// 历史搜索
 				oldKeywordList: [],
 				// 热门搜索
@@ -152,8 +144,6 @@
 				isPriceDesc: true,
 				// 是否展示搜索到的产品列表
 				isShowSearchList: false,
-				// 是否展示购物车图标
-				isShowIcon: false,
 				// 是否查询到产品
 				hasData: false,
 				// 产品总数
@@ -194,6 +184,18 @@
 			},
 			blur() {
 				uni.hideKeyboard()
+			},
+			inputChange(event) {
+				this.inputClearValue = event.target.value;
+				if (event.target.value.length > 0) {
+					this.showClearIcon = true;
+				} else {
+					this.showClearIcon = false;
+				}
+			},
+			clearIcon() {
+				this.keyword = '';
+				this.showClearIcon = false;
 			},
 			//加载默认搜索关键字
 			loadDefaultKeyword() {
@@ -272,8 +274,6 @@
 				this.keyword = key;
 				//保存为历史 
 				this.saveKeyword(key);
-				// 展示购物车图标
-				this.isShowIcon = true;
 				// 清空数据列表
 				this.goodsList = [];
 				// 查询数据
@@ -518,10 +518,17 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			border: 1px solid #EEEEEE;
+			border-radius: 2px;
+		}
+		
+		.search-box .input-box .uni-icon-clear{
+			color: #999;
 		}
 
 		.search-box .search-btn {
 			width: 15%;
+			height: 28px;
 			margin: 0 0 0 2%;
 			display: flex;
 			justify-content: center;
@@ -529,14 +536,14 @@
 			flex-shrink: 0;
 			font-size: 14px;
 			color: #fff;
-			background: linear-gradient(to right, #ff9801, #ff570a);
-			border-radius: 30px;
+			background-color: #242424;
+			border-radius: 2px;
 		}
 
 		.search-box .input-box>input {
 			width: 100%;
-			height: 30px;
-			font-size: 16px;
+			height: 28px;
+			font-size: 12px;
 			border: 0;
 			border-radius: 30px;
 			-webkit-appearance: none;
@@ -550,6 +557,7 @@
 
 		.placeholder-class {
 			color: #9e9e9e;
+			font-size: 12px;
 		}
 
 		.search-keyword {

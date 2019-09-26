@@ -88,32 +88,38 @@
 						<view class="triangle_border_down" :class="currentFilter=='score'&&!isDesc?'down':''"></view>
 					</view>
 				</view>
-				<!-- 内容 -->
-				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
-					<view class="name">
-						{{item.name}}
+				<block v-if="!hasNoData">
+					<!-- 内容 -->
+					<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
+						<view class="name">
+							{{item.name}}
+						</view>
+						<view class="time">
+							{{item.time}}
+						</view>
+						<view class="product">
+							{{item.product}}
+						</view>
+						<view class="balance">
+							￥{{item.balance}}
+						</view>
+						<view class="num">
+							{{item.num}}
+						</view>
+						<view class="money">
+							￥{{item.money}}
+						</view>
+						<view class="score">
+							+{{item.score}}
+						</view>
 					</view>
-					<view class="time">
-						{{item.time}}
-					</view>
-					<view class="product">
-						{{item.product}}
-					</view>
-					<view class="balance">
-						￥{{item.balance}}
-					</view>
-					<view class="num">
-						{{item.num}}
-					</view>
-					<view class="money">
-						￥{{item.money}}
-					</view>
-					<view class="score">
-						+{{item.score}}
-					</view>
-				</view>
+				</block>
 			</view>
 		</scroll-view>
+		<!-- 暂无数据 -->
+		<block v-if="hasNoData">
+			<noData :text="noDataText"></noData>
+		</block>
 		<!-- 返回顶部 -->
 		<scrollToTop :isShowBtn="isShowBtn"></scrollToTop>
 	</view>
@@ -129,172 +135,14 @@
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
 	import service from "../../common/service.js";
-	const dataList = [{
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 787845,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996456,
-					score: 888894
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈娃哈哈娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996576,
-					score: 88889
-				},{
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 787845,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996456,
-					score: 888894
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈娃哈哈娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996576,
-					score: 88889
-				}]
+	import noData from "../../components/common/no-data.vue";
+										
 	export default {
 		components:{
 			uniIcon,
 			MxDatePicker,
-			scrollToTop
+			scrollToTop,
+			noData
 		},
 		data() {
 			return {
@@ -323,7 +171,8 @@
 				dataList: [],
 				scrollLeft: 0,
 				// 是否显示回到顶部按钮
-				isShowBtn: false
+				isShowBtn: false,
+				noDataText: "暂无相关数据"
 
 			}
 		},
@@ -331,8 +180,9 @@
 			this.isShowBtn = e.scrollTop >= 216 ? true : false
 		},
 		computed: {
-			disabled() {
-				return this.card === "";
+			// 是否有数据
+			hasNoData() {
+				return this.dataList.length === 0;
 			}
 		},
 		methods: {

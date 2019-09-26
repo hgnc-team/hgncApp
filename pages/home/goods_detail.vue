@@ -150,6 +150,8 @@
 				numberValue: 1,
 				// 加入购物车|直接购买
 				type: "",
+				// 店铺id
+				storeId: '',
 				// 商品id
 				id: "",
 				// 商品标题
@@ -252,6 +254,7 @@
 						this.price = data[0].price;
 						this.detail = data[0].detail;
 						this.pointRate = data[0].pointRate;
+						this.storeId = data[0].storeId;
 						// 配置轮播图片
 						this.flowImages = util.setImageUrl({
 							type: "goods",
@@ -462,7 +465,8 @@
 					standardId: this.specSelected.id,
 					standardText: this.specSelected.title,
 					num: this.numberValue,
-					price: this.specSelected.price
+					price: this.specSelected.price,
+					storeId: this.storeId
 				}
 				this.INIT_ORDER_lIST([data]);
 				uni.navigateTo({

@@ -242,7 +242,6 @@
 				this.$store.dispatch("change_page", this.pageCode);
 			}
 		}
-
 	}
 </script>
 

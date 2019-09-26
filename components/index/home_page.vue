@@ -59,7 +59,7 @@
 							<view class="product-list" @click="toGoods">
 								<view class="product" v-for="(item,index2) in tab.data" :key="index2" :data-index="index2" :class="'swiper'+index1">
 									<view class="uni-media-list-logo" :data-index="index2">
-										<image class="image" lazy-load="true" :class="{lazy:!item.show}" :data-index="index2" @load="loaded" @error="imageError"
+										<image class="image" lazy-load="true" :class="{lazy:!item.show}" :data-index="index2" @load="loaded"
 										 :src="item.show?item.img:''" />
 										<image class="image placeholder" :data-index="index2" :class="{loaded:item.loaded}" :src="placeholderSrc" />
 									</view>
@@ -458,10 +458,8 @@
 						if (image.top <= this.windowHeight) {
 							let item = Object.assign({}, this.dataList[this.tabIndex].data[image.dataset.index]);
 							item.show = true;
-							// item.loaded = true;
 							// 重新刷新数据
 							this.$set(this.dataList[this.tabIndex].data, image.dataset.index, item);
-							console.log(JSON.stringify(this.dataList[this.tabIndex].data))
 						}
 					})
 				}).exec()
@@ -472,10 +470,6 @@
 				let item = Object.assign({}, this.dataList[this.tabIndex].data[e.target.dataset.index]);
 				item.loaded = true;
 				this.$set(this.dataList[this.tabIndex].data, e.target.dataset.index, item);
-				console.log('load', this.dataList[this.tabIndex].data)
-			},
-			imageError: function(e) {
-				console.error('image发生error事件，携带值为' + e.detail.errMsg)
 			},
 			// Scroll-view组件的滚动监听
 			onPageScrollFn: _.throttle(function() {
@@ -506,7 +500,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: #fff;
+		background-color: #f0f0f0;
 
 		.header {
 			width: 100%;
@@ -549,7 +543,7 @@
 					height: 56upx;
 					background-color: #ffffff;
 					font-size: 28upx;
-					border-radius: 4upx;
+					border-radius: 6upx;
 
 					.icon {
 						width: 56upx;
@@ -696,7 +690,7 @@
 				flex-wrap: wrap;
 				padding: 0 30upx;
 				box-sizing: border-box;
-
+				background-color: #fff;
 				.product {
 					width: 47.75%;
 					border-radius: 20upx;

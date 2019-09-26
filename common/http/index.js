@@ -2,6 +2,8 @@
  * 通用uni-app网络请求
  * 基于 Promise 对象实现更简单的 request 使用方式，支持请求和响应拦截
  */
+import store from "../../store"
+
 // 是否正在刷新
 let isRefreshing = false;
 
@@ -49,17 +51,20 @@ function checkTokenStatus(response) {
 			response.data.data = "token已过期"
 		}
 		// 获取当前路由，已经处于登录页面，跳过此处判断
-		const pages = getCurrentPages();
-		const currentPage = pages.length > 0 && pages[pages.length - 1].route;
-		if(currentPage !== "pages/login/login" || !currentPage) {
-			// 清楚缓存的token信息
-			uni.removeStorageSync('USERS_INFO');
-			uni.removeStorageSync('USER_TOKEN');
-			// 重定向到登录页面
-			uni.navigateTo({
-				url: "/pages/login/login"
-			})
-		}	
+		setTimeout(()=>{
+			const pages = getCurrentPages();
+			const currentPage = pages.length > 0 && pages[pages.length - 1].route;
+			if(currentPage !== "pages/login/login" || !currentPage) {
+				// 清楚缓存的token信息
+				uni.removeStorageSync('USERS_INFO');
+				uni.removeStorageSync('USER_TOKEN');
+				store.dispatch('logout');
+				// 重定向到登录页面
+				uni.navigateTo({
+					url: "/pages/login/login"
+				})
+			}	
+		},50)
 	}
 }
 
