@@ -234,7 +234,8 @@
 						num: item.num,
 						price: item.price,
 						detail: item.standardText,
-						imageUrl: item.imageUrl
+						imageUrl: item.imageUrl,
+						storeId: item.storeId
 					})
 				})
 				let params = {
